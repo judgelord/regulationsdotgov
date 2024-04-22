@@ -1,13 +1,14 @@
-# This script builds a function that pulls all material related to a single docket
+# This script builds a function that pulls all documents related to a single docket 
+# This function will be used as a helper function for pulling comments
+
+# currently just pulls the metadata with no pdf or supporting content - should be updated
+
 # source("api-key.R") 
 
 library(httr)
 library(jsonlite)
 library(tidyverse)
 library(magrittr)
-docketId <- "OMB-2023-0001"
-endpoint <- "comments"
-pages <- 1:20
 
 get_docket4 <- function(docketId,
                         lastModifiedDate = Sys.time(), 
@@ -21,7 +22,7 @@ get_docket4 <- function(docketId,
   
     #default settings
     url  <- "https://api.regulations.gov"
-    rpp <- 25 # results per page
+    rpp <- 250 # results per page
     sortby <- "-postedDate" # decending posted date 
     lastModifiedDate = Sys.time() %>% str_replace_all("[A-Z]", " ") %>%  str_squish()
     
@@ -39,7 +40,7 @@ get_docket4 <- function(docketId,
     
     content <- purrr::map(metadata, ~fromJSON(rawToChar(.x$content)))
     
-    data_frame_list <- map(content, ~{ # left off here, need to use map to get all the attributes and join
+    docket_metadata <- map_dfr(content, ~{ # left off here, need to use map to get all the attributes and join
       data <- .x$data
       meta <- .x$meta
       data_frame <- data$attributes %>%
@@ -50,22 +51,24 @@ get_docket4 <- function(docketId,
                lastpage = meta$lastPage)
       return(data_frame)
     })
-    
-    data <- bind_rows(data_frame_list)
-    
-    return(data)
+
+    return(docket_metadata)
 }
 
+### TEST CODE - DELETE
+#
+#docketId <- "OMB-2023-0001"
+#endpoint <- "documents"
+#pages <- 1:20
+#
+#
+#data <- get_docket4(docketId = "OMB-2023-0001", pages = 1:20, endpoint = "documents")
+#
+#get_comments4 <- function(lastModifiedDate = Sys.time(), 
+#                          endpoint = "comments"){
+#  
+#  commentIds <- data$objectId}
 
-d <- GET("https://api.regulations.gov/v4/comments/HHS-OCR-2018-0002-5313?include=attachments&api_key=9azbQEqsdmKb7d3sb4ThbELXxMIk5CeYMhlUSd8o")
-d2 <- fromJSON(rawToChar(d$content))
 
-data2 <- get_docket4(docketId = "OMB-2023-0001", pages = 1:20, endpoint = "comments")
-
-get_comments4 <- function(lastModifiedDate = Sys.time(), 
-                          endpoint = "comments"){
-  
-  commentIds <- data$objectId}
-
-
-
+#d <- GET("https://api.regulations.gov/v4/comments/HHS-OCR-2018-0002-5313?include=attachments&api_key=9azbQEqsdmKb7d3sb4ThbELXxMIk5CeYMhlUSd8o")
+#d2 <- fromJSON(rawToChar(d$content))
