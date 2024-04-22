@@ -62,7 +62,7 @@ get_comments4 <- function(docketId,
            "&filter[lastModifiedDate][ge]=",lastModifiedDate,
            "&page[size]=250",
            "&page[number]=", 1:20,
-           "&sort=lastModifiedDate,documentId",
+           "&sort=-lastModifiedDate,documentId",
            "&api_key=", api_key)}) %>%
     unlist()
   
