@@ -6,7 +6,7 @@ library(jsonlite)
 library(tidyverse)
 library(magrittr)
 
-commentids <- d$id[1:1010]
+commentids <- d$id[1000:2000]
 
 get_commentdetails4 <- function(commentId,
                                 lastModifiedDate = Sys.time(),
@@ -20,9 +20,9 @@ get_commentdetails4 <- function(commentId,
            "&api_key=", api_key)
   })
   
-  fetch_with_delay <- function(url) {
+  fetch_with_delay <- function(path) {
     Sys.sleep(delay_seconds)  
-    GET(url)
+    GET(path)
   }
   
   result <- purrr::map(path, ~slowly(fetch_with_delay, rate = rate_delay(delay_seconds))(.x))
@@ -32,9 +32,10 @@ get_commentdetails4 <- function(commentId,
   
 
   first5k <- purrr::map_dfr(metadata, ~.x$data$attributes)
-  
+
   return(first5k)
 }
 
 attachment <- get_commentdetails4(commentId = "OMB-2023-0001-18154")
+c2 <- get_commentdetails4(commentId = commentids)
  
