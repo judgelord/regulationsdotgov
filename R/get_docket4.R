@@ -12,8 +12,7 @@ library(magrittr)
 
 get_docket4 <- function(docketId,
                         lastModifiedDate = Sys.time(), 
-                        endpoint, 
-                        pages){
+                        endpoint){
     
     # backwards integration with v3 functions 
     #endpoint = ifelse(documenttype %in% c("Public Submission", "comments"), "comments", "documents") 
@@ -30,7 +29,7 @@ get_docket4 <- function(docketId,
                    endpoint, 
                    "?filter[docketId]=",docketId,
                    "&page[size]=250", 
-                   "&page[number]=", pages,
+                   "&page[number]=", 1:20,
                    "&api_key=", api_key)
     
     # inspect path 
@@ -62,7 +61,7 @@ get_docket4 <- function(docketId,
 #pages <- 1:20
 #
 #
-#data <- get_docket4(docketId = "OMB-2023-0001", pages = 1:20, endpoint = "documents")
+#data <- get_docket4(docketId = "OMB-2023-0001", endpoint = "documents")
 #
 #get_comments4 <- function(lastModifiedDate = Sys.time(), 
 #                          endpoint = "comments"){
