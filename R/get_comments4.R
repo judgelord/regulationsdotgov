@@ -3,7 +3,7 @@
 
 # just pulls the metadata, no detail about individual comments
 
-# source("api-key.R") 
+source("~/api-key.R") 
 
 library(httr)
 library(jsonlite)
