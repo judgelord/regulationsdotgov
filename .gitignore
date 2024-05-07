@@ -35,3 +35,4 @@ po/*~
 rsconnect/
 .Rproj.user
 regulationsdotgov.Rproj
+.DS_Store
