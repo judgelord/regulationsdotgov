@@ -73,15 +73,20 @@ get_commentdetails4 <- function(commentId,
     links <- relationships$attachments$links$self
   }
 
-  #TODO this works, but only if some results contain attachments; otherwise, it breaks
+  #this works, but might not be the best solution
+
+  #extract attachment file urls from included$attributes
   attachments <- purrr::map_dfr(content, ~.x$included$attributes$fileFormats)
 
+  # if some comments have attachments, then extract ids from the urls and nest all file url into one list per comment id
   if(nrow(attachments) > 0){
     attachments <- attachments |>
       mutate(id = str_remove_all(fileUrl, ".*gov/|/attach.*")) |>
       select(id, fileUrl) |>
       nest(.by = "id", .key = "attachments")
 
+    # join in the attachment lists by id
+    # comments with no attachments will be null
     metadata <- left_join(metadata, attachments)
   }
 
@@ -91,10 +96,17 @@ get_commentdetails4 <- function(commentId,
 }
 
 
+
+
+################
+# TESTING #####
+###############
+
 # for a notice (the API appears to return the same document details with /comments/ instead of /documents/ in the path)
 # however, it does not return the same included list
 document_details1 <- get_commentdetails4(commentId = "OMB-2023-0001-12471")
 
+######################################
 # for comments on that notice
 
 # one comment
