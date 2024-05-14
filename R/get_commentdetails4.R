@@ -20,7 +20,12 @@ commentId <- commentIds
 # keeping this here temporarily, but moved to separate script
 fetch_with_delay <- function(path, delay_seconds = 3.6) {
   Sys.sleep(delay_seconds)
-  GET(path)
+  message(paste(Sys.time()|> format("%X") , ":",
+                path |> str_remove_all(".*/|\\?.*")
+                ))
+
+  result <- GET(path)
+  return(result)
 }
 
 # keeping this here temporarily, but moved to separate script
@@ -34,6 +39,10 @@ make_path <- function(id, api_key){
 }
 
 
+# run the stuff inside the function for one comment to get a default for possibly to return if the call fails
+content_init <- content
+
+
 # main function for this script
 get_commentdetails4 <- function(commentId,
                                 lastModifiedDate = Sys.time(),
@@ -43,19 +52,24 @@ get_commentdetails4 <- function(commentId,
   path <- map_chr(commentId, make_path, api_key = api_key)
 
 
-  result <- purrr::map(path, ~slowly(fetch_with_delay, rate = rate_delay(delay_seconds))(.x)) # Devin's note: this seems to delay twice, once inside the fetch_with_delay function and again in `slowly`
+  #result <- purrr::map(path, ~slowly(fetch_with_delay, rate = rate_delay(delay_seconds))(.x)) # Devin's note: this seems to delay twice, once inside the fetch_with_delay function and again in `slowly`
+  result <- purrr::map(path, fetch_with_delay, delay_seconds = 3.6) # Devin's note: this seems gets the same result without `slowly`
 
-  content <- purrr::map(result, ~fromJSON(rawToChar(.x$content)))
+  content <- purrr::map(result,
+                        possibly(
+                          ~fromJSON(rawToChar(.x$content)),
+                                 otherwise = content_init)
+                        )
 
   # note that document call return attachment file names in attributes, but comments are in included
   metadata <- purrr::map_dfr(content, ~.x$data$attributes)
 
-  # add id back in (we could just use the ids supplied to the function,  but the API returns more than one result for a single supplied ID. I am hoping that by extracting it back out of the result, we get a vector of the correct length)
+  # add id back in (we could just use the ids supplied to the function,  but the API returns more than one row for a single supplied document ID (at least for documents other than comments, it seems). I am hoping that by extracting it back out of the result, we get a vector of the correct length)
   id <- purrr::map_chr(content, ~.x$data$id)
   metadata$id <- id
 
 
-  #TODO, since comment attachment ids/urls are in the included list, we need to merge this in. However, it contains nothing to merge on. Thus, we may need to do this one comment at a time, rather than having this function process many commmens
+  #TODO, since comment attachment ids/urls are in the included list, we need to merge this in.
   if(F){
     included <- purrr::map_dfr(content, ~.x$included)
 
@@ -110,7 +124,14 @@ document_details1 <- get_commentdetails4(commentId = "OMB-2023-0001-12471")
 # for comments on that notice
 
 # one comment
-comment_details1 <- get_commentdetails4(commentId = "OMB-2023-0001-18154")
+comment_details1 <- get_commentdetails4(commentId = c("OMB-2023-0001-18154"))
+
+
+# one comment
+comment_details2 <- get_commentdetails4(commentId = c("OMB-2023-0001-15386",
+                                                      "OMB-2023-0001-14801"))
 
 # a vector
-comment_details2 <- get_commentdetails4(commentId = commentIds)
+comment_details <- get_commentdetails4(commentId = commentIds)#[1:1000])
+
+comments_with_attachments <- comment_details |> unnest(attachments)
