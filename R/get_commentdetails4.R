@@ -6,19 +6,22 @@ library(jsonlite)
 library(tidyverse)
 library(magrittr)
 
+source("~/api-key.R")
+
 #NOTRUN
 if(F){
-commentIds <- d$id[1:2]
-
+  load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
+commentIds <- comment_metadata$id[1:200]
+}
 # the second one has an attachment
 commentIds <- c("OMB-2023-0001-15386", "OMB-2023-0001-14801")
 
 commentId <- commentIds
-}
+
 
 
 # keeping this here temporarily, but moved to separate script
-fetch_with_delay <- function(path, delay_seconds = 3.6) {
+fetch_with_delay <- function(path, delay_seconds = 3) {
   Sys.sleep(delay_seconds)
   message(paste(Sys.time()|> format("%X") , ":",
                 path |> str_remove_all(".*/|\\?.*")
@@ -29,7 +32,7 @@ fetch_with_delay <- function(path, delay_seconds = 3.6) {
 }
 
 # keeping this here temporarily, but moved to separate script
-make_path <- function(id, api_key){
+make_path <- function(id, api_key = api_key){
   path = paste0("https://api.regulations.gov/v4/comments/",
        id,
        "?",
@@ -39,8 +42,10 @@ make_path <- function(id, api_key){
 }
 
 
-# run the stuff inside the function for one comment to get a default for possibly to return if the call fails
-content_init <- content
+# a default for possibly to return if the call fails
+path = make_path(commentId[1], api_key)
+result_init <- GET(path)
+content_init <- fromJSON(rawToChar(result_init$content))
 
 
 # main function for this script
@@ -53,7 +58,11 @@ get_commentdetails4 <- function(commentId,
 
 
   #result <- purrr::map(path, ~slowly(fetch_with_delay, rate = rate_delay(delay_seconds))(.x)) # Devin's note: this seems to delay twice, once inside the fetch_with_delay function and again in `slowly`
-  result <- purrr::map(path, fetch_with_delay, delay_seconds = 3.6) # Devin's note: this seems gets the same result without `slowly`
+  result <- purrr::map(path,
+                       possibly(
+                         fetch_with_delay,# delay_seconds = 3.6,
+                         otherwise = result_init) # Devin's note: this seems gets the same result without `slowly`
+  )
 
   content <- purrr::map(result,
                         possibly(
@@ -67,25 +76,6 @@ get_commentdetails4 <- function(commentId,
   # add id back in (we could just use the ids supplied to the function,  but the API returns more than one row for a single supplied document ID (at least for documents other than comments, it seems). I am hoping that by extracting it back out of the result, we get a vector of the correct length)
   id <- purrr::map_chr(content, ~.x$data$id)
   metadata$id <- id
-
-
-  #TODO, since comment attachment ids/urls are in the included list, we need to merge this in.
-  if(F){
-    included <- purrr::map_dfr(content, ~.x$included)
-
-    included$id
-    included$type
-    included$links
-    included$attributes
-    included$attributes$fileFormats |> paste()
-
-    # relationships
-    relationships <- purrr::map_dfr(content, ~.x$data$relationships)
-
-    attachment_id <- relationships$attachments[[3]]$id
-
-    links <- relationships$attachments$links$self
-  }
 
   #this works, but might not be the best solution
 
@@ -103,8 +93,6 @@ get_commentdetails4 <- function(commentId,
     # comments with no attachments will be null
     metadata <- left_join(metadata, attachments)
   }
-
-
 
   return(metadata)
 }
@@ -132,6 +120,11 @@ comment_details2 <- get_commentdetails4(commentId = c("OMB-2023-0001-15386",
                                                       "OMB-2023-0001-14801"))
 
 # a vector
+commentIds <- setdiff(commentIds, comment_details)
 comment_details <- get_commentdetails4(commentId = commentIds)#[1:1000])
+
+save(comment_deatils, file = here::here("data", "comment_details.rdata"))
+
+comment_deatils %<>% distinct()
 
 comments_with_attachments <- comment_details |> unnest(attachments)
