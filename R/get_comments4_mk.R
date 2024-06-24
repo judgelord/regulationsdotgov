@@ -34,8 +34,6 @@ get_comments4_batch <- function(commentOnId,
   # call the make path function to make paths for the first 20 pages of 250 results each
   path <- make_path_commentOnId(commentOnId, lastModifiedDate)
   
-  while(lastpage == F){
-  
     for (url in path){
     
       df <- make_call(url)
@@ -46,8 +44,6 @@ get_comments4_batch <- function(commentOnId,
       
       lastpage <- tail(d$lastpage)
   } 
-    
-  }
   
   combined_df <- bind_rows(d)
  
