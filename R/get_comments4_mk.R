@@ -1,5 +1,4 @@
-
-## less commplicated
+# Function to grab metadata for the first 5,000 comments on a document
 
 source("~/api-key.R")
 
@@ -37,19 +36,26 @@ get_comments4_batch <- function(commentOnId,
   # map GET function over pages
   result <- purrr::map(path, GET)
   
-  # map the content of there api results into a list
+  # map the content of successful api results into a list
   metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
   
-  # mape the list into a dataframe with the information we care about (defined in the make_comment_dataframe function)
+  # print unsuccessful api calls (might be helpful to know which URLs are failing)
+  
+  purrr::walk2(result, path, function(response, url) {
+    if (status_code(response) != 200) {
+      print(paste("Failed URL:", url))
+    }
+  })
+  
+  # map the list into a dataframe with the information we care about 
   d <- map_dfr(metadata, make_comment_dataframe)
   
-  # add back in the id for the document being commmented on
+  # add back in the id for the document being commented on
   d$commentOnId <- commentOnId
   
   return(d)
 }
 
 
-
-
 n <- get_comments4_batch(commentOnId)
+
