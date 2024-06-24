@@ -1,5 +1,5 @@
 
-## less commplicated
+## trying to incorporate a while loop for last page - I might have lost the plot 
 
 source("~/api-key.R")
 
@@ -19,10 +19,11 @@ source("R/make_call.R")
 #commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-0001-12471 - less pages / calls
 commentOnId = "09000064824e36b7"
 
-# the batch function
 get_comments4_batch <- function(commentOnId,
                                 lastModifiedDate = Sys.time()){
   
+  d <- list()
+  lastpage <- FALSE
   
   # fixing lastMdifiedDate inside the function so that we do not need to do format dates for the API before providing them to the function (this also allows us to set sys.time as a default, which requires formatting as well)
   lastModifiedDate <- lastModifiedDate  %>%
@@ -34,22 +35,28 @@ get_comments4_batch <- function(commentOnId,
   # call the make path function to make paths for the first 20 pages of 250 results each
   path <- make_path_commentOnId(commentOnId, lastModifiedDate)
   
-  # map GET function over pages
-  result <- purrr::map(path, GET)
+    for (url in path){
+    
+      df <- make_call(url)
+    
+    if (!is.null(df)) {
+      d <- append(d, list(df))
+    }
+      
+      lastpage <- tail(d$lastpage)
+  } 
   
-  # map the content of there api results into a list
-  metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
+  combined_df <- bind_rows(d)
+ 
+  combined_df$commentOnId <- commentOnId
   
-  # mape the list into a dataframe with the information we care about (defined in the make_comment_dataframe function)
-  d <- map_dfr(metadata, make_comment_dataframe)
-  
-  # add back in the id for the document being commmented on
-  d$commentOnId <- commentOnId
-  
-  return(d)
+  return(combined_df)
 }
 
 
 
-
 n <- get_comments4_batch(commentOnId)
+
+
+
+
