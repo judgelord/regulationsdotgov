@@ -8,10 +8,8 @@ library(tidyverse)
 library(magrittr)
 library(lubridate)
 
-source("R/fetch_with_delay.R")
 source("R/make_path_commentOnId.R")
 source("R/make_comment_dataframe.R")
-source("R/make_call.R")
 
 # FOR TESTING
 #commentOnId = "09000064856107a5" # this is https://www.regulations.gov/document/OMB-2023-0001-0001
