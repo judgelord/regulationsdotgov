@@ -127,12 +127,16 @@ comment_details2 <- get_commentdetails4(id = c("OMB-2023-0001-15386",
                                                       "OMB-2023-0001-14801"))
 
 # a vector
-ids <- setdiff(ids, comment_details)
+ids <- setdiff(ids, comment_details$id)
 comment_details <- get_commentdetails4(id = ids)#[1:1000])
+d <- comment_details
 
-save(comment_deatils, file = here::here("data", "comment_details.rdata"))
-
-comment_deatils %<>% distinct()
+if(F){
+  load(here::here("data", "comment_details.rdata"))
+  comment_details %<>% full_join(d)
+  save(comment_deatils, file = here::here("data", "comment_details.rdata"))
+}
+comment_details %<>% distinct()
 
 # comments with no attachments are dropped by unnest
 comments_with_attachments <- comment_details |> unnest(attachments)
