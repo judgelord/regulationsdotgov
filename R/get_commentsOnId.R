@@ -1,14 +1,10 @@
-source("~/api-key.R")
-
 library(httr)
 library(jsonlite)
 library(tidyverse)
 library(magrittr)
 library(lubridate)
 
-source("R/make_path_commentOnId.R")
-source("R/make_comment_dataframe.R")
-#source("R/get_comments4_mk.R")
+source("R/get_comments4_mk.R")
 
 get_commentsOnId <- function(commentOnId){
   

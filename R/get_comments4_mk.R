@@ -1,6 +1,6 @@
 # Function to grab metadata for the first 5,000 comments on a document
 
-source("~/api-key.R")
+#source("~/api-key.R")
 
 library(httr)
 library(jsonlite)
