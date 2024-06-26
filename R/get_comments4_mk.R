@@ -20,7 +20,8 @@ commentOnId = "09000064824e36b7"
 
 # the batch function
 get_comments4_batch <- function(commentOnId,
-                                lastModifiedDate){
+                                lastModifiedDate = Sys.time()){
+
 
   # fixing lastMdifiedDate inside the function so that we do not need to do format dates for the API before providing them to the function (this also allows us to set sys.time as a default, which requires formatting as well)
   lastModifiedDate <- lastModifiedDate  %>%
