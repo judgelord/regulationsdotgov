@@ -37,9 +37,14 @@ get_comments4_batch <- function(commentOnId,
   result <- purrr::map(path, GET)
 
   # TODO: EXTRACT THE STATUS CODE AND MOST RECENT x-ratelimit-remaining and save it for the while loop
+  status_code(tail(result, 1))
+
+  status <<- map(result, status_code) |> tail(1)
+
+  remaining <<-  map(result, headers) |> tail(1) #FIXME |> pluck(remaining, "x-ratelimit-remaining")
 
 
-  # map the content of successful api results into a list
+ # map the content of successful api results into a list
   metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
 
   # print unsuccessful api calls (might be helpful to know which URLs are failing)
