@@ -14,7 +14,7 @@ source("R/make_comment_dataframe.R")
 # FOR TESTING
 if(F){
 #commentOnId = "09000064856107a5" # this is https://www.regulations.gov/document/OMB-2023-0001-0001
-#commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-0001-12471 - less pages / calls
+commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-0001-12471 - less pages / calls
 commentOnId = "09000064824e36b7"
 }
 
@@ -41,11 +41,17 @@ get_comments4_batch <- function(commentOnId,
 
   # print unsuccessful api calls (might be helpful to know which URLs are failing)
 
-  purrr::walk2(result, path, function(response, url) {
+  purrr::walk2(result,
+               path,
+               function(response, url) {
     if (status_code(response) != 200) {
-      print(paste("Failed URL:", url))
+      print(paste(status_code(response),
+                  "Failed URL:",
+                  url)
+            )
     }
-  })
+  }
+  )
 
   # map the list into a dataframe with the information we care about
   d <- map_dfr(metadata, make_comment_dataframe)
