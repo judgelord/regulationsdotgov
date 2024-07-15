@@ -36,6 +36,9 @@ get_comments4_batch <- function(commentOnId,
   # map GET function over pages
   result <- purrr::map(path, GET)
 
+  # TODO: EXTRACT THE STATUS CODE AND MOST RECENT x-ratelimit-remaining and save it for the while loop
+
+
   # map the content of successful api results into a list
   metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
 
@@ -67,3 +70,4 @@ get_comments4_batch <- function(commentOnId,
 if(F){
 n <- get_comments4_batch(commentOnId)
 }
+
