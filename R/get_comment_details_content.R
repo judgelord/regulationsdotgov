@@ -15,7 +15,9 @@ get_comment_details_content <- function(id,
 
   content <-  fromJSON(rawToChar(result$content))
 
-  if(result$headers$`x-ratelimit-remaining` == 0){
+  remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
+
+  if(remaining < 2){ # if we set it to 0, we sometimes get a 429 because the reported rate limit does not keep up with the true limit
 
     message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
 
