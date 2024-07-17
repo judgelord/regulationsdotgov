@@ -11,7 +11,7 @@ get_commentsOnId <- function(commentOnId){
   # Fetch the initial 5k and establish the base dataframe
   comments <- get_comments4_batch(commentOnId, lastModifiedDate = Sys.time())
 
-  # Loop until lastpage is TRUE
+  # Loop until last page is TRUE
   while( !tail(comments$lastpage, 1) ) {
 
     # Fetch the next batch of comments using the last modified date
@@ -20,7 +20,7 @@ get_commentsOnId <- function(commentOnId){
                                                              n = 1)
                                      )
 
-    # Append nextbatch to comments
+    # Append next batch to comments
     comments <<- bind_rows(comments, nextbatch)
   }
 

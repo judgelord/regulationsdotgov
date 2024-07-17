@@ -46,10 +46,11 @@ get_comments4_batch <- function(commentOnId,
                   "| Status", status,
                   "| URL:", url))
 
+    # small pause to give use a chance to cancel
     Sys.sleep(6)
   }
 
-  # EXTRACT THE MOST RECENT x-ratelimit-remaining and save it for the while loop
+  # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
   remaining <<-  map(result, headers) |>
     tail(1) |>
     pluck(1, "x-ratelimit-remaining")
