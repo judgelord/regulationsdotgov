@@ -36,9 +36,11 @@ get_comment_details <- function(id,
   metadata <- purrr::map_dfr(content, ~.x$data$attributes)
 
   # add id back in (we could just use the ids supplied to the function,  but the API returns more than one row for a single supplied document ID (at least for documents other than comments, it seems). I am hoping that by extracting it back out of the result, we get a vector of the correct length)
-  id <- purrr::map_chr(content, ~.x$data$id)
+  ids <- map(content, ~.x |> pluck("data", "id")) |>
+    discard(is.null) |>  # FIXME? hopefully by discarding nulls, we get the same length as metadata
+    as.character()
 
-  metadata$id <- id
+  metadata$id <- ids
 
   #extract attachment file urls from included$attributes
   attachments <- purrr::map_dfr(content, ~.x$included$attributes$fileFormats)
@@ -67,6 +69,9 @@ get_comment_details <- function(id,
 
 #NOTRUN
 if(F){
+  details <- get_comment_details(comments_coded$document_id)
+  save(details, file = "data/comments_coded_details.rda")
+
   # load saved comment metadata for testing
   load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
 
