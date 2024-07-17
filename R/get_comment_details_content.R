@@ -5,7 +5,7 @@ get_comment_details_content <- function(id,
                                         ){
 
 
-  path <- make_path_comment_details(id[2], api_key)
+  path <- make_path_comment_details(id, api_key)
 
   result <- GET(path)
 
@@ -23,4 +23,8 @@ get_comment_details_content <- function(id,
   }
 
   return(content)
+}
+
+if(F){
+  get_comment_details(id = "CEQ-2019-0003-197917")
 }
