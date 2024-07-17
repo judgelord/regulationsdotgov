@@ -15,7 +15,7 @@ source("R/make_comment_dataframe.R")
 if(F){
 #commentOnId = "09000064856107a5" # this is https://www.regulations.gov/document/OMB-2023-0001-0001
 commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-0001-12471 - less pages / calls
-commentOnId = "09000064824e36b7"
+# commentOnId = "09000064824e36b7"
 }
 
 # the batch function
@@ -27,6 +27,7 @@ get_comments4_batch <- function(commentOnId,
   lastModifiedDate <- lastModifiedDate  %>%
     ymd_hms() %>%
     with_tz(tzone = "America/New_York") %>%
+    # replace spaces with unicode
     gsub(" ", "%20", .) %>%
     str_remove("\\..*")
 
@@ -36,12 +37,29 @@ get_comments4_batch <- function(commentOnId,
   # map GET function over pages
   result <- purrr::map(path, GET)
 
-  # TODO: EXTRACT THE STATUS CODE AND MOST RECENT x-ratelimit-remaining and save it for the while loop
-  status_code(tail(result, 1))
+  status <<- map(result, status_code) |> tail(1) %>% as.numeric()
 
-  status <<- map(result, status_code) |> tail(1)
+  url <- result[[20]][1]$url
 
-  remaining <<-  map(result, headers) |> tail(1) #FIXME |> pluck(remaining, "x-ratelimit-remaining")
+  if(status != 200){
+    message(paste(Sys.time() |> format("%X"),
+                  "| Status", status,
+                  "| URL:", url))
+
+    Sys.sleep(6)
+  }
+
+  # EXTRACT THE MOST RECENT x-ratelimit-remaining and save it for the while loop
+  remaining <<-  map(result, headers) |>
+    tail(1) |>
+    pluck(1, "x-ratelimit-remaining")
+
+  if(remaining == 0){
+
+    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
+
+    Sys.sleep(60)
+  }
 
 
  # map the content of successful api results into a list
@@ -53,7 +71,7 @@ get_comments4_batch <- function(commentOnId,
                path,
                function(response, url) {
     if (status_code(response) != 200) {
-      print(paste(status_code(response),
+      message(paste(status_code(response),
                   "Failed URL:",
                   url)
             )
