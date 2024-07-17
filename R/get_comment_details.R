@@ -8,73 +8,27 @@ library(magrittr)
 
 source("~/api-key.R")
 
-#NOTRUN
-if(F){
-  # load saved comment metadata for testing
-  load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
-
-  # to get all
-  ids <- comment_metadata$id
-
-  # for testing with 200
-  ids <- comment_metadata$id[1:200]
-}
-
-# or test with just two
-# the second one has an attachment
-id <- c("OMB-2023-0001-15386", "OMB-2023-0001-14801")
-
-
-
-
 ##############
-# HELPER FUNCTIONS #
+# REQUIRES HELPER FUNCTIONS #
 ####################
+source("R/make_path_comment_details.R")
+source("R/get_comment_details_content.R")
 
-# keeping this here temporarily, but moved to separate script
-make_path <- function(id, api_key = api_key){
-  path = paste0("https://api.regulations.gov/v4/comments/",
-       id,
-       "?",
-       "include=attachments&",
-       "api_key=", api_key)
-  return(path)
-}
 
-# the helper that does the work for each comment
-# keeping just the content, not the full results, in memory while the main loop runs
-get_commentdetails4_content <- function(id,
+# loop over a vector of comment ids, return a dataframe of comment details
+get_comment_details <- function(id,
                                 lastModifiedDate = Sys.time(),
-                                delay_seconds = 3) {
+                                delay_seconds = 60) {
 
-  message(paste(Sys.time()|> format("%X") , ":", id))
+  #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
+  # a default for possibly to return if the call fails
+  path <- make_path_comment_details(id[1], api_key)
+  result_init <- GET(path)
+  content_init <- fromJSON(rawToChar(result_init$content))
 
-  path <- make_path(id, api_key)
-
-  result <- GET(path)
-
-  content <-  fromJSON(rawToChar(result$content))
-
-  Sys.sleep(delay_seconds)
-
-  return(content)
-}
-
-
-#FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
-# a default for possibly to return if the call fails
-path <- make_path(id[1], api_key)
-result_init <- GET(path)
-content_init <- fromJSON(rawToChar(result_init$content))
-
-
-# main function for this script to loop over a vector of comments
-get_commentdetails4 <- function(id,
-                                lastModifiedDate = Sys.time(),
-                                delay_seconds = 3) {
 
   content <- purrr::map(id,
-                        possibly(get_commentdetails4_content,
+                        possibly(get_comment_details_content,
                                  otherwise = content_init)
   )
 
@@ -111,9 +65,31 @@ get_commentdetails4 <- function(id,
 # TESTING #####
 ###############
 
+#NOTRUN
+if(F){
+  # load saved comment metadata for testing
+  load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
+
+  # to get all
+  ids <- comment_metadata$id
+
+  # for testing with 200
+  ids <- comment_metadata$id[1:200]
+
+
+# or test with just two
+# the second one has an attachment
+id <- c("OMB-2023-0001-15386", "OMB-2023-0001-14801")
+}
+
+
+if(F){
+
 # for a notice (the API appears to return the same document details with /comments/ instead of /documents/ in the path)
 # however, it does not return the same included list
-document_details1 <- get_commentdetails4(id = "OMB-2023-0001-12471")
+document_details1 <- get_comment_details(id = "OMB-2023-0001-12471")
+
+details <- get_comment_details(id)
 
 ######################################
 # for comments on that notice
@@ -140,3 +116,5 @@ comment_details %<>% distinct()
 
 # comments with no attachments are dropped by unnest
 comments_with_attachments <- comment_details |> unnest(attachments)
+
+}
