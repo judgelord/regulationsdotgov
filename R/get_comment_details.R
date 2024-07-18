@@ -29,7 +29,7 @@ get_comment_details <- function(id,
 
   content <- purrr::map(id,
                         possibly(get_comment_details_content,
-                                 otherwise = content_init)
+                                 otherwise = content_init) # FIXME replace with NULL, and then drop NULLs before next step? We might also be able to try the failed ones again.
   )
 
   # note that document call return attachment file names in attributes, but comments are in included
@@ -94,7 +94,6 @@ if(F){
 # however, it does not return the same included list
 document_details1 <- get_comment_details(id = "OMB-2023-0001-12471")
 
-details <- get_comment_details(id)
 
 ######################################
 # for comments on that notice
@@ -108,9 +107,15 @@ comment_details2 <- get_commentdetails4(id = c("OMB-2023-0001-15386",
                                                       "OMB-2023-0001-14801"))
 
 # a vector
-ids <- setdiff(ids, comment_details$id)
-comment_details <- get_commentdetails4(id = ids)#[1:1000])
-d <- comment_details
+ids <- comments_coded$document_id
+# remove ones we already have
+ids <- setdiff(ids, d$id)
+
+comment_details <- get_comment_details(id = ids)#[1:1000])
+
+# add new ones to ones we already had
+d %<>% full_join(comment_details)
+#d <- comment_details
 
 if(F){
   load(here::here("data", "comment_details.rdata"))

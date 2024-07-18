@@ -9,20 +9,30 @@ get_comment_details_content <- function(id,
 
   result <- GET(path)
 
-  message(paste("|", id,
-                "| status:", result$status_code,
-                "| limit-remaining", result$headers$`x-ratelimit-remaining`)) #FIXME add status code and API limit remaining
-
-  content <-  fromJSON(rawToChar(result$content))
-
   remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
 
-  if(remaining < 2){ # if we set it to 0, we sometimes get a 429 because the reported rate limit does not keep up with the true limit
+  message(paste("|", id,
+                "| status:", result$status_code,
+                "| limit-remaining", remaining)) #FIXME add status code and API limit remaining
+
+
+  if(remaining < 2){ # if we set it to 0, we often get a 429 because the reported rate limit lags the true limit remaining. Even at <2, we occassionally get 429, but not often
 
     message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
 
+    # pause to reset rate limit
     Sys.sleep(60)
   }
+
+  # if previously failed due to rate limit, try again
+  if( result$status_code == 429){
+    result <- GET(path)
+
+    Sys.sleep(3) # small pause to make up for extra request
+  }
+
+  # return content (small object than result)
+  content <-  fromJSON(rawToChar(result$content))
 
   return(content)
 }
