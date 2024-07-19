@@ -37,6 +37,7 @@ get_comments4_batch <- function(commentOnId,
   # map GET function over pages
   result <- purrr::map(path, GET)
 
+  # report result status
   status <<- map(result, status_code) |> tail(1) %>% as.numeric()
 
   url <- result[[20]][1]$url
@@ -46,7 +47,7 @@ get_comments4_batch <- function(commentOnId,
                   "| Status", status,
                   "| URL:", url))
 
-    # small pause to give use a chance to cancel
+    # small pause to give user a chance to cancel
     Sys.sleep(6)
   }
 

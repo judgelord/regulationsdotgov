@@ -47,14 +47,14 @@ get_comment_details <- function(id,
 
   # if some comments have attachments, then extract ids from the urls and nest all file url into one list per comment id
   if(nrow(attachments) > 0){
-    attachments <- attachments |>
+    attachments_with_urls <- attachments |>
       mutate(id = str_remove_all(fileUrl, ".*gov/|/attach.*")) |>
-      select(id, fileUrl) |>
+      distinct(id, fileUrl) |>
       nest(.by = "id", .key = "attachments")
 
     # join in the attachment lists by id
     # comments with no attachments will be null
-    metadata <- left_join(metadata, attachments, by = "id")
+    metadata <- left_join(metadata, attachments_with_urls, by = "id")
   }
 
   return(metadata)
@@ -63,68 +63,3 @@ get_comment_details <- function(id,
 
 
 
-################
-# TESTING #####
-###############
-
-#NOTRUN
-if(F){
-  details <- get_comment_details(comments_coded$document_id)
-  save(details, file = "data/comments_coded_details.rda")
-
-  # load saved comment metadata for testing
-  load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
-
-  # to get all
-  ids <- comment_metadata$id
-
-  # for testing with 200
-  ids <- comment_metadata$id[1:200]
-
-
-# or test with just two
-# the second one has an attachment
-id <- c("OMB-2023-0001-15386", "OMB-2023-0001-14801")
-}
-
-
-if(F){
-
-# for a notice (the API appears to return the same document details with /comments/ instead of /documents/ in the path)
-# however, it does not return the same included list
-document_details1 <- get_comment_details(id = "OMB-2023-0001-12471")
-
-
-######################################
-# for comments on that notice
-
-# one comment
-comment_details1 <- get_commentdetails4(id = c("OMB-2023-0001-18154"))
-
-
-# one comment
-comment_details2 <- get_commentdetails4(id = c("OMB-2023-0001-15386",
-                                                      "OMB-2023-0001-14801"))
-
-# a vector
-ids <- comments_coded$document_id
-# remove ones we already have
-ids <- setdiff(ids, d$id)
-
-comment_details <- get_comment_details(id = ids)#[1:1000])
-
-# add new ones to ones we already had
-d %<>% full_join(comment_details)
-#d <- comment_details
-
-if(F){
-  load(here::here("data", "comment_details.rdata"))
-  comment_details %<>% full_join(d)
-  save(comment_deatils, file = here::here("data", "comment_details.rdata"))
-}
-comment_details %<>% distinct()
-
-# comments with no attachments are dropped by unnest
-comments_with_attachments <- comment_details |> unnest(attachments)
-
-}

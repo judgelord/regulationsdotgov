@@ -16,7 +16,7 @@ get_comment_details_content <- function(id,
                 "| limit-remaining", remaining)) #FIXME add status code and API limit remaining
 
 
-  if(remaining < 2){ # if we set it to 0, we often get a 429 because the reported rate limit lags the true limit remaining. Even at <2, we occassionally get 429, but not often
+  if( remaining < 2 ){ # if we set it to 0, we often get a 429 because the reported rate limit lags the true limit remaining. Even at <2, we occassionally get 429, but not often
 
     message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
 
@@ -25,11 +25,13 @@ get_comment_details_content <- function(id,
   }
 
   # if previously failed due to rate limit, try again
-  if( result$status_code == 429){
+  if( result$status_code == 429 ){
     result <- GET(path)
 
     Sys.sleep(3) # small pause to make up for extra request
   }
+
+  Sys.sleep(0.1) # very small pause to allow rate limit reported to be more accurate
 
   # return content (small object than result)
   content <-  fromJSON(rawToChar(result$content))
