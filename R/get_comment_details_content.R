@@ -28,6 +28,10 @@ get_comment_details_content <- function(id,
   if( result$status_code == 429 ){
     result <- GET(path)
 
+    message(paste("429 | trying", id, "again",
+                  "| now", result$status_code,
+                  "| limit-remaining", remaining)) #FIXME add status code and API limit remaining
+
     Sys.sleep(3) # small pause to make up for extra request
   }
 
