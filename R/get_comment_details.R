@@ -32,12 +32,15 @@ get_comment_details <- function(id,
                                  otherwise = content_init) # FIXME replace with NULL, and then drop NULLs before next step? We might also be able to try the failed ones again.
   )
 
+  # save(content, file = "data/content_temp.rdata")
+
   # note that document call return attachment file names in attributes, but comments are in included
   metadata <- purrr::map_dfr(content, ~.x$data$attributes)
 
   # add id back in (we could just use the ids supplied to the function,  but the API returns more than one row for a single supplied document ID (at least for documents other than comments, it seems). I am hoping that by extracting it back out of the result, we get a vector of the correct length)
   ids <- map(content, ~.x |> pluck("data", "id")) |>
-    discard(is.null) |>  # FIXME? hopefully by discarding nulls, we get the same length as metadata
+    # FIXME? hopefully by discarding nulls, we get the same length as metadata....no this did not seem to work...
+    # discard(is.null) |>
     as.character()
 
   metadata$id <- ids
