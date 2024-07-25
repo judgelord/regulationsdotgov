@@ -42,7 +42,7 @@ The package also contains functions to use the API's search function to search t
 
 Finally, using URLs returned from `get_documents()` and `get_comment_details()`, we can download files  (e.g., pdfs)
 
-- `download_regulationsdotgov("[url]")` saves local copies of desired files in a standard file structure mirroring that above in a "files" folder: "files/agency_acronym/docket_id/document_id/document_name.extension"  (e.g., "files/ACF/ACF-2009-0005/ACF-2009-0005-0018/attachment_1.doc" is a public comment on ACF Notice ACF-2009-0005-0018, located at "files/ACF/ACF-2009-0005//ACF-2009-0005-0002/content.pdf")
+- `download_regulationsdotgov("[url]")` saves local copies of desired files in a standard file structure mirroring that above in a "files" folder: "files/agency_acronym/docket_id/document_id/document_name.extension"  (e.g., "files/ACF/ACF-2009-0005/ACF-2009-0005-0018_1.doc" is a public comment on ACF Notice ACF-2009-0005-0002. This notice is located at "files/ACF/ACF-2009-0005/ACF-2009-0005-0002.pdf")
 
 To specify your own file structure, simply use the base download function 
 

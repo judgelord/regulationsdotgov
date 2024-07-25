@@ -4,12 +4,12 @@ library(tidyverse)
 library(magrittr)
 library(lubridate)
 
-source("R/get_comments4_mk.R")
+source("R/get_comments_batch.R")
 
 get_commentsOnId <- function(commentOnId){
 
   # Fetch the initial 5k and establish the base dataframe
-  comments <- get_comments4_batch(commentOnId, lastModifiedDate = Sys.time())
+  comments <- get_comments_batch(commentOnId, lastModifiedDate = Sys.time())
 
   # Loop until last page is TRUE
   while( !tail(comments$lastpage, 1) ) {
