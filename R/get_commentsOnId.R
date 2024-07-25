@@ -12,7 +12,7 @@ get_commentsOnId <- function(commentOnId){
   comments <- get_comments_batch(commentOnId, lastModifiedDate = Sys.time())
 
   # Loop until last page is TRUE
-  while( !tail(comments$lastpage, 1) ) {
+  while( !tail(metadata$lastpage, 1) & nrow(metadata) != 5000) {
 
     # Fetch the next batch of comments using the last modified date
     nextbatch <- get_comments_batch(commentOnId,

@@ -33,6 +33,7 @@ get_searchTerm <- function(searchTerm,
                            documents = "documents", # c("documents", "comments") defaults to documents
                            lastModifiedDate = Sys.time()){
 
+
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_searchTerm_batch(searchTerm,
                                    documents,
@@ -41,61 +42,26 @@ get_searchTerm <- function(searchTerm,
                                    )
 
   # Loop until last page is TRUE
-  while( !tail(metadata$lastpage, 1) ) {
+  while( !tail(metadata$lastpage, 1) & nrow(metadata) != 5000) {
 
     # Fetch the next batch of metadata using the last modified date
     nextbatch <- get_searchTerm_batch(searchTerm,
                                     documents,
-                                    lastModifiedDate = tail(comments$lastModifiedDate,
+                                    lastModifiedDate = tail(metadata$lastModifiedDate,
                                                              n = 1)
     )
 
     # Append next batch to comments
-    metadata <<- bind_rows(metadata, nextbatch)
+    # metadata <<- bind_rows(metadata, nextbatch)
+    metadata <<- full_join(metadata, nextbatch)
   }
 
   return(metadata)
 }
 
 
-### OLD VERSION FOR REFERENCE:
-if(F){
-get_searchTerm <- function(searchTerm,
-                           documents = "documents",
-                           lastModifiedDate = Sys.time()){
 
-  d <- list()
-  lastpage <- FALSE
 
-  # fixing lastMdifiedDate inside the function so that we do not need to do format dates for the API before providing them to the function (this also allows us to set sys.time as a default, which requires formatting as well)
-  lastModifiedDate <- lastModifiedDate  %>%
-    ymd_hms() %>%
-    with_tz(tzone = "America/New_York") %>%
-    gsub(" ", "%20", .) %>%
-    str_remove("\\..*")
-
-  # call the make path function to make paths for the first 20 pages of 250 results each
-  path <- make_path_searchTerm(searchTerm, documents, lastModifiedDate)
-
-  for (url in path){
-
-    df <- make_call(url)
-
-    if (!is.null(df)) {
-      d <- append(d, list(df))
-    }
-
-    lastpage <- tail(d$lastpage)
-  }
-
-  combined_df <- bind_rows(d)
-
-  combined_df$searchTerm <- searchTerm
-
-  return(combined_df)
-}
-
-}
 
 #TESTING
 if(F){
