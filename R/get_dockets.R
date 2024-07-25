@@ -10,7 +10,7 @@ get_dockets <- function(agency, lastModifiedDate = Sys.time()){
     gsub(" ", "%20", .) %>%
     str_remove("\\..*")
 
-  path <- make_path_dockets(agency)
+  path <- make_path_dockets(agency, lastModifiedDate)
 
   # map GET function over pages
   result <- purrr::map(path, GET)
