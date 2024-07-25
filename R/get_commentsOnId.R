@@ -15,7 +15,7 @@ get_commentsOnId <- function(commentOnId){
   while( !tail(comments$lastpage, 1) ) {
 
     # Fetch the next batch of comments using the last modified date
-    nextbatch <- get_comments4_batch(commentOnId,
+    nextbatch <- get_comments_batch(commentOnId,
                                      lastModifiedDate = tail(comments$lastModifiedDate,
                                                              n = 1)
                                      )
