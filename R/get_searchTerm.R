@@ -42,7 +42,7 @@ get_searchTerm <- function(searchTerm,
                                    )
 
   # Loop until last page is TRUE
-  while( !tail(metadata$lastpage, 1) & nrow(metadata) != 5000) {
+  while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
     # Fetch the next batch of metadata using the last modified date
     nextbatch <- get_searchTerm_batch(searchTerm,
@@ -52,8 +52,8 @@ get_searchTerm <- function(searchTerm,
     )
 
     # Append next batch to comments
-    # metadata <<- bind_rows(metadata, nextbatch)
-    metadata <<- full_join(metadata, nextbatch)
+    metadata <<- bind_rows(metadata, nextbatch)
+    # metadata <<- full_join(metadata, nextbatch) #FIXME? perhaps better? But will need to silence message
   }
 
   return(metadata)
