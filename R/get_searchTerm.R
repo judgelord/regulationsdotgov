@@ -16,8 +16,50 @@ source("R/make_call.R")
 
 
 # FOR TESTING
+if(F){
 searchTerm =  c("national congress of american indians")
+}
 
+library(httr)
+library(jsonlite)
+library(tidyverse)
+library(magrittr)
+library(lubridate)
+
+source("R/get_searchTerm_batch.R")
+
+
+get_searchTerm <- function(searchTerm,
+                           documents = "documents", # c("documents", "comments") defaults to documents
+                           lastModifiedDate = Sys.time()){
+
+  # Fetch the initial 5k and establish the base dataframe
+  metadata <- get_searchTerm_batch(searchTerm,
+                                   documents,
+                                   #commentOnId, #TODO feature to search comments on a specific docket or document
+                                   lastModifiedDate = Sys.time()
+                                   )
+
+  # Loop until last page is TRUE
+  while( !tail(metadata$lastpage, 1) ) {
+
+    # Fetch the next batch of metadata using the last modified date
+    nextbatch <- get_searchTerm_batch(searchTerm,
+                                    documents,
+                                    lastModifiedDate = tail(comments$lastModifiedDate,
+                                                             n = 1)
+    )
+
+    # Append next batch to comments
+    metadata <<- bind_rows(metadata, nextbatch)
+  }
+
+  return(metadata)
+}
+
+
+### OLD VERSION FOR REFERENCE:
+if(F){
 get_searchTerm <- function(searchTerm,
                            documents = "documents",
                            lastModifiedDate = Sys.time()){
@@ -53,14 +95,20 @@ get_searchTerm <- function(searchTerm,
   return(combined_df)
 }
 
+}
 
 #TESTING
 if(F){
-d <- get_searchTerm(searchTerm, documents = "comments")
+  d <- get_searchTerm(searchTerm, documents = "documents")
+
+ d <- get_searchTerm(searchTerm, documents = "comments")
+
+
 
 # write_csv(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".csv")))
 
 searchTerm =  c("national congress of american indians", "cherokee nation")
+
 documents = c("documents", "comments")
 
 search <- function(searchTerm, documents){
