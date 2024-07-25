@@ -1,9 +1,9 @@
-# should give this a new name at some point 
+# should give this a new name at some point
 
-make_comment_dataframe <- function(metadata){
+make_dataframe <- function(metadata){
   data <- metadata$data
   meta <- metadata$meta
-  
+
   data_frame <- data$attributes %>%
     as_tibble() %>%
     mutate(id = data$id,

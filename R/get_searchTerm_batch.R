@@ -25,6 +25,10 @@ get_searchTerm_batch <- function(searchTerm,
                                  lastModifiedDate = Sys.time()
                                  ){
 
+  message(paste0("Searching for ", documents,
+                 ' containing "', searchTerm,
+                 '" posted before ',lastModifiedDate)
+          )
 
   # fixing lastMdifiedDate inside the function so that we do not need to do format dates for the API before providing them to the function (this also allows us to set sys.time as a default, which requires formatting as well)
   lastModifiedDate <- lastModifiedDate  %>%
@@ -62,7 +66,8 @@ get_searchTerm_batch <- function(searchTerm,
   # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
   remaining <<-  map(result, headers) |>
     tail(1) |>
-    pluck(1, "x-ratelimit-remaining")
+    pluck(1, "x-ratelimit-remaining") |>
+    as.numeric()
 
   if(remaining < 20){
 
@@ -90,7 +95,7 @@ get_searchTerm_batch <- function(searchTerm,
   )
 
   # map the list into a dataframe with the information we care about
-  d <- map_dfr(metadata, make_comment_dataframe)
+  d <- map_dfr(metadata, make_dataframe)
 
   # add back in the id for the document being commented on
   d$searchTerm <- searchTerm

@@ -9,7 +9,7 @@ library(magrittr)
 library(lubridate)
 
 source("R/make_path_commentOnId.R")
-source("R/make_comment_dataframe.R")
+source("R/make_dataframe.R")
 
 # FOR TESTING
 if(F){
@@ -82,7 +82,7 @@ get_comments_batch <- function(commentOnId,
   )
 
   # map the list into a dataframe with the information we care about
-  d <- map_dfr(metadata, make_comment_dataframe)
+  d <- map_dfr(metadata, make_dataframe)
 
   # add back in the id for the document being commented on
   d$commentOnId <- commentOnId
