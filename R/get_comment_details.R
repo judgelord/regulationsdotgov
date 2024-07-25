@@ -26,11 +26,17 @@ get_comment_details <- function(id,
   result_init <- GET(path)
   content_init <- fromJSON(rawToChar(result_init$content))
 
+  if(length(id) != length(id |> unique()) ){
+    message("Duplicate ids dropped to save API calls (result will be shorter than length of id vector)")
+  }
 
-  content <- purrr::map(id,
+
+  content <- purrr::map(id |> unique(),
                         possibly(get_comment_details_content,
                                  otherwise = content_init) # FIXME replace with NULL, and then drop NULLs before next step? We might also be able to try the failed ones again.
   )
+  # save(content, file = "data/content_temp2.rdata")
+
 
   # nulls are 404 errors on comment ids
   nulls <- purrr::map(content, ~.x$data$id) |> map_lgl(is.null )
@@ -40,7 +46,7 @@ get_comment_details <- function(id,
   # drop null
   content <- content[!nulls]
 
-  # save(content, file = "data/content_temp.rdata")
+
 
   # note that document call return attachment file names in attributes, but comments are in included
   metadata <- purrr::map_dfr(content, ~.x |> pluck("data", "attributes")) |> # purrr::map_dfr(content, ~.x$data$attributes) |>
@@ -69,13 +75,13 @@ get_comment_details <- function(id,
   # ids <- purrr::map(content, ~.x$data$id) |> as.character()
   ids <- map_chr(content, ~.x |> pluck("data", "id"))
 
-  metadata$id <- ids
+  metadata$id <- ids # |> unique()
 
   #extract attachment file urls from included$attributes
   # attachments <- purrr::map_dfr(content, ~.x$included$attributes$fileFormats)
   attachments <- purrr::map(content, ~.x |> pluck("included", "attributes", "fileFormats"))
 
-  metadata$attachments <- attachments
+  metadata$attachments <- attachments #|> unique()
 
   # NO LONGER NEED THIS NOW THAT WE ARE USING PLUCK
   # # if some comments have attachments, then extract ids from the urls and nest all file url into one list per comment id
@@ -92,7 +98,3 @@ get_comment_details <- function(id,
 
   return(metadata)
 }
-
-
-
-
