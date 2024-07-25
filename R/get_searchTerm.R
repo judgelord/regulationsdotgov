@@ -52,8 +52,8 @@ get_searchTerm <- function(searchTerm,
     )
 
     # Append next batch to comments
-    metadata <<- bind_rows(metadata, nextbatch)
-    # metadata <<- full_join(metadata, nextbatch) #FIXME? perhaps better? But will need to silence message
+    # metadata <<- bind_rows(metadata, nextbatch) |> distinct()
+     metadata <<- full_join(metadata, nextbatch) |> distinct()#FIXME? perhaps better? But will need to silence message
   }
 
   return(metadata)
@@ -75,15 +75,26 @@ if(F){
 
 searchTerm =  c("national congress of american indians", "cherokee nation")
 
+searchTerm = c("climate justice", "environmental justice")
+
 documents = c("documents", "comments")
 
-search <- function(searchTerm, documents){
+search_to_csv <- function(searchTerm, documents){
   d <- get_searchTerm(searchTerm, documents)
 
   write_csv(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".csv")))
 }
 
-walk2(searchTerm, documents, .f = search)
+walk2(searchTerm, documents, .f = search_to_csv)
+
+
+search_to_rda <- function(searchTerm, documents){
+  d <- get_searchTerm(searchTerm, documents)
+
+  save(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".rda")))
+}
+
+walk2(searchTerm, documents, .f = search_to_rda)
 }
 
 
