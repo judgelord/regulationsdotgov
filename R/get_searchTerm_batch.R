@@ -81,7 +81,7 @@ get_searchTerm_batch <- function(searchTerm,
     # ROTATE KEYS
       api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
       api_key <- api_keys[1]
-      message(paste("Rotating to api key", api_key))
+      message(paste("Rotating api key to", api_key))
 
     Sys.sleep(60)
   }

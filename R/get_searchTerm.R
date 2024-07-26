@@ -22,7 +22,8 @@ searchTerm =  c("national congress of american indians")
 
 get_searchTerm <- function(searchTerm,
                            documents = "documents", # c("documents", "comments") defaults to documents
-                           lastModifiedDate = Sys.time()){
+                           lastModifiedDate = Sys.time() # , api_keys = api_keys #TODO test this
+                           ){
 
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_searchTerm_batch(searchTerm = searchTerm,
