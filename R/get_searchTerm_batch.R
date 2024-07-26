@@ -68,7 +68,7 @@ get_searchTerm_batch <- function(searchTerm,
     Sys.sleep(6)
   }
 
-  # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
+  # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is less than 20 (since we call 20 pages at a time)
   remaining <<-  map(result, headers) |>
     tail(1) |>
     pluck(1, "x-ratelimit-remaining") |>
@@ -78,7 +78,7 @@ get_searchTerm_batch <- function(searchTerm,
 
     message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
 
-    #FIXME ROTATE KEYS api_key <- api_keys[n+1]
+    # ROTATE KEYS
       api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
       api_key <- api_keys[1]
       message(paste("Rotating to api key", api_key))
