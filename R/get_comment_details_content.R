@@ -18,25 +18,31 @@ get_comment_details_content <- function(id,
 
   if( remaining < 2 ){ # if we set it to 0, we often get a 429 because the reported rate limit lags the true limit remaining. Even at <2, we occassionally get 429, but not often
 
-    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
 
-    # ROTATE KEYS
-    api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
-    message(paste("Rotating to api key", api_keys[1]))
-
-    # pause to reset rate limit
-    Sys.sleep(60)
   }
 
   # if previously failed due to rate limit, try again
-  if( result$status_code == 429 ){
+  while( result$status_code == 429 ){
+
+    # ROTATE KEYS
+    api_keys <<- api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
+
+    message(paste("Rotating to api key", api_keys[1]))
+
+    # try again
     result <- GET(path)
 
-    message(paste("429 | trying", id, "again",
-                  "| now", result$status_code,
-                  "| limit-remaining", remaining)) #FIXME add status code and API limit remaining
+    remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
 
-    Sys.sleep(3) # small pause to make up for extra request
+    message(paste("429 | trying", id, "again",
+                  "| now", result$status_code, "|"
+                  remaining, "remaaining")) #FIXME add status code and API limit remaining
+
+    # pause to reset rate limit
+    if(result$status_code == 429){
+    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
+    Sys.sleep(60)
+    }
   }
 
   Sys.sleep(0.1) # very small pause to allow rate limit reported to be more accurate

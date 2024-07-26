@@ -21,6 +21,15 @@ get_comment_details <- function(id,
                                 api_keys = api_keys
                                 ) {
 
+  if(length(id) != length(id |> unique()) ){
+    message("Duplicate ids dropped to save API calls (result will be shorter than length of id vector)")
+  }
+
+  unique_ids <- unique(id)
+
+  # TODO make batches that we save in a temp file?
+  # batches <- length(id)/5000 |> round(1)
+
   #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
   # a default for possibly to return if the call fails
   path <- make_path_comment_details(id[1], api_keys[1])
@@ -28,21 +37,15 @@ get_comment_details <- function(id,
   content_init <- fromJSON(rawToChar(result_init$content))
   content_init$data$id <- NULL
 
-  if(length(id) != length(id |> unique()) ){
-    message("Duplicate ids dropped to save API calls (result will be shorter than length of id vector)")
-  }
 
-  unique_ids <- unique(id)
-
-  # TESTING
+  # TESTING WITHOUT POSSIBLY TO SEE ERRORS
   # content <- purrr::map(unique_ids, get_comment_details_content, api_keys = api_keys)
 
-  content <- purrr::map(unique_ids, api_keys = api_keys,
+  content <- purrr::map(unique_ids,
+                        api_keys = api_keys,
                         possibly(get_comment_details_content,
                                  otherwise = content_init) # FIXME replace with NULL, and then drop NULLs before next step? We might also be able to try the failed ones again.
   )
-  # save(content, file = "data/content_temp2.rdata")
-
 
   # nulls are 404 errors on comment ids
   nulls <- purrr::map(content, ~.x$data$id) |> map_lgl(is.null )
@@ -53,8 +56,6 @@ get_comment_details <- function(id,
 
   # drop null
   content <- content[!nulls]
-
-
 
   # note that document call return attachment file names in attributes, but comments are in included
   metadata <- purrr::map_dfr(content, ~.x |> pluck("data", "attributes")) |> # purrr::map_dfr(content, ~.x$data$attributes) |>
