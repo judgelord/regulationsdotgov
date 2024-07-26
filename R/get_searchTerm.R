@@ -24,7 +24,6 @@ get_searchTerm <- function(searchTerm,
                            documents = "documents", # c("documents", "comments") defaults to documents
                            lastModifiedDate = Sys.time()){
 
-
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_searchTerm_batch(searchTerm = searchTerm,
                                    documents = documents,
@@ -43,17 +42,14 @@ get_searchTerm <- function(searchTerm,
                                     api_keys = api_keys
                                     )
 
-    message(paste("+", nrow(nextbatch)))
+    message(paste(nrow(metadata), "+", nrow(nextbatch)))
 
     # Append next batch to comments
+     metadata <- suppressMessages(
+       full_join(metadata, nextbatch)
+     )
 
-    #FIXME this works when run on its own, but using the function, metadata fails to update
-     #metadata <<- bind_rows(metadata, nextbatch) #|> distinct()
-     metadata <<- full_join(metadata, nextbatch) #FIXME? perhaps better? But will need to silence message
-
-     metadata <<- distinct(metadata)
-
-     message(paste(" = ", nrow(metadata)))
+     message(paste("= ", nrow(metadata)))
   }
 
   return(metadata)
@@ -73,14 +69,14 @@ if(F){
 
 # write_csv(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".csv")))
 
-search =  c("national congress of american indians", "cherokee nation")
+ searchTerm =  c("national congress of american indians", "cherokee nation")
 
-search = c("climate justice", "environmental justice")
+ searchTerm = c("climate justice", "environmental justice")
 
-search = c("climate justice")
+ searchTerm = c("environmental justice")
 
 
-documents = c("documents", "comments")
+ searchTerm = c("documents", "comments")
 
 documents = c("comments")
 
@@ -94,13 +90,13 @@ search_to_csv <- function(searchTerm, documents){
 walk2(searchTerm, documents, .f = search_to_csv)
 
 
-search_to_rda <- function(search, documents){
+search_to_rda <- function(searchTerm, documents){
   d <- get_searchTerm(searchTerm, documents)
 
   save(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".rda")))
 }
 
-walk2(search, documents, .f = search_to_rda)
+walk2(searchTerm, documents, .f = search_to_rda)
 }
 
 

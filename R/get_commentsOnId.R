@@ -19,10 +19,16 @@ get_commentsOnId <- function(commentOnId){
                                      lastModifiedDate = tail(metadata$lastModifiedDate,
                                                              n = 1)
                                      )
+    message(paste(nrow(metadata), "+", nrow(nextbatch)))
 
     # Append next batch to comments
-    metadata <<- bind_rows(metadata, nextbatch)
-  }
+    metadata <- suppressMessages(
+      full_join(metadata, nextbatch)
+    )
+
+    message(paste(" = ", nrow(metadata)))
+
+    }
 
   return(metadata)
 }
