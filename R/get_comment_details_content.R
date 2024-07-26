@@ -1,11 +1,11 @@
 # this helper that does the work for each comment
 # keeping just the content, not the full results, in memory while the main loop runs
 get_comment_details_content <- function(id,
-                                        lastModifiedDate = Sys.time()
-                                        ){
+                                        lastModifiedDate = Sys.time(),
+                                        api_keys){
 
 
-  path <- make_path_comment_details(id, api_key)
+  path <- make_path_comment_details(id, api_keys[1])
 
   result <- GET(path)
 
@@ -19,6 +19,10 @@ get_comment_details_content <- function(id,
   if( remaining < 2 ){ # if we set it to 0, we often get a 429 because the reported rate limit lags the true limit remaining. Even at <2, we occassionally get 429, but not often
 
     message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
+
+    # ROTATE KEYS
+    api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
+    message(paste("Rotating to api key", api_keys[1]))
 
     # pause to reset rate limit
     Sys.sleep(60)
@@ -44,5 +48,5 @@ get_comment_details_content <- function(id,
 }
 
 if(F){
-  get_comment_details(id = "CEQ-2019-0003-197917")
+  get_comment_details_content(id = "CEQ-2019-0003-197917", api_keys = api_keys)
 }

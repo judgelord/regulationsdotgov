@@ -18,20 +18,26 @@ source("R/get_comment_details_content.R")
 # loop over a vector of comment ids, return a dataframe of comment details
 get_comment_details <- function(id,
                                 lastModifiedDate = Sys.time(),
-                                delay_seconds = 60) {
+                                api_keys = api_keys
+                                ) {
 
   #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
   # a default for possibly to return if the call fails
-  path <- make_path_comment_details(id[1], api_key)
+  path <- make_path_comment_details(id[1], api_keys[1])
   result_init <- GET(path)
   content_init <- fromJSON(rawToChar(result_init$content))
+  content_init$data$id <- NULL
 
   if(length(id) != length(id |> unique()) ){
     message("Duplicate ids dropped to save API calls (result will be shorter than length of id vector)")
   }
 
+  unique_ids <- unique(id)
 
-  content <- purrr::map(id |> unique(),
+  # TESTING
+  # content <- purrr::map(unique_ids, get_comment_details_content, api_keys = api_keys)
+
+  content <- purrr::map(unique_ids, api_keys = api_keys,
                         possibly(get_comment_details_content,
                                  otherwise = content_init) # FIXME replace with NULL, and then drop NULLs before next step? We might also be able to try the failed ones again.
   )
@@ -41,7 +47,9 @@ get_comment_details <- function(id,
   # nulls are 404 errors on comment ids
   nulls <- purrr::map(content, ~.x$data$id) |> map_lgl(is.null )
 
+  if( sum(nulls) > 0 ){
   message(paste("404 error:", paste(id[nulls], collapse = ",")))
+  }
 
   # drop null
   content <- content[!nulls]
@@ -75,11 +83,14 @@ get_comment_details <- function(id,
   # ids <- purrr::map(content, ~.x$data$id) |> as.character()
   ids <- map_chr(content, ~.x |> pluck("data", "id"))
 
-  metadata$id <- ids # |> unique()
+  metadata$id <- ids  #unique()
 
   #extract attachment file urls from included$attributes
   # attachments <- purrr::map_dfr(content, ~.x$included$attributes$fileFormats)
   attachments <- purrr::map(content, ~.x |> pluck("included", "attributes", "fileFormats"))
+
+  #TODO REPLACE NULL WITH A DATA FRAME OF NAs SO THAT THIS WORKS?
+  # attachments <- map(attachments, flatten) |> map(as.data.frame)
 
   metadata$attachments <- attachments #|> unique()
 
@@ -99,3 +110,11 @@ get_comment_details <- function(id,
   return(metadata)
 }
 
+
+if(F){
+  get_comment_details(id = c("DOC-2024-0007-0020",  "USDA-2024-0003-0115"), api_keys = api_keys)
+
+  details <- get_comment_details(id = d$id,#[1:100],
+                                 api_keys = api_keys)
+  save(details, here::here("data", "details_temp.rda"))
+}

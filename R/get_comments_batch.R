@@ -20,7 +20,8 @@ commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-
 
 # the batch function
 get_comments_batch <- function(commentOnId,
-                                lastModifiedDate = Sys.time()){
+                                lastModifiedDate = Sys.time(),
+                               api_keys){
 
 
   # fixing lastMdifiedDate inside the function so that we do not need to do format dates for the API before providing them to the function (this also allows us to set sys.time as a default, which requires formatting as well)
