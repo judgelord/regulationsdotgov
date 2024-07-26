@@ -8,8 +8,8 @@ library(tidyverse)
 library(magrittr)
 library(lubridate)
 
-source("R/make_path_commentOnId.R")
-source("R/make_comment_dataframe.R")
+source("R/make_dataframe.R")
+source("R/make_path_searchTerm.R")
 
 # FOR TESTING
 if(F){
@@ -22,8 +22,11 @@ if(F){
 get_searchTerm_batch <- function(searchTerm,
                                  documents,
                                  #commentOnId, #TODO feature to search comments on a specific docket or document
-                                 lastModifiedDate = Sys.time()
+                                 lastModifiedDate,
+                                 api_keys
                                  ){
+
+  api_key <- api_keys[1]
 
   message(paste0("Searching for ", documents,
                  ' containing "', searchTerm,
@@ -43,6 +46,7 @@ get_searchTerm_batch <- function(searchTerm,
                                documents,
                                lastModifiedDate)
 
+
   # map GET function over pages
   result <- purrr::map(path, GET)
 
@@ -50,12 +54,13 @@ get_searchTerm_batch <- function(searchTerm,
   status_codes <<- map(result, status_code)
   status <<- status_codes |> tail(1) %>% as.numeric()
 
-  url <- result[[20]][1]$url
+  #FIXME TRY FAILED ATTEMPTS AGAIN
 
+  # message with error codes if not successful
   if(status != 200){
     message(paste(Sys.time() |> format("%X"),
                   "| Status", status,
-                  "| URL:", url,
+                  "| URL:", result[[20]][1]$url,
                   "Prior codes:", paste(status_codes, collapse = ","))
             )
 
@@ -72,6 +77,11 @@ get_searchTerm_batch <- function(searchTerm,
   if(remaining < 20){
 
     message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
+
+    #FIXME ROTATE KEYS api_key <- api_keys[n+1]
+      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
+      api_key <- api_keys[1]
+      message(paste("Rotating to api key", api_key))
 
     Sys.sleep(60)
   }
@@ -101,11 +111,5 @@ get_searchTerm_batch <- function(searchTerm,
   d$searchTerm <- searchTerm
 
   return(d)
-}
-
-
-# TESTING
-if(F){
-  n <- get_comments4_batch(commentOnId)
 }
 
