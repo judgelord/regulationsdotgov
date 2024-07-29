@@ -34,7 +34,7 @@ get_comment_details_content <- function(id,
     remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
 
     message(paste("| Trying", id, "again",
-                  "| now", result$status_code, "|"
+                  "| now", result$status_code, "|",
                   remaining, "remaining |"))
 
     # pause to reset rate limit
