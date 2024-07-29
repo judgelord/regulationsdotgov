@@ -1,5 +1,10 @@
 
 
+##############
+# REQUIRES HELPER FUNCTIONS #
+####################
+source("R/make_path_dockets.R")
+
 
 get_dockets <- function(agency, lastModifiedDate = Sys.time()){
 
@@ -49,3 +54,6 @@ get_dockets <- function(agency, lastModifiedDate = Sys.time()){
   return(docket_metadata)
 
 }
+
+get_dockets(agency = "OMB")
+
