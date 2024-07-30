@@ -52,6 +52,4 @@ get_comment_details_content <- function(id,
   return(content)
 }
 
-if(F){
-  get_comment_details_content(id = "CEQ-2019-0003-197917", api_keys = api_keys)
-}
+

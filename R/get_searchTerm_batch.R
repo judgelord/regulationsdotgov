@@ -4,12 +4,12 @@
 
 library(httr)
 library(jsonlite)
-library(tidyverse)
-library(magrittr)
-library(lubridate)
+library(tidyverse) #  FIXME just purrr and dplyr, right?
+library(magrittr) #  FIXME can we remove this dependency?
+library(lubridate) #  FIXME can we remove this dependency?
 
-source("R/make_dataframe.R")
-source("R/make_path_searchTerm.R")
+# source("R/make_dataframe.R")
+# source("R/make_path_searchTerm.R")
 
 # FOR TESTING
 if(F){

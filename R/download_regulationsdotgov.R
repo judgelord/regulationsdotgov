@@ -2,26 +2,7 @@ library(tidyverse)
 library(magrittr)
 library(here)
 
-attachments <- comments_coded$attachments |>
-  flatten() |>
-  map(as.data.frame) |>
-  map_dfr(~.x)
 
-ggplot(attachments) +
-  aes(x = size, fill = format) +
-  geom_bar()
-
-ggplot(attachments |> slice_max(size, 100)) +
-  aes(x = size, fill = format) +
-  geom_bar()
-
-attachment_urls <- attachments |>
-  pull(fileUrl) |>
-  unique()
-
-
-
-download_regulations_gov(attachment_urls )
 
 
 download_regulations_gov <- function(url){
@@ -128,18 +109,6 @@ download_regulations_gov <- function(url){
     #Sys.sleep(60) # 1 min
   }
 }
-
-#TESTING
-if(F){
-  download_regulations_gov(download)
-}
-
-##################
-
-# FIXME do this inside next function, one at a time
-# pdftools::pdf_text("comments/WHD-2017-0002-138298-1.pdf")
-# READ TEXTS
-# initialize and loop over downloaded attachments to read in texts
 
 
 

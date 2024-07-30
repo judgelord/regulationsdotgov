@@ -1,2 +1,11 @@
 ^regulationsdotgov\.Rproj$
 ^\.Rproj\.user$
+^_pkgdown\.yml$
+^docs$
+^data$
+^oldscripts$
+^pkgdown$
+^\.github$
+^LICENSE\.md$
+^Icon$
+^sandbox$

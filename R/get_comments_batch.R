@@ -5,7 +5,7 @@
 library(httr)
 library(jsonlite)
 library(tidyverse)
-library(magrittr)
+library(magrittr) # FIXME lets make this not a dependency
 library(lubridate)
 
 source("R/make_path_commentOnId.R")

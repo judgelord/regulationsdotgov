@@ -4,15 +4,15 @@
 library(httr)
 library(jsonlite)
 library(tidyverse)
-library(magrittr)
-
-source("~/api-key.R")
+library(magrittr) # FIXME, lets not depend on this?
 
 ##############
 # REQUIRES HELPER FUNCTIONS #
+# FIXME ADD TO DOCUMENTATION
 ####################
-source("R/make_path_comment_details.R")
-source("R/get_comment_details_content.R")
+# source("R/make_path_comment_details.R")
+# source("R/get_comment_details_content.R")
+# source("~/api-key.R")
 
 
 # loop over a vector of comment ids, return a dataframe of comment details
@@ -41,6 +41,7 @@ get_comment_details <- function(id,
   # TESTING WITHOUT POSSIBLY TO SEE ERRORS
   # content <- purrr::map(unique_ids, get_comment_details_content, api_keys = api_keys)
 
+  #FIXME batch this by 5k, saving to a temp file
   content <- purrr::map(unique_ids,
                         api_keys = api_keys,
                         possibly(get_comment_details_content,
@@ -112,10 +113,3 @@ get_comment_details <- function(id,
 }
 
 
-if(F){
-  get_comment_details(id = c("DOC-2024-0007-0020",  "USDA-2024-0003-0115"), api_keys = api_keys)
-
-  details <- get_comment_details(id = d$id,#[1:100],
-                                 api_keys = api_keys)
-  save(details, here::here("data", "details_temp.rda"))
-}

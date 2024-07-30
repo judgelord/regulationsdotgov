@@ -28,7 +28,7 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 # pkgdown site
-docs/
+# docs/
 # translation temp files
 po/*~
 # RStudio Connect folder
@@ -38,3 +38,4 @@ regulationsdotgov.Rproj
 .DS_Store
 data
 Icon
+docs
