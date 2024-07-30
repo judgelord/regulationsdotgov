@@ -23,3 +23,5 @@ Imports:
     purrr,
     stringr,
     tibble
+VignetteBuilder:
+    quarto
