@@ -10,7 +10,7 @@ pdf_to_txt <- function(file){
 
   agency <- str_extract(file, "[A-Z]*")
 
-  docket <- str_extract(file, "[A-Z]*-[0-9]*-[0-9]*")
+  docket <- str_extract(file, "[A-Z|-]*-[0-9]*-[0-9]*")
 
   # create new directories if needed
   if (!dir.exists(here("comment_text", agency, docket) ) ){
