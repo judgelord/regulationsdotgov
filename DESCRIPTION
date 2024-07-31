@@ -21,6 +21,7 @@ Imports:
     magrittr,
     pdftools,
     purrr,
+    quarto,
     stringr,
     tibble
 VignetteBuilder:

@@ -1,0 +1,76 @@
+---
+title: "Dockets"
+logo: '`r here::here("man/figures/logo.png")`'
+author: "Devin Judge-Lord"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{legislators}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  cache = FALSE,
+  collapse = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  tidy = FALSE,
+  fig.align='center',
+  fig.path = "../man/figures/",
+  R.options = list(width = 200)
+)
+
+
+str_fix <- function(x){
+  stringr::str_replace_all(x, "\\$", "\\\\$") |> 
+    stringr::str_remove_all("`|\\\\bf|\\\\br")
+}
+
+# format kable for document type 
+kable <- function(...){
+  if (knitr::is_latex_output()){
+    utils::head(..., 25) |>
+      knitr::kable(booktabs = TRUE, format = 'latex') |>
+      kableExtra::kable_styling(latex_options = c("striped", "scale_down", "HOLD_position"))
+  } else {
+    utils::head(..., 50) |>
+      dplyr::mutate_all(str_fix) |>
+    knitr::kable(escape = TRUE) |>
+      kableExtra::kable_styling() |>
+      kableExtra::scroll_box(height = "400px")
+  }
+}
+
+head <- function(x){
+  #utils::head(x) |>
+  x |> as.data.frame() |> 
+  kable()
+}
+```
+
+
+
+#### Get dockets from an agency
+
+- `get_dockets("[agency_acronym]")` retrieves dockets for an agency (see official acronyms on regulations.gov)
+
+```{r warning=FALSE, message=FALSE}
+# you need an API key
+source("~/api-key.R")
+
+library(regulationsdotgov)
+
+devtools::load_all() # FIXME This is only here because library() was not loading the functions, possibly due to lack of documentation
+```
+
+```{r warning=FALSE}
+
+# get FBI dockets
+FBI_dockets <- get_dockets("FBI")
+
+FBI_dockets[[1]]$data  # FIXME we should not need  [[1]]$data when this no longer returns a list
+```
