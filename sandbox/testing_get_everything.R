@@ -66,5 +66,46 @@ save_comment_details <- function(docket){
 
 walk(dockets, save_comment_details)
 
-# DOWNLOAD
+# DOWNLOAD ATTACHMENTS
 
+# extract attachments from details
+attachments <- comment_details$attachments |>
+  flatten() |>
+  map(as.data.frame) |> #FIXME, can we do this in one line?
+  map_dfr(~.x)
+
+# inspect
+ggplot(attachments) +
+  aes(x = size, fill = format) +
+  geom_bar()
+
+ggplot(attachments |> slice_max(size, 100)) +
+  aes(x = size, fill = format) +
+  geom_bar()
+
+#TODO? drop large pdf files?
+
+attachment_urls <- attachments |>
+  pull(fileUrl) |>
+  unique()
+
+
+download_regulations_gov(attachment_urls )
+
+
+
+
+# CONVERT TO TXT
+files <- list.files("comments", recursive = T)
+length(files)
+head(files)
+converted <- list.files("comment_text", recursive = T) |> str_replace("txt", "pdf")
+head(converted)
+# files not converted
+not_converted <- files[!files %in% converted]
+head(not_converted)
+
+# pdfs not converted
+pdfs <- not_converted[str_detect(not_converted, "pdf")]
+
+walk(pdfs, possibly(pdf_to_txt, otherwise = print("nope")))
