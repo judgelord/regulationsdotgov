@@ -1,4 +1,4 @@
-v##############
+##############
 # REQUIRES HELPER FUNCTIONS #
 ####################
 library(magrittr)
@@ -61,3 +61,4 @@ get_dockets_batch <- function(agency,
   return(d)
   
 }
+
