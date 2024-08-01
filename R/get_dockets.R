@@ -6,56 +6,39 @@
 library(magrittr)
 library(stringr)
 library(lubridate)
-source("R/make_path_dockets.R")
+library(tidyverse)
+library(httr)
+source("R/get_dockets_batch.R")
 
 
-get_dockets <- function(agency, lastModifiedDate = Sys.time()){
-
-  lastModifiedDate <- lastModifiedDate  %>%
-    ymd_hms() %>%
-    with_tz(tzone = "America/New_York") %>%
-    # replace spaces with unicode
-    gsub(" ", "%20", .) %>%
-    str_remove("\\..*")
-
-  path <- make_path_dockets(agency, lastModifiedDate)
-
-  # map GET function over pages
-  result <- purrr::map(path, GET)
-
-  # report result status
-  status <<- map(result, status_code) |> tail(1) %>% as.numeric()
-
-  url <- result[[20]][1]$url
-
-  if(status != 200){
-    message(paste(Sys.time() |> format("%X"),
-                  "| Status", status,
-                  "| URL:", url))
-
-    # small pause to give user a chance to cancel
-    Sys.sleep(6)
+get_dockets <- function(agency, 
+                        lastModifiedDate = Sys.time(), 
+                        api_keys){
+  
+  # Fetch the initial 5k and establish the base dataframe
+  metadata <- get_dockets_batch(agency, lastModifiedDate = Sys.time())
+  
+  # Loop until last page is TRUE
+  while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
+    
+    # Fetch the next batch of comments using the last modified date
+    nextbatch <- get_dockets_batch(agency,
+                                   lastModifiedDate = tail(metadata$lastModifiedDate,
+                                                           n = 1)
+    )
+    message(paste(nrow(metadata), "+", nrow(nextbatch)))
+    
+    # Append next batch to comments
+    metadata <- suppressMessages(
+      full_join(metadata, nextbatch)
+    )
+    
+    message(paste(" = ", nrow(metadata)))
+    
   }
-
-  # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
-  remaining <<-  map(result, headers) |>
-    tail(1) |>
-    pluck(1, "x-ratelimit-remaining")
-
-  if(remaining < 2){
-
-    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
-
-    Sys.sleep(60)
-  }
-
-
-  # map the content of successful api results into a list
-  docket_metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
-
-
-  return(docket_metadata)
-
+  
+  return(metadata)
+  
 }
 
 # get_dockets(agency = "OMB")
