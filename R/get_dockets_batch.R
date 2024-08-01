@@ -3,22 +3,17 @@
 ####################
 library(magrittr)
 library(stringr)
-library(lubridate)
 library(tidyverse)
 library(httr)
 source("R/make_path_dockets.R")
 source("R/make_dataframe.R")
+source("R/format_date.R")
 
 get_dockets_batch <- function(agency, 
                         lastModifiedDate = Sys.time(), 
                         api_keys){
   
-  lastModifiedDate <- lastModifiedDate  %>%
-    ymd_hms() %>%
-    with_tz(tzone = "America/New_York") %>%
-    # replace spaces with unicode
-    gsub(" ", "%20", .) %>%
-    str_remove("\\..*")
+  lastModifiedDate <- format_date(lastModifiedDate) 
   
   path <- make_path_dockets(agency, lastModifiedDate)
   
@@ -61,4 +56,3 @@ get_dockets_batch <- function(agency,
   return(d)
   
 }
-

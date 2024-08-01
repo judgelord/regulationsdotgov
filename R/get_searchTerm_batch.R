@@ -6,8 +6,9 @@ library(httr)
 library(jsonlite)
 library(tidyverse) #  FIXME just purrr and dplyr, right?
 library(magrittr) #  FIXME can we remove this dependency?
-library(lubridate) #  FIXME can we remove this dependency?
 
+
+# source("R/format_date.R")
 # source("R/make_dataframe.R")
 # source("R/make_path_searchTerm.R")
 
@@ -33,13 +34,7 @@ get_searchTerm_batch <- function(searchTerm,
                  '" posted before ',lastModifiedDate)
           )
 
-  # fixing lastMdifiedDate inside the function so that we do not need to do format dates for the API before providing them to the function (this also allows us to set sys.time as a default, which requires formatting as well)
-  lastModifiedDate <- lastModifiedDate  %>%
-    ymd_hms() %>%
-    with_tz(tzone = "America/New_York") %>%
-    # replace spaces with unicode
-    gsub(" ", "%20", .) %>%
-    str_remove("\\..*")
+  lastModifiedDate <- format_date(lastModifiedDate) 
 
   # call the make path function to make paths for the first 20 pages of 250 results each
   path <- make_path_searchTerm(searchTerm,
