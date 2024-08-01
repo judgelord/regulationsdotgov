@@ -1,4 +1,7 @@
-make_path_searchTerm <- function(searchTerm, documents, lastModifiedDate = Sys.time()){
+make_path_searchTerm <- function(searchTerm, 
+                                 documents, 
+                                 lastModifiedDate = Sys.time(), 
+                                 api_keys){
   paste0("https://api.regulations.gov",
          "/v4/",
          ifelse(documents == "comments", "comments", "documents"),

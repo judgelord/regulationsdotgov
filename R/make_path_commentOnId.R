@@ -1,4 +1,6 @@
-make_path_commentOnId <- function(commentOnId, lastModifiedDate = Sys.time()){
+make_path_commentOnId <- function(commentOnId, 
+                                  lastModifiedDate = Sys.time(), 
+                                  api_keys = api_keys){
   paste0("https://api.regulations.gov",
          "/v4/",
          "comments",
