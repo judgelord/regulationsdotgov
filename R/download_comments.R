@@ -1,11 +1,5 @@
-library(tidyverse)
-library(magrittr)
-library(here)
 
-
-
-
-download_regulations_gov <- function(url){
+download_comments <- function(url){
 
   d <- tibble::tibble(
     url = url)
@@ -30,21 +24,9 @@ download_regulations_gov <- function(url){
 
   walk(here(needed_dir), dir.create)
 
-
-
-
-
-  # Test
-  d$url[1]
-
-  # name output file
-  d %<>%
-    mutate(file = file_path)
-
   # Inspect
-  d$file[1]
+  d$file_path[1]
   d$url[1]
-
 
 
   #################################
@@ -54,7 +36,7 @@ download_regulations_gov <- function(url){
   # subset to files we don't have
   #FIXME
   download %<>% filter(
-    !file %in% paste0("comments/",
+    !file_path %in% paste0("comments/",
                       list.files("comments", recursive = T)
     )
   ) %>%
@@ -95,11 +77,11 @@ download_regulations_gov <- function(url){
         errorcount<<-errorcount+1
         print(errorcount)
         if( str_detect(e[[1]][1], "cannot open URL") ){
-          download$file[i] <<- "cannot open URL.csv" # this is a dummy file in the comments folder, which will cause this url to be filtered out
+          download$file_path[i] <<- "cannot open URL.csv" # this is a dummy file in the comments folder, which will cause this url to be filtered out
         }
         print(e)
       })
-      print(i)
+      message(paste(i, "of", dim(download)[1]) )
       #Sys.sleep(1) # pausing between requests does not seem to help, but makes it easier to stop failed calls
     } else{
       message("pausing for one minute to avoid IP being blocked")

@@ -79,18 +79,19 @@ ggplot(attachments) +
   aes(x = size, fill = format) +
   geom_bar()
 
-ggplot(attachments |> slice_max(size, 100)) +
+ggplot(attachments |> slice_max(size, n = 100)) +
   aes(x = size, fill = format) +
   geom_bar()
 
 #TODO? drop large pdf files?
+# attachments %<>% filter(size < 100000000) # = < 100 MB ?
 
 attachment_urls <- attachments |>
   pull(fileUrl) |>
   unique()
 
 
-download_regulations_gov(attachment_urls )
+download_comments(attachment_urls )
 
 
 
