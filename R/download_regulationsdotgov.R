@@ -2,7 +2,8 @@
 download_regulationsdotgov <- function(url, dir){
 
   d <- tibble::tibble(
-    url = url)
+    url = url) |>
+    distinct()
 
 
   d %<>% mutate(
