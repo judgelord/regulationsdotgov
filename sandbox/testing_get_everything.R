@@ -2,18 +2,23 @@
 
 agencies <- c("BIA", "IHS")
 
+# create directories for each agency
 walk(here::here("data", agencies), dir.create)
 
 dockets <- map_dfr(agencies, get_dockets) # retrieves dockets for an agency (see official acronyms on regulations.gov)
 
-walk(here::here("data", dockets$docket_id), dir.create)
 
-#### Get documents from each docket folder
+# create directories for each docket
+docket_paths <- paste(dockets$agency, dockets$docket_id, sep = "/")
 
+walk(here::here("data", docket_paths), dir.create)
+
+#### Get documents from each docket
 save_documents <- function(docket){
   documents <- map_dfr(docket, get_documents)
   save(documents, here::here("data",
-                             str_extract("[A-Z]+)", docket), # agency
+                             str_extract("[A-Z|-]+)", docket), #FIXME this is not going to work for agencies with numbers in their names, e.g. FWS-R9...
+                             # should we require an agency argument here, or is there a reliable way to split agencies and dockets, e.g., by looking for years -19[0-9][0-9]- or -20[0-9][0-9]-
                              docket,
                              "documents.rda"
                              )
