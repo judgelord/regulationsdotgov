@@ -10,9 +10,9 @@ library(dplyr)
 #############################
 # REQUIRES HELPER FUNCTIONS #
 #############################
-source("R/make_path_commentOnId.R")
-source("R/make_dataframe.R")
-source("R/format_date.R")
+source("R/helper_functions/make_path_commentOnId.R")
+source("R/helper_functions//make_dataframe.R")
+source("R/helper_functions/format_date.R")
 
 # FOR TESTING
 if(F){
