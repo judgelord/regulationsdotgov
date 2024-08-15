@@ -1,10 +1,11 @@
-##############
-# REQUIRES HELPER FUNCTIONS #
-####################
-library(magrittr)
-library(stringr)
-library(tidyverse)
 library(httr)
+library(jsonlite)
+library(purrr)
+library(dplyr)
+
+#############################
+# REQUIRES HELPER FUNCTIONS #
+#############################
 source("R/make_path_dockets.R")
 source("R/make_dataframe.R")
 source("R/format_date.R")

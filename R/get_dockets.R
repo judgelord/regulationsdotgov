@@ -1,13 +1,11 @@
-
-
-##############
-# REQUIRES HELPER FUNCTIONS #
-####################
-library(magrittr)
-library(stringr)
-library(lubridate)
-library(tidyverse)
 library(httr)
+library(jsonlite)
+library(purrr)
+library(dplyr)
+
+#############################
+# REQUIRES HELPER FUNCTIONS #
+#############################
 source("R/get_dockets_batch.R")
 
 
@@ -41,5 +39,8 @@ get_dockets <- function(agency,
   
 }
 
-# get_dockets(agency = "OMB")
+# TESTING
+if(F){
+n <- get_dockets(agency = "OMB")
+}
 

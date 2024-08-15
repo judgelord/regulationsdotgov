@@ -1,9 +1,12 @@
 library(httr)
 library(jsonlite)
-library(tidyverse)
-library(magrittr)
-library(lubridate)
+library(purrr)
+library(dplyr)
 
+
+#############################
+# REQUIRES HELPER FUNCTIONS #
+#############################
 source("R/get_comments_batch.R")
 
 get_commentsOnId <- function(commentOnId){

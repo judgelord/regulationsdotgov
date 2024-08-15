@@ -4,9 +4,12 @@
 
 library(httr)
 library(jsonlite)
-library(tidyverse)
-library(magrittr) # FIXME lets make this not a dependency
+library(purrr)
+library(dplyr)
 
+#############################
+# REQUIRES HELPER FUNCTIONS #
+#############################
 source("R/make_path_commentOnId.R")
 source("R/make_dataframe.R")
 source("R/format_date.R")
@@ -87,6 +90,6 @@ get_comments_batch <- function(commentOnId,
 
 # TESTING
 if(F){
-n <- get_comments4_batch(commentOnId)
+n <- get_comments_batch(commentOnId)
 }
 

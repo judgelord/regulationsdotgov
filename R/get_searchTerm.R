@@ -1,11 +1,11 @@
-
-## trying to incorporate a while loop for last page - I might have lost the plot
-
 library(httr)
 library(jsonlite)
-library(tidyverse) #  FIXME just purrr and dplyr, right?
-library(magrittr) #  FIXME can we remove this dependency?
-library(lubridate) #  FIXME can we remove this dependency?
+library(purrr)
+library(dplyr)
+
+#############################
+# REQUIRES HELPER FUNCTIONS #
+#############################
 
 # source("R/make_dataframe.R")
 # source("R/get_searchTerm_batch.R")
