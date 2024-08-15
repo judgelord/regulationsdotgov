@@ -1,17 +1,25 @@
 
 
-agencies <- c("BIA", "IHS")
+#agencies <- c("BIA", "IHS")
+
+agencies <- c("USPC")
 
 walk(here::here("data", agencies), dir.create)
 
-dockets <- map_dfr(agencies, get_dockets) # retrieves dockets for an agency (see official acronyms on regulations.gov)
+dockets <- map_dfr(agencies, get_dockets)# retrieves dockets for an agency (see official acronyms on regulations.gov)
 
-walk(here::here("data", dockets$docket_id), dir.create)
+
+for (i in length(agencies)){
+  walk(here::here("data", agencies[i], dockets$id), dir.create) #FIXME Currently this doesnt nest the data for multiple agencies
+}
+
+
+
 
 #### Get documents from each docket folder
 
 save_documents <- function(docket){
-  documents <- map_dfr(docket, get_documents)
+  documents <- map_dfr(docket, get_documents_batch)
   save(documents, here::here("data",
                              str_extract("[A-Z]+)", docket), # agency
                              docket,
