@@ -1,6 +1,6 @@
-make_path_documents <- function(docketId, 
-                                  lastModifiedDate = Sys.time(), 
-                                  api_keys = api_keys){
+make_path_documents <- function(docketId,
+                                  lastModifiedDate,
+                                  api_key){
   paste0("https://api.regulations.gov",
          "/v4/",
          "documents",
