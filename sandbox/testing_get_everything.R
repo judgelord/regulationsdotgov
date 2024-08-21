@@ -1,49 +1,69 @@
+devtools::load_all()
 
+#agency <- c("BIA", "IHS")
 
-#agencies <- c("BIA", "IHS")
+agency <- c('RITA','FRA','FTA','MARAD','NHTSA','PHMSA','DOD','DOT',#'EPA',
+'FHWA','FMCSA','FAA','NRC','NOAA','USCG','AMS','FWS','BLM','COE',
+'FEMA','NRCS','RBS','USDA','FDA','HUD','CEQ','TVA','FSIS','DOE',
+'LSC','TREAS','RUS','GSA','FSA','RHS','BSEE','CCC','BIA','OSM','BOEM',
+'EERE','NCPC','FS','ACF','PHS','CMS','HHSIG','HHS')
 
-agencies <- c("USPC")
+agency <- c("USPC")
 
 # create directories for each agency
-walk(here::here("data", agencies), dir.create)
+walk(here::here("data", agency), dir.create)
 
-dockets <- map_dfr(agencies, get_dockets)# retrieves dockets for an agency (see official acronyms on regulations.gov)
+dockets <- map_dfr(agency, get_dockets)# retrieves dockets for an agency (see official acronyms on regulations.gov)
 
-
-for (i in length(agencies)){
-  walk(here::here("data", agencies[i], dockets$id), dir.create) #FIXME Currently this doesnt nest the data for multiple agencies
-}
-
-
+save(dockets, file = here::here("data", agency,
+                                paste0(agency, "_dockets.rda")))
 
 
 # create directories for each docket
-docket_paths <- paste(dockets$agency, dockets$docket_id, sep = "/")
+for (i in length(agency)){
+  walk(here::here("data", agency[i], dockets$id), dir.create) #FIXME Currently this doesnt nest the data for multiple agencies
+}
+
+
+# create directories for each docket [alternative...can probably delete]
+docket_paths <- paste(dockets$agencyId, #FIXME Should the get_dockets re-name this "agency"
+                      dockets$id, #FIXME Should the get_dockets re-name this "docket_id"
+                      sep = "/")
 
 walk(here::here("data", docket_paths), dir.create)
 
 #### Get documents from each docket
-save_documents <- function(docket){
-  documents <- map_dfr(docket, get_documents_batch)
-  save(documents, here::here("data",
-                             str_extract("[A-Z|-]+)", docket), #FIXME this is not going to work for agencies with numbers in their names, e.g. FWS-R9...
+
+# SAVE IN SEPERATE FILES IN DOCKET FOLDERS
+save_documents <- function(docket, agency){
+  documents <- map_dfr(docket, get_documents)
+  message(paste("|", docket, "| n =", nrow(documents), "|"))
+  save(documents, file = here::here("data",
+                             agency, #str_extract("[A-Z]"), docket),
                              # should we require an agency argument here, or is there a reliable way to split agencies and dockets, e.g., by looking for years -19[0-9][0-9]- or -20[0-9][0-9]-
                              docket,
-                             "documents.rda"
+                             paste0(docket, "_documents.rda")
                              )
   )
 }
 
-walk(dockets, save_documents)
+downloaded <- list.files(pattern = "_documents.rda", recursive = T) |>
+  str_remove_all(".*/|_.*")
 
-documents <- map_dfr(dockets$docket_id, get_documents) # retrieves documents for a docket
+dockets %<>% filter(!(id %in% downloaded))
 
-save(here::here("data", "documents.rda"))
+walk2(dockets$id, dockets$agencyId, .f =  save_documents)
+
+# SAVE ONE LAGE FILE IN AGENCY FOLDER
+documents <- map_dfr(dockets$id, get_documents) # retrieves documents for a docket
+
+save(documents, file = here::here("data", agency,
+                                  paste0(agency, "_documents.rda")))
 
 
 #### Get metadata for comments on a document or docket
 
-get_comments_on_docket("[docket_id]") # retrieves all comments for a docket (e.g., including an Advanced Notice of Proposed Rulemaking and all draft proposed rules)
+# get_comments_on_docket("[docket_id]") # retrieves all comments for a docket (e.g., including an Advanced Notice of Proposed Rulemaking and all draft proposed rules)
 
 save_comments <- function(docket){
   comments <- map_dfr(docket, get_comments_on_docket)
@@ -58,8 +78,19 @@ save_comments <- function(docket){
 walk(dockets, save_comments)
 
 
-
+# METHOD 2 - DOCUMENT LEVEL
 get_commentsOnId("[document_id]") # retrieves comments on a specific document (e.g., a specific proposed rule)
+
+save_comments <- function(document){
+  comments <- map_dfr(document, get_commentsOnId)
+  save(comments, here::here("data",
+                            str_extract("[A-Z]+)", document), # agency
+                            paste("document", "comments.rda")
+  )
+  )
+}
+
+walk(documents$id, save_comments)
 
 #### Get detailed metadata about a comment
 
