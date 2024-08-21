@@ -26,7 +26,7 @@ get_comments_batch <- function(commentOnId,
                                 lastModifiedDate = Sys.time(),
                                api_keys){
 
-  lastModifiedDate <- format_date(lastModifiedDate) 
+  lastModifiedDate <- format_date(lastModifiedDate)
 
   # call the make path function to make paths for the first 20 pages of 250 results each
   path <- make_path_commentOnId(commentOnId, lastModifiedDate)
@@ -51,7 +51,8 @@ get_comments_batch <- function(commentOnId,
   # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
   remaining <<-  map(result, headers) |>
     tail(1) |>
-    pluck(1, "x-ratelimit-remaining")
+    pluck(1, "x-ratelimit-remaining") |>
+    as.numeric()
 
   if(remaining == 0){
 
