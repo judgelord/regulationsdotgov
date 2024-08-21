@@ -1,10 +1,7 @@
-# pulling first 5k comments
-# I wrote this for my own use but it could be helpful in the future and its working
-
 library(httr)
 library(jsonlite)
-library(tidyverse)
-library(magrittr) # FIXME, lets not depend on this?
+library(purrr)
+library(dplyr)
 
 ##############
 # REQUIRES HELPER FUNCTIONS #

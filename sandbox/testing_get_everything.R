@@ -1,11 +1,20 @@
 
 
-agencies <- c("BIA", "IHS")
+#agencies <- c("BIA", "IHS")
+
+agencies <- c("USPC")
 
 # create directories for each agency
 walk(here::here("data", agencies), dir.create)
 
-dockets <- map_dfr(agencies, get_dockets) # retrieves dockets for an agency (see official acronyms on regulations.gov)
+dockets <- map_dfr(agencies, get_dockets)# retrieves dockets for an agency (see official acronyms on regulations.gov)
+
+
+for (i in length(agencies)){
+  walk(here::here("data", agencies[i], dockets$id), dir.create) #FIXME Currently this doesnt nest the data for multiple agencies
+}
+
+
 
 
 # create directories for each docket
@@ -15,7 +24,7 @@ walk(here::here("data", docket_paths), dir.create)
 
 #### Get documents from each docket
 save_documents <- function(docket){
-  documents <- map_dfr(docket, get_documents)
+  documents <- map_dfr(docket, get_documents_batch)
   save(documents, here::here("data",
                              str_extract("[A-Z|-]+)", docket), #FIXME this is not going to work for agencies with numbers in their names, e.g. FWS-R9...
                              # should we require an agency argument here, or is there a reliable way to split agencies and dockets, e.g., by looking for years -19[0-9][0-9]- or -20[0-9][0-9]-
