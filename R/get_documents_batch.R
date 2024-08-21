@@ -46,8 +46,8 @@ get_documents_batch <- function(docketId,
     message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit, will continue after one minute |", remaining, "remaining"))
 
     # ROTATE KEYS
-    apikeys <<- c(tail(apikeys, -1), head(apikeys, 1))
-    api_key <- apikeys[1]
+    keys <<- c(tail(keys, -1), head(keys, 1))
+    api_key <- keys[1]
     #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
     message(paste("Rotating api key to", api_key))
 
