@@ -18,6 +18,7 @@ dockets <- map_dfr(agency, get_dockets)# retrieves dockets for an agency (see of
 save(dockets, file = here::here("data", agency,
                                 paste0(agency, "_dockets.rda")))
 
+load(here::here("data", agency, paste0(agency, "_dockets.rda")))
 
 # create directories for each docket
 for (i in length(agency)){
@@ -36,6 +37,7 @@ walk(here::here("data", docket_paths), dir.create)
 
 # SAVE IN SEPERATE FILES IN DOCKET FOLDERS
 save_documents <- function(docket, agency){
+  message (docket)
   documents <- map_dfr(docket, get_documents)
   message(paste("|", docket, "| n =", nrow(documents), "|"))
   save(documents, file = here::here("data",
@@ -48,11 +50,14 @@ save_documents <- function(docket, agency){
 }
 
 downloaded <- list.files(pattern = "_documents.rda", recursive = T) |>
-  str_remove_all(".*/|_.*")
+  str_remove_all(".*/|_documents.rda")
 
-dockets %<>% filter(!(id %in% downloaded))
+dockets %<>% filter(!(id %in% downloaded)) %>%
+  filter(!(id %in% c("EPA-HQ-OAR-2002-0065")))
 
-walk2(dockets$id, dockets$agencyId, .f =  save_documents)
+# To investigate: EPA-HQ-OW-2009-0819
+
+walk2(dockets$id, dockets$agencyId, possibly(save_documents, otherwise = print("nope")))
 
 # SAVE ONE LAGE FILE IN AGENCY FOLDER
 documents <- map_dfr(dockets$id, get_documents) # retrieves documents for a docket
