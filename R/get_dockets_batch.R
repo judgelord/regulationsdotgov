@@ -6,9 +6,9 @@ library(dplyr)
 #############################
 # REQUIRES HELPER FUNCTIONS #
 #############################
-source("R/helper_functions/make_path_dockets.R")
-source("R/helper_functions/make_dataframe.R")
-source("R/helper_functions/format_date.R")
+source("R/make_path_dockets.R")
+source("R/make_dataframe.R")
+source("R/format_date.R")
 
 get_dockets_batch <- function(agency,
                         lastModifiedDate,
