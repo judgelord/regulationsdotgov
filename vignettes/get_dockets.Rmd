@@ -72,5 +72,5 @@ devtools::load_all() # FIXME This is only here because library() was not loading
 # get FBI dockets
 FBI_dockets <- get_dockets("FBI")
 
-FBI_dockets[[1]]$data  # FIXME we should not need  [[1]]$data when this no longer returns a list
+FBI_dockets
 ```
