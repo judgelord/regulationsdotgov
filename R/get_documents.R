@@ -21,6 +21,10 @@ get_documents <- function(docketId,
                                   lastModifiedDate,
                                   apikeys = api_keys)
 
+  if(nrow(metadata) == 0){
+    metadata <- tibble(lastpage = TRUE)
+  }
+
   # Loop until last page is TRUE
   while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
