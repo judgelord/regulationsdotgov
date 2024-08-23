@@ -17,7 +17,12 @@ get_dockets <- function(agency,
 
 
   # Fetch the initial 5k and establish the base dataframe
-  metadata <- get_dockets_batch(agency, lastModifiedDate)
+  metadata <- get_dockets_batch(agency, lastModifiedDate, api_keys)
+
+  # make an near-empty dataframe if the results are empty
+  if(nrow(metadata) == 0){
+    metadata <- tibble(lastpage = TRUE)
+  }
 
   # Loop until last page is TRUE
   while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
@@ -27,8 +32,8 @@ get_dockets <- function(agency,
     format_date2()
 
     nextbatch <- get_dockets_batch(agency,
-                                   lastModifiedDate
-                                   )
+                                   lastModifiedDate,
+                                   api_keys)
 
     message(paste(nrow(metadata), "+", nrow(nextbatch)))
 
