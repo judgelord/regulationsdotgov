@@ -14,6 +14,7 @@ get_dockets_batch <- function(agency,
                         lastModifiedDate,
                         api_keys){
 
+  api_key <- api_keys[1]
 
   path <- make_path_dockets(agency, lastModifiedDate)
 
@@ -44,7 +45,13 @@ get_dockets_batch <- function(agency,
 
     message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit, will continue after one minute |", remaining, "remaining"))
 
-    Sys.sleep(60)
+    # ROTATE KEYS
+    api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
+    api_key <- api_keys[1]
+    #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
+    message(paste("Rotating api key to", api_key))
+
+    # Sys.sleep(60)
   }
 
 
