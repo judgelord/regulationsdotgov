@@ -13,27 +13,51 @@ agency <- c("USPC")
 # create directories for each agency
 walk(here::here("data", agency), dir.create)
 
-dockets <- map_dfr(agency, get_dockets)# retrieves dockets for an agency (see official acronyms on regulations.gov)
 
-save(dockets, file = here::here("data", agency,
-                                paste0(agency, "_dockets.rda")))
-
-load(here::here("data", agency, paste0(agency, "_dockets.rda")))
-
-# create directories for each docket
-for (i in length(agency)){
-  walk(here::here("data", agency[i], dockets$id), dir.create) #FIXME Currently this doesnt nest the data for multiple agencies
+# SAVE IN SEPERATE FILES IN DOCKET FOLDERS
+save_dockets <- function(agency){
+  message (agency)
+  dockets <- map_dfr(agency, get_dockets)
+  message(paste("|", agency, "| n =", nrow(dockets), "|"))
+  # agency <- "NOAA"
+  # dockets <- metadata
+  save(dockets, file = here::here("data",
+                                    agency,
+                                    paste0(agency, "_dockets.rda")
+  )
+  )
 }
 
 
-# create directories for each docket [alternative...can probably delete]
-docket_paths <- paste(dockets$agencyId, #FIXME Should the get_dockets re-name this "agency"
-                      dockets$id, #FIXME Should the get_dockets re-name this "docket_id"
-                      sep = "/")
 
-walk(here::here("data", docket_paths), dir.create)
+downloaded <- list.files(pattern = "_dockets.rda", recursive = T) |>
+  str_remove_all(".*/|_dockets.rda")
+
+agency <- agency[!(agency %in% downloaded)]
+
+# To investigate: EPA-HQ-OW-2009-0819
+
+walk(agency, possibly(save_dockets, otherwise = print("nope")))
+
+
+# load FOR JUST ONE AGENCY
+agency <- list.dirs("data", recursive = F) |> str_remove("data/")
+
+# create directories for each docket
+for (agency in agency){
+
+  message(agency)
+
+  load(here::here("data", agency, paste0(agency, "_dockets.rda")))
+
+  walk(here::here("data", agency, dockets$id), possibly(dir.create, otherwise = print("nope"))) #FIXME Currently this doesnt nest the data for multiple agencies
+}
+
+
+
 
 #### Get documents from each docket
+
 
 # SAVE IN SEPERATE FILES IN DOCKET FOLDERS
 save_documents <- function(docket, agency){
@@ -49,22 +73,20 @@ save_documents <- function(docket, agency){
   )
 }
 
+
+# loop over a vector of agencies
+for(agency in agency){
+  # load dockets
+  load(here::here("data", agency, paste0(agency, "_dockets.rda")))
+
+  # id doc metadata already downloaded
 downloaded <- list.files(pattern = "_documents.rda", recursive = T) |>
   str_remove_all(".*/|_documents.rda")
 
-dockets %<>% filter(!(id %in% downloaded)) %>%
-  filter(!(id %in% c("EPA-HQ-OAR-2002-0065")))
-
-# To investigate: EPA-HQ-OW-2009-0819
+dockets %<>% filter(!(id %in% downloaded))
 
 walk2(dockets$id, dockets$agencyId, possibly(save_documents, otherwise = print("nope")))
-
-# SAVE ONE LAGE FILE IN AGENCY FOLDER
-documents <- map_dfr(dockets$id, get_documents) # retrieves documents for a docket
-
-save(documents, file = here::here("data", agency,
-                                  paste0(agency, "_documents.rda")))
-
+}
 
 #### Get metadata for comments on a document or docket
 
