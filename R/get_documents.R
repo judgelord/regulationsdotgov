@@ -29,7 +29,7 @@ get_documents <- function(docketId,
   while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
     # Fetch the next batch of comments using the last modified date
-    nextbatch <- get_documents_batch(agency,
+    nextbatch <- get_documents_batch(docketId = docketId,
                                    lastModifiedDate = tail(metadata$lastModifiedDate,
                                                            n = 1) |>
                                      str_replace("T", "%20") |>

@@ -58,10 +58,10 @@ get_documents_batch <- function(docketId,
   # map the content of successful api results into a list
   document_metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
 
-  d <- map_dfr(document_metadata, make_dataframe)
+  metadata <- map_dfr(document_metadata, make_dataframe)
 
 
-  return(d)
+  return(metadata)
 
 }
 
