@@ -6,7 +6,7 @@ library(dplyr)
 #############################
 # REQUIRES HELPER FUNCTIONS #
 #############################
-source("R/helper_functions/make_path_comment_details.R")
+source("R/make_path_comment_details.R")
 
 # this helper that does the work for each comment
 # keeping just the content, not the full results, in memory while the main loop runs
