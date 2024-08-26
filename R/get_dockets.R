@@ -11,7 +11,7 @@ source("R/get_dockets_batch.R")
 
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
-                        api_keys){
+                        api_keys = keys){
 
   lastModifiedDate <- format_date(lastModifiedDate)
 
