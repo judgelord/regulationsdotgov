@@ -1,14 +1,18 @@
+load("../keys.rda")
 devtools::load_all()
 
 #agency <- c("BIA", "IHS")
 
-agency <- c('RITA','FRA','FTA','MARAD','NHTSA','PHMSA','DOD','DOT',#'EPA',
+agency <- c('RITA','FRA','FTA','MARAD','NHTSA','PHMSA','DOD',
+            'DOT','EPA',
 'FHWA','FMCSA','FAA','NRC','NOAA','USCG','AMS','FWS','BLM','COE',
 'FEMA','NRCS','RBS','USDA','FDA','HUD','CEQ','TVA','FSIS','DOE',
 'LSC','TREAS','RUS','GSA','FSA','RHS','BSEE','CCC','BIA','OSM','BOEM',
-'EERE','NCPC','FS','ACF','PHS','CMS','HHSIG','HHS')
+'EERE','NCPC','FS','ACF','PHS','CMS','HHSIG','HHS') |> rev()
 
 agency <- c("USPC")
+
+agency <- "PHS"
 
 # create directories for each agency
 walk(here::here("data", agency), dir.create)
@@ -29,7 +33,7 @@ save_dockets <- function(agency){
 }
 
 
-
+#FIXME alternatively, specify a date of last run and merge in with exisiting metadata file
 downloaded <- list.files(pattern = "_dockets.rda", recursive = T) |>
   str_remove_all(".*/|_dockets.rda")
 
@@ -61,7 +65,7 @@ for (agency in agency){
 
 # SAVE IN SEPERATE FILES IN DOCKET FOLDERS
 save_documents <- function(docket, agency){
-  message (docket)
+  message (paste(Sys.time(), agency, docket))
   documents <- map_dfr(docket, get_documents)
   message(paste("|", docket, "| n =", nrow(documents), "|"))
   save(documents, file = here::here("data",
@@ -80,14 +84,70 @@ for(agency in agency){
   load(here::here("data", agency, paste0(agency, "_dockets.rda")))
 
   # id doc metadata already downloaded
+  #FIXME alternatively, specify a date of last run and merge in with exisiting metadata file
 downloaded <- list.files(pattern = "_documents.rda", recursive = T) |>
   str_remove_all(".*/|_documents.rda")
+
+# if dockets metadata is not empty & docket metadata was not already downloaded, save documents for each docket
+if("id" %in% names(dockets)){
 
 dockets %<>% filter(!(id %in% downloaded))
 
 walk2(dockets$id, dockets$agencyId, possibly(save_documents, otherwise = print("nope")))
+} else{
+  message(paste(agency, "has no dockets in metadata returned by regulations.gov"))
+}
 }
 
+
+
+
+
+# Aggregate docket-leve documents metadata to agency level and save in agency folder
+for(agency in agency){
+files <- list.files(pattern = paste0(
+  agency, ".*_documents.rda"), recursive = T
+  )
+
+load(files[1])
+d <- documents
+
+for(file in files){
+  load(file)
+
+  temp <- documents
+
+  d <<- full_join(d, temp)
+}
+
+documents <- d
+
+save(documents, file = here::here("data", agency, paste0(agency, "_documents.rda")))
+}
+
+###################
+# Aggregate all agency-level document metadata and save in data folder
+  files <- list.files(pattern = "^[A-Z]*_documents.rda", recursive = T
+  )
+
+  load(files[1])
+  d <- documents
+
+  for(file in files){
+    load(file)
+
+    temp <- documents
+
+    d <<- full_join(d, temp)
+  }
+
+  documents <- d
+
+  save(documents, file = here::here("data", "all_documents.rda"))
+
+
+
+#######################################################
 #### Get metadata for comments on a document or docket
 
 # get_comments_on_docket("[docket_id]") # retrieves all comments for a docket (e.g., including an Advanced Notice of Proposed Rulemaking and all draft proposed rules)
