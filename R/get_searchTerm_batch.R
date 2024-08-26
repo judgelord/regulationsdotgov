@@ -24,17 +24,15 @@ get_searchTerm_batch <- function(searchTerm,
                                  documents,
                                  #commentOnId, #TODO feature to search comments on a specific docket or document
                                  lastModifiedDate,
-                                 api_keys
+                                 apikeys
                                  ){
 
-  api_key <- api_keys[1]
+  api_key <- apikeys[1]
 
   message(paste0("Searching for ", documents,
                  ' containing "', searchTerm,
                  '" posted before ',lastModifiedDate)
           )
-
-  lastModifiedDate <- format_date(lastModifiedDate) 
 
   # call the make path function to make paths for the first 20 pages of 250 results each
   path <- make_path_searchTerm(searchTerm,
@@ -78,7 +76,7 @@ get_searchTerm_batch <- function(searchTerm,
       api_key <- api_keys[1]
       message(paste("Rotating api key to", api_key))
 
-    Sys.sleep(60)
+    Sys.sleep(.60)
   }
 
 

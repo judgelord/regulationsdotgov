@@ -11,7 +11,7 @@ source("R/make_path_comment_details.R")
 # this helper that does the work for each comment
 # keeping just the content, not the full results, in memory while the main loop runs
 get_comment_details_content <- function(id,
-                                        lastModifiedDate = Sys.time(),
+                                        lastModifiedDate,
                                         api_keys){
 
 
