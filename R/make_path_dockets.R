@@ -1,6 +1,6 @@
 make_path_dockets <- function(agency, 
                               lastModifiedDate, 
-                              api_keys){
+                              api_key){
 
   paste0("https://api.regulations.gov",
          "/v4/",

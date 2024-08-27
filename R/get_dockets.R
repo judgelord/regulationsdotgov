@@ -8,13 +8,9 @@ library(dplyr)
 #############################
 source("R/get_dockets_batch.R")
 
-
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
-                        api_keys = keys){
-
-  lastModifiedDate <- format_date(lastModifiedDate)
-
+                        api_keys){
 
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_dockets_batch(agency, lastModifiedDate, api_keys)
@@ -28,18 +24,16 @@ get_dockets <- function(agency,
   while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
     # Fetch the next batch of comments using the last modified date
-    lastModifiedDate = tail(metadata$lastModifiedDate,  n = 1) |>
-    format_date2()
 
     nextbatch <- get_dockets_batch(agency,
-                                   lastModifiedDate,
+                                   lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
                                    api_keys)
 
     message(paste(nrow(metadata), "+", nrow(nextbatch)))
 
     # Append next batch to comments
     metadata <- suppressMessages(
-      full_join(metadata, nextbatch)
+      bind_rows(metadata, nextbatch)
     )
 
     message(paste(" = ", nrow(metadata)))
@@ -52,6 +46,6 @@ get_dockets <- function(agency,
 
 # TESTING
 if(F){
-n <- get_dockets(agency = "OMB")
+n <- get_dockets(agency = "NOAA", api_keys = api_keys)
 }
 

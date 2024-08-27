@@ -15,8 +15,7 @@ library(dplyr)
 # loop over a vector of comment ids, return a dataframe of comment details
 get_comment_details <- function(id,
                                 lastModifiedDate = Sys.time(),
-                                api_keys = api_keys
-                                ) {
+                                api_keys) {
 
   if(length(id) != length(id |> unique()) ){
     message("Duplicate ids dropped to save API calls (result will be shorter than length of id vector)")
