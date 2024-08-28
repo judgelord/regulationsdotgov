@@ -8,6 +8,10 @@ if(F){
   n <- get_commentsOnId(commentOnId, api_keys = api_keys)
 
   c <- unique(n$objectId)
-
-
+  
+  # are objectIds and documentIds any different? Yes
+  
+  #FBI_one <- get_commentsOnId(commentOnId = "09000064865d514a", api_keys = api_keys)
+  #FBI_two <- get_commentsOnId(commentOnId = "FBI-2024-0001-0001", api_keys = api_keys)
 }
+
