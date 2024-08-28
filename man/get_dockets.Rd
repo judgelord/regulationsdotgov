@@ -9,7 +9,7 @@ Get dockets from an agency
 get_dockets("[agency_acronym]") retrieves dockets for an agency
 }
 \usage{
-get_dockets(agency, lastModifiedDate = Sys.time(), api_keys)
+get_dockets(agency, lastModifiedDate, api_keys)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
