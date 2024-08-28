@@ -2,21 +2,29 @@
 \alias{get_dockets}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A Capitalized Title (ideally limited to 65 characters)
+Get dockets from an agency
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
+get_dockets("[agency_acronym]") retrieves dockets for an agency
 }
 \usage{
-get_dockets(agency, lastModifiedDate = Sys.time())
+get_dockets(agency, lastModifiedDate = Sys.time(), api_keys)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{agency}{
 %%     ~~Describe \code{agency} here~~
+Agency acronym (see official acronyms on regulations.gov)
 }
   \item{lastModifiedDate}{
 %%     ~~Describe \code{lastModifiedDate} here~~
+Filter results by their last modified date. Default is set to Sys.time(). 
+
+User-specified values must be formatted as yyyy-MM-dd HH:mm:ss.
+
+}
+  \item{api_keys}{API key(s) from api.data.gov. 
 }
 }
 \details{
@@ -45,6 +53,23 @@ get_dockets(agency, lastModifiedDate = Sys.time())
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
+
+> FBI_dockets <- get_dockets(agency = "FBI", api_keys = "DEMO_KEY")
+
+> head(FBI_dockets)
+
+# A tibble: 6 × 8
+  docketType    lastModifiedDate     highlightedContent agencyId title                objectId id    lastpage
+  <chr>         <chr>                <lgl>              <chr>    <chr>                <chr>    <chr> <lgl>   
+1 Rulemaking    2024-08-26T13:14:32Z NA                 FBI      "Bipartisan Safer C… 0b00006… FBI-… TRUE    
+2 Rulemaking    2024-08-26T13:13:45Z NA                 FBI      "Child Protection I… 0b00006… FBI-… TRUE    
+3 Rulemaking    2023-08-25T08:08:48Z NA                 FBI      "Recently Posted FB… 0b00006… FBI_… TRUE    
+4 Rulemaking    2021-05-02T01:06:49Z NA                 FBI      "National Instant C… 0b00006… FBI-… TRUE    
+5 Rulemaking    2021-05-02T01:06:49Z NA                 FBI      "FBI Criminal Justi… 0b00006… FBI-… TRUE    
+6 Nonrulemaking 2021-05-02T01:06:49Z NA                 FBI      "FBI Records Manage… 0b00006… FBI-… TRUE 
+
+
+##{DELETE?}
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
 ##--	or standard data sets, see data().
