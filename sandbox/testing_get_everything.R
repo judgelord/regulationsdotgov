@@ -10,6 +10,15 @@ agency <- c('RITA','FRA','FTA','MARAD','NHTSA','PHMSA','DOD',
 'LSC','TREAS','RUS','GSA','FSA','RHS','BSEE','CCC','BIA','OSM','BOEM',
 'EERE','NCPC','FS','ACF','PHS','CMS','HHSIG','HHS') |> rev()
 
+agency <- c('ACF', #'ACL',
+            'AID', 'AMS', 'BIA', 'BLM', 'BOEM', 'BSEE', 'CCC', 'CEQ', 'CMS', 'COE', 'CPSC', 'DOC', 'DOD',
+'DOE', 'DOJ', 'DOS', 'DOT', 'EBSA', 'EERE', 'EPA', 'FAA', 'FAR', 'FDA', 'FEMA', 'FHWA', 'FMC', 'FMCSA', 'FRA', 'FS',
+'FSA', 'FSIS', 'FTA', 'FWS', 'GSA', 'HHS', 'HHSIG', 'HUD', 'IRS', 'MARAD', 'NASA', 'NHTSA', 'NOAA', 'NRC', 'NRCS',
+'NTSB', 'OCC', 'OSM', 'PHMSA', 'RBS', 'RHS', 'RITA', 'RUS', 'TREAS', 'USA', 'USCG', 'USDA', 'SRBC', 'FERC')
+
+agency <- c("PHS",   "NCPC",  "OSM",   "RHS",   "RUS",   "TREAS", "LSC",
+            "TVA"  )
+
 agency <- c("USPC")
 
 agency <- "PHS"
@@ -38,13 +47,13 @@ downloaded <- list.files(pattern = "_dockets.rda", recursive = T) |>
   str_remove_all(".*/|_dockets.rda")
 
 agency <- agency[!(agency %in% downloaded)]
+agency
 
 # To investigate: EPA-HQ-OW-2009-0819
 
 walk(agency, possibly(save_dockets, otherwise = print("nope")))
 
 
-# load FOR JUST ONE AGENCY
 agency <- list.dirs("data", recursive = F) |> str_remove("data/")
 
 # create directories for each docket
@@ -95,7 +104,7 @@ dockets %<>% filter(!(id %in% downloaded))
 
 walk2(dockets$id, dockets$agencyId, possibly(save_documents, otherwise = print("nope")))
 } else{
-  message(paste(agency, "has no dockets in metadata returned by regulations.gov"))
+  message(paste(agency, "has no document metadata returned by regulations.gov"))
 }
 }
 
@@ -105,30 +114,40 @@ walk2(dockets$id, dockets$agencyId, possibly(save_documents, otherwise = print("
 
 # Aggregate docket-leve documents metadata to agency level and save in agency folder
 for(agency in agency){
-files <- list.files(pattern = paste0(
-  agency, ".*_documents.rda"), recursive = T
+  files <- list.files(pattern = paste0(
+    agency, ".*_documents.rda"), recursive = T
   )
 
-load(files[1])
-d <- documents
+  done  <- files <- list.files(pattern = paste0(
+    agency, "_documents.rda"), recursive = T
+  )
 
-for(file in files){
-  load(file)
+  if(!length(files)==0){
+    load(files[1])
+    d <- documents
 
-  temp <- documents
+    for(file in files){
+      load(file)
 
-  d <<- full_join(d, temp)
-}
+      temp <- documents
 
-documents <- d
+      d <<- suppressMessages(full_join(d, temp))
+    }
 
-save(documents, file = here::here("data", agency, paste0(agency, "_documents.rda")))
+    documents <- d
+
+    save(documents, file = here::here("data", agency, paste0(agency, "_documents.rda")))
+  } else
+    message(paste("Missing", agency))
 }
 
 ###################
 # Aggregate all agency-level document metadata and save in data folder
-  files <- list.files(pattern = "^[A-Z]*_documents.rda", recursive = T
-  )
+  files <- list.files(pattern = "^[A-Z]*_documents.rda", recursive = T)
+
+length(files) == length(agency)
+
+done <- files |> str_remove_all(".*/|-.*")
 
   load(files[1])
   d <- documents
@@ -143,7 +162,25 @@ save(documents, file = here::here("data", agency, paste0(agency, "_documents.rda
 
   documents <- d
 
+  agency[!agency %in% d$agencyId]
+
   save(documents, file = here::here("data", "all_documents.rda"))
+
+
+d %>%
+  full_join(documents) %>%
+  ungroup() %>%
+  mutate(year = str_sub(postedDate,1,4) %>% as.numeric()) %>%
+  ggplot() +
+  aes(x = year,
+      fill = searchTerm) +
+  geom_histogram()
+
+
+
+
+
+
 
 
 
