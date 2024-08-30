@@ -1,7 +1,5 @@
 # Function to grab metadata for the first 5,000 comments on a document
 
-#source("~/api-key.R")
-
 library(httr)
 library(jsonlite)
 library(purrr)
@@ -14,22 +12,16 @@ source("R/make_path_commentOnId.R")
 source("R/make_dataframe.R")
 source("R/format_date.R")
 
-# FOR TESTING
-if(F){
-#commentOnId = "09000064856107a5" # this is https://www.regulations.gov/document/OMB-2023-0001-0001
-commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-0001-12471 - less pages / calls
-# commentOnId = "09000064824e36b7"
-}
-
-# the batch function
 get_comments_batch <- function(commentOnId,
-                                lastModifiedDate = Sys.time(),
+                               lastModifiedDate = Sys.time(),
                                api_keys){
+  
+  api_key <- api_keys[1]
 
   lastModifiedDate <- format_date(lastModifiedDate)
 
   # call the make path function to make paths for the first 20 pages of 250 results each
-  path <- make_path_commentOnId(commentOnId, lastModifiedDate)
+  path <- make_path_commentOnId(commentOnId, lastModifiedDate, api_key)
 
   # map GET function over pages
   result <- purrr::map(path, GET)
@@ -54,13 +46,18 @@ get_comments_batch <- function(commentOnId,
     pluck(1, "x-ratelimit-remaining") |>
     as.numeric()
 
-  if(remaining == 0){
-
-    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
-
+  if(remaining < 2){
+    
+    message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit, will continue after one minute |", remaining, "remaining"))
+    
+    # ROTATE KEYS
+    api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
+    api_key <- api_keys[1]
+    #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
+    message(paste("Rotating api key to", api_key))
+    
     Sys.sleep(60)
   }
-
 
  # map the content of successful api results into a list
   metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
@@ -86,11 +83,5 @@ get_comments_batch <- function(commentOnId,
   d$commentOnId <- commentOnId
 
   return(d)
-}
-
-
-# TESTING
-if(F){
-n <- get_comments_batch(commentOnId)
 }
 

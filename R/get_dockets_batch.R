@@ -15,8 +15,10 @@ get_dockets_batch <- function(agency,
                         api_keys){
 
   api_key <- api_keys[1]
+  
+  lastModifiedDate <- format_date(lastModifiedDate)
 
-  path <- make_path_dockets(agency, lastModifiedDate)
+  path <- make_path_dockets(agency, lastModifiedDate, api_key)
 
   # map GET function over pages
   result <- purrr::map(path, GET)
@@ -51,7 +53,7 @@ get_dockets_batch <- function(agency,
     #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
     message(paste("Rotating api key to", api_key))
 
-    # Sys.sleep(60)
+    Sys.sleep(60)
   }
 
 

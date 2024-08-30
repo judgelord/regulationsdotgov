@@ -11,10 +11,11 @@ source("R/make_dataframe.R")
 source("R/format_date.R")
 
 get_documents_batch <- function(docketId,
-                                lastModifiedDate,
-                                apikeys){
+                                lastModifiedDate, api_keys){
 
-  api_key <- apikeys[1]
+  api_key <- api_keys[1]
+  
+  lastModifiedDate <- format_date(lastModifiedDate)
 
   path <- make_path_documents(docketId, lastModifiedDate, api_key)
 
