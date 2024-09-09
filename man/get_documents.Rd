@@ -19,9 +19,9 @@ ID of docket
 }
   \item{lastModifiedDate}{
 %%     ~~Describe \code{lastModifiedDate} here~~
-Filter results by their last modified date. Default is set to Sys.time(). 
+Filter results by their last modified date. Default is set to \code{Sys.time()}. 
 
-User-specified values must be formatted as yyyy-MM-dd HH:mm:ss.
+User-specified values must be formatted as \code{yyyy-MM-dd\%20HH:mm:ss}.
 
 }
   \item{api_keys}{API key(s) from api.data.gov. 
@@ -54,14 +54,14 @@ User-specified values must be formatted as yyyy-MM-dd HH:mm:ss.
 }
 \examples{
 
-> FBI_docket_2024 <- get_documents(docketId = "FBI-2024-0001", api_keys = "DEMO_KEY")
+# FBI_docket_2024 <- get_documents(docketId = "FBI-2024-0001", api_keys = "DEMO_KEY")
 
-> head(FBI_docket_2024)
+# head(FBI_docket_2024)
 
 # A tibble: 1 × 16
-  documentType lastModifiedDate     highlightedContent frDocNum   withdrawn agencyId commentEndDate     title
-  <chr>        <chr>                <chr>              <chr>      <lgl>     <chr>    <chr>              <chr>
-1 Rule         2024-07-26T01:01:24Z ""                 2024-14253 FALSE     FBI      2024-08-01T03:59:… Bipa…
+#   documentType lastModifiedDate     highlightedContent frDocNum   withdrawn agencyId # commentEndDate     title
+#   <chr>        <chr>                <chr>              <chr>      <lgl>     <chr>    <chr>       #        <chr>
+# 1 Rule         2024-07-26T01:01:24Z ""                 2024-14253 FALSE     FBI      2024-08# -01T03:59:… Bipa…
 # ℹ 8 more variables: postedDate <chr>, docketId <chr>, subtype <lgl>, commentStartDate <chr>,
 #   openForComment <lgl>, objectId <chr>, id <chr>, lastpage <lgl>
 }
