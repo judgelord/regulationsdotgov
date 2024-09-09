@@ -19,9 +19,9 @@ Agency acronym (see official acronyms on regulations.gov)
 }
   \item{lastModifiedDate}{
 %%     ~~Describe \code{lastModifiedDate} here~~
-Filter results by their last modified date. Default is set to Sys.time(). 
+Filter results by their last modified date. Default is set to \code{Sys.time()}. 
 
-User-specified values must be formatted as yyyy-MM-dd HH:mm:ss.
+User-specified values must be formatted as \code{yyyy-MM-dd\%20HH:mm:ss}.
 
 }
   \item{api_keys}{API key(s) from api.data.gov. 
