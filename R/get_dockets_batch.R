@@ -1,14 +1,6 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
 
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/make_path_dockets.R")
-source("R/make_dataframe.R")
-source("R/format_date.R")
+
+#' @keywords internal
 
 get_dockets_batch <- function(agency,
                         lastModifiedDate,

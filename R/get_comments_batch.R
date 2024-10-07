@@ -1,16 +1,8 @@
 # Function to grab metadata for the first 5,000 comments on a document
 
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
 
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/make_path_commentOnId.R")
-source("R/make_dataframe.R")
-source("R/format_date.R")
+
+#' @keywords internal
 
 get_comments_batch <- function(commentOnId,
                                lastModifiedDate = Sys.time(),

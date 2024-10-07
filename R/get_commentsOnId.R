@@ -1,13 +1,6 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
 
 
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/get_comments_batch.R")
+#' @export
 
 get_commentsOnId <- function(commentOnId, 
                              lastModifiedDate = Sys.time(), 

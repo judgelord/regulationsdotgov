@@ -1,12 +1,4 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
-
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/make_path_comment_details.R")
+#' @keywords internal
 
 # this helper that does the work for each comment
 # keeping just the content, not the full results, in memory while the main loop runs

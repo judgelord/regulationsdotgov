@@ -1,5 +1,5 @@
 # should give this a new name at some point
-
+#' @keywords internal
 make_dataframe <- function(metadata){
   data <- metadata$data
   meta <- metadata$meta
