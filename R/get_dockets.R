@@ -10,7 +10,7 @@ source("R/get_dockets_batch.R")
 
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
-                        api_keys){
+                        api_keys = keys){
 
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_dockets_batch(agency, lastModifiedDate, api_keys)
