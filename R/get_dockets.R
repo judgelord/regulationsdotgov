@@ -1,12 +1,6 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
 
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/get_dockets_batch.R")
+
+#' @export
 
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),

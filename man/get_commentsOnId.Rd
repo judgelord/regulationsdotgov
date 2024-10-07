@@ -17,9 +17,9 @@ objectId obtained from a document's metadata
 }
   \item{lastModifiedDate}{
 %%     ~~Describe \code{lastModifiedDate} here~~
-Filter results by their last modified date. Default is set to Sys.time(). 
+Filter results by their last modified date. Default is set to \code{Sys.time()}. 
 
-User-specified values must be formatted as yyyy-MM-dd HH:mm:ss.
+User-specified values must be formatted as \code{yyyy-MM-dd\%20HH:mm:ss}.
 
 }
   \item{api_keys}{API key(s) from api.data.gov. 
@@ -52,13 +52,13 @@ User-specified values must be formatted as yyyy-MM-dd HH:mm:ss.
 }
 \examples{
 
-> comment_metadata <- get_commentsOnId(commentOnId = "09000064865d514a", api_keys = "DEMO_KEY")
+# comment_metadata <- get_commentsOnId(commentOnId = "09000064865d514a", api_keys = "DEMO_KEY")
 
-> head(comment_metadata)
+# head(comment_metadata)
 
 # A tibble: 1 × 11
-  documentType      lastModifiedDate    highlightedContent withdrawn agencyId title objectId postedDate id   
-  <chr>             <chr>               <chr>              <lgl>     <chr>    <chr> <chr>    <chr>      <chr>
-1 Public Submission 2024-07-26T13:29:3… ""                 FALSE     FBI      Comm… 0900006… 2024-07-2… FBI-…
+#   documentType      lastModifiedDate    highlightedContent withdrawn agencyId title objectId postedDate id   
+#   <chr>             <chr>               <chr>              <lgl>     <chr>    <chr> <chr>    <chr>      <chr>
+# 1 Public Submission 2024-07-26T13:29:3… ""                 FALSE     FBI      Comm… 0900006… 2024-07-2… FBI-…
 # ℹ 2 more variables: lastpage <lgl>, commentOnId <chr>
 }

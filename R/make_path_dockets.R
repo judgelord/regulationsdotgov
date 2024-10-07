@@ -1,3 +1,5 @@
+#' @keywords internal
+
 make_path_dockets <- function(agency, 
                               lastModifiedDate, 
                               api_key){

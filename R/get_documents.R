@@ -1,12 +1,4 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
-
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/get_documents_batch.R")
+#' @export
 
 
 get_documents <- function(docketId,

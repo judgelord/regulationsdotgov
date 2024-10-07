@@ -1,3 +1,5 @@
+#' @keywords internal
+
 make_path_documents <- function(docketId,
                                   lastModifiedDate,
                                   api_key){

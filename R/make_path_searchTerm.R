@@ -1,3 +1,5 @@
+#' @keywords internal
+
 make_path_searchTerm <- function(searchTerm, 
                                  documents, 
                                  lastModifiedDate = Sys.time(), 

@@ -1,16 +1,5 @@
 # Function to grab metadata for the first 5,000 comments on a document
-
-#source("~/api-key.R")
-
-library(httr)
-library(jsonlite)
-library(tidyverse) #  FIXME just purrr and dplyr, right?
-library(magrittr) #  FIXME can we remove this dependency?
-
-
-# source("R/format_date.R")
-# source("R/make_dataframe.R")
-# source("R/make_path_searchTerm.R")
+#' @keywords internal
 
 # FOR TESTING
 if(F){

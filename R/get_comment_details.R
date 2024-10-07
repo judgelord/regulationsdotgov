@@ -1,15 +1,5 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
 
-##############
-# REQUIRES HELPER FUNCTIONS #
-# FIXME ADD TO DOCUMENTATION
-####################
-# source("R/make_path_comment_details.R")
-# source("R/get_comment_details_content.R")
-# source("~/api-key.R")
+#' @export
 
 
 # loop over a vector of comment ids, return a dataframe of comment details

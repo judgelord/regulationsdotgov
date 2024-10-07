@@ -1,14 +1,5 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
 
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-source("R/make_path_documents.R")
-source("R/make_dataframe.R")
-source("R/format_date.R")
+#' @keywords internal
 
 get_documents_batch <- function(docketId,
                                 lastModifiedDate, api_keys){

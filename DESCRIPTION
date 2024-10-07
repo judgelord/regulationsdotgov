@@ -5,7 +5,7 @@ Authors@R:
     c(person("Devin", "Judge-Lord", , "judgelor@umich.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-4384-4380")),
     person("Maya", "Khuzam", , "mzkhuzam@umich.edu ", role = c("aut"),
-           comment = c(ORCID = "YOUR-ORCID-ID")))
+           comment = c(ORCID = "0009-0007-7805-7460")))
 Description: This package provides functions to get data from regulations.gov.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -17,8 +17,6 @@ Imports:
     here,
     httr,
     jsonlite,
-    lubridate,
-    magrittr,
     pdftools,
     purrr,
     quarto,

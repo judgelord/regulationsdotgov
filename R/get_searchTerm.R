@@ -1,22 +1,6 @@
-library(httr)
-library(jsonlite)
-library(purrr)
-library(dplyr)
-
-#############################
-# REQUIRES HELPER FUNCTIONS #
-#############################
-
-# source("R/make_dataframe.R")
-# source("R/get_searchTerm_batch.R")
 
 
-# FOR TESTING
-if(F){
-searchTerm =  c("national congress of american indians")
-}
-
-
+#' @export
 
 get_searchTerm <- function(searchTerm,
                            documents = "documents", # c("documents", "comments") defaults to documents
@@ -56,6 +40,11 @@ get_searchTerm <- function(searchTerm,
   }
 
   return(metadata)
+}
+
+# FOR TESTING
+if(F){
+  searchTerm =  c("national congress of american indians")
 }
 
 
