@@ -7,7 +7,8 @@ get_documents <- function(docketId,
 
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_documents_batch(docketId,
-                                  lastModifiedDate, api_keys)
+                                  lastModifiedDate,
+                                  api_keys = keys)
 
   if(nrow(metadata) == 0){
     metadata <- tibble(lastpage = TRUE)
@@ -20,7 +21,7 @@ get_documents <- function(docketId,
     nextbatch <- get_documents_batch(docketId,
                                    lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
                                    api_keys)
-    
+
     message(paste(nrow(metadata), "+", nrow(nextbatch)))
 
     # Append next batch to comments
