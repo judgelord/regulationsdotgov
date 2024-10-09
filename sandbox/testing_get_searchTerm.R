@@ -1,3 +1,6 @@
+devtools::load_all()
+load("../keys.rda")
+
 
 #TESTING
 if(F){
@@ -15,10 +18,11 @@ if(F){
 
   searchTerm = c("environmental justice")
 
-
-  searchTerm = c("documents", "comments")
+  documents = c("documents", "comments")
 
   documents = c("comments")
+
+  documents = c("documents")
 
 
   search_to_csv <- function(searchTerm, documents){

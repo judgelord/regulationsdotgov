@@ -1,4 +1,5 @@
 load("../keys.rda")
+keys <- rev(keys)
 devtools::load_all()
 
 #agency <- c("BIA", "IHS")
@@ -14,7 +15,8 @@ agency <- c('ACF', #'ACL',
             'AID', 'AMS', 'BIA', 'BLM', 'BOEM', 'BSEE', 'CCC', 'CEQ', 'CMS', 'COE', 'CPSC', 'DOC', 'DOD',
 'DOE', 'DOJ', 'DOS', 'DOT', 'EBSA', 'EERE', 'EPA', 'FAA', 'FAR', 'FDA', 'FEMA', 'FHWA', 'FMC', 'FMCSA', 'FRA', 'FS',
 'FSA', 'FSIS', 'FTA', 'FWS', 'GSA', 'HHS', 'HHSIG', 'HUD', 'IRS', 'MARAD', 'NASA', 'NHTSA', 'NOAA', 'NRC', 'NRCS',
-'NTSB', 'OCC', 'OSM', 'PHMSA', 'RBS', 'RHS', 'RITA', 'RUS', 'TREAS', 'USA', 'USCG', 'USDA', 'SRBC', 'FERC')
+'NTSB', 'OCC', 'OSM', 'PHMSA', 'RBS', 'RHS', 'RITA', 'RUS', 'TREAS',
+'USA', 'USCG', 'USDA', 'SRBC', 'FERC') |> rev()
 
 agency <- c("PHS",   "NCPC",  "OSM",   "RHS",   "RUS",   "TREAS", "LSC",
             "TVA"  )
@@ -53,8 +55,8 @@ agency
 
 walk(agency, possibly(save_dockets, otherwise = print("nope")))
 
-
-agency <- list.dirs("data", recursive = F) |> str_remove("data/")
+# all agency folders
+# agency <- list.dirs("data", recursive = F) |> str_remove("data/")
 
 # create directories for each docket
 for (agency in agency){
@@ -114,15 +116,18 @@ walk2(dockets$id, dockets$agencyId, possibly(save_documents, otherwise = print("
 
 # Aggregate docket-leve documents metadata to agency level and save in agency folder
 for(agency in agency){
+
+  # document metadata in docket folders
   files <- list.files(pattern = paste0(
     agency, ".*_documents.rda"), recursive = T
   )
 
-  done  <- files <- list.files(pattern = paste0(
+  # aggregated metadata for the whole agency
+  done <- list.files(pattern = paste0(
     agency, "_documents.rda"), recursive = T
-  )
+    )
 
-  if(!length(files)==0){
+  if(!length(files) == 0 & length(done) == 0){
     load(files[1])
     d <- documents
 
@@ -168,13 +173,17 @@ done <- files |> str_remove_all(".*/|-.*")
 
 
 d %>%
-  full_join(documents) %>%
+  #full_join(documents) %>%
+  group_by(documentType,docketId) %>%
+  slice_max(n = 1, with_ties = F, order_by = postedDate) %>%
   ungroup() %>%
   mutate(year = str_sub(postedDate,1,4) %>% as.numeric()) %>%
+  filter(year > 1992,
+         documentType %in% c("Rule", "Proposed Rule")) %>%
   ggplot() +
-  aes(x = year,
-      fill = searchTerm) +
-  geom_histogram()
+  aes(x = as.factor(year),
+      fill = documentType) +
+  geom_bar(position = "dodge")
 
 
 
