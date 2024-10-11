@@ -27,7 +27,7 @@ get_comment_details_content <- function(id,
     # ROTATE KEYS
     api_keys <<- api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
 
-    message(paste("429 - rotating api key to", api_keys[1]))
+    message(paste("429 - rotating to api key ending in", api_keys[1] |> str_remove(".{35}")))
 
     # try again
     path <- make_path_comment_details(id, api_keys[1])
