@@ -1,6 +1,10 @@
 load("../keys.rda")
 keys <- rev(keys)
 devtools::load_all()
+library(tidyverse)
+library(httr)
+library(jsonlite)
+library(magrittr)
 
 #agency <- c("BIA", "IHS")
 
@@ -199,11 +203,39 @@ d %>%
 # get_comments_on_docket("[docket_id]") # retrieves all comments for a docket (e.g., including an Advanced Notice of Proposed Rulemaking and all draft proposed rules)
 
 save_comments <- function(docket){
-  comments <- map_dfr(docket, get_comments_on_docket)
-  save(comments, here::here("data",
-                             str_extract("[A-Z]+)", docket), # agency
+  #comments <- map_dfr(docket, get_comments_on_docket)
+
+  # for testing
+  # docket <- "EPA-HQ-OAR-2021-0317"
+  documents <- get_documents(docket)
+
+  # documents |> count(documentType)
+
+  documents |> filter(documentType == "Proposed Rule") |> select(commentEndDate, withdrawn, subtype, objectId)
+
+  # subset to proposed rules
+  d <- documents |>
+    filter(documentType == "Proposed Rule") |>
+    select(document_subtype = subtype,
+           commentStartDate, commentEndDate, frDocNum,
+           commentOnId = objectId,
+           document_title = title) |>
+    #FIXME not sure if a 0 comment document was the source of the error I got
+    drop_na(commentStartDate)
+
+
+  # get comments
+  c <- map_dfr( d$objectId, get_commentsOnId, api_keys = keys)
+
+  # join back in document metadata
+  c %<>% left_join(d)
+
+  comments <- c  #|> filter(is.na(subtype )) # NA subtype = normal PR?
+
+  save(comments, file = here::here("data",
+                             str_extract(docket, "[A-Z]+"), # agency
                              docket,
-                            "comments.rda"
+                            paste(docket, "comments.rda", sep = "_")
   )
   )
 }
@@ -217,7 +249,7 @@ get_commentsOnId("[document_id]") # retrieves comments on a specific document (e
 save_comments <- function(document){
   comments <- map_dfr(document, get_commentsOnId)
   save(comments, here::here("data",
-                            str_extract("[A-Z]+)", document), # agency
+                            str_extract(document, "[A-Z]+)"), # agency
                             paste("document", "comments.rda")
   )
   )
@@ -230,14 +262,14 @@ walk(documents$id, save_comments)
 get_comment_details("[comment_id]") # retrieves comments on a specific document (e.g., a specific proposed rule)
 
 
-save_comment_details <- function(docket){
-  comments <- map_dfr(docket, get_comments_on_docket)
-  comment_details <- get_comment_details(comments$document_id)
+save_comment_details <- function(comments){
+  #comments <- map_dfr(docket, get_comments_on_docket)
+  comment_details <- get_comment_details(comments$id, api_keys = keys)
 
-  save(comment_details, here::here("data",
-                            str_extract("[A-Z]+)", docket), # agency
+  save(comment_details, file = here::here("data",
+                            str_extract(docket, "[A-Z]+"), # agency
                             docket,
-                            "comment_details.rda"
+                            paste(docket, "comment_details.rda", sep = "_")
   )
   )
 }

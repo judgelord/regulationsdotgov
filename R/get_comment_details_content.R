@@ -46,7 +46,7 @@ get_comment_details_content <- function(id,
     }
   }
 
-  Sys.sleep(0.1) # very small pause to allow rate limit reported to be more accurate
+  Sys.sleep(0.01) # very small pause to allow rate limit reported to be more accurate
 
   # return content (small object than result)
   content <-  fromJSON(rawToChar(result$content))

@@ -18,7 +18,7 @@ get_comment_details <- function(id,
 
   #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
   # a default for possibly to return if the call fails
-  path <- make_path_comment_details(id[1], api_keys[1])
+  path <- make_path_comment_details(unique_ids[1], api_keys[1])
   result_init <- GET(path)
   content_init <- fromJSON(rawToChar(result_init$content))
   content_init$data$id <- NULL
