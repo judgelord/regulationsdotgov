@@ -27,7 +27,7 @@ agency <- c("PHS",   "NCPC",  "OSM",   "RHS",   "RUS",   "TREAS", "LSC",
 
 agency <- c("USPC")
 
-agency <- "PHS"
+agency <- "HHS"
 
 # create directories for each agency
 walk(here::here("data", agency), dir.create)
@@ -36,7 +36,7 @@ walk(here::here("data", agency), dir.create)
 # SAVE IN SEPERATE FILES IN DOCKET FOLDERS
 save_dockets <- function(agency){
   message (agency)
-  dockets <- map_dfr(agency, get_dockets)
+  dockets <- map_dfr(agency, get_dockets, api_keys = keys)
   message(paste("|", agency, "| n =", nrow(dockets), "|"))
   # agency <- "NOAA"
   # dockets <- metadata
@@ -207,11 +207,12 @@ save_comments <- function(docket){
 
   # for testing
   # docket <- "EPA-HQ-OAR-2021-0317"
-  documents <- get_documents(docket)
+  docket <- "FBI-2024-0001"
+  documents <- get_documents(docket, api_keys = keys)
 
   # documents |> count(documentType)
 
-  documents |> filter(documentType == "Proposed Rule") |> select(commentEndDate, withdrawn, subtype, objectId)
+  documents |> filter(documentType == "Proposed Rule") |> select(commentStartDate, commentEndDate, withdrawn, subtype, objectId)
 
   # subset to proposed rules
   d <- documents |>
@@ -225,7 +226,7 @@ save_comments <- function(docket){
 
 
   # get comments
-  c <- map_dfr( d$objectId, get_commentsOnId, api_keys = keys)
+  c <- map_dfr( d$commentOnId, get_commentsOnId, api_keys = keys)
 
   # join back in document metadata
   c %<>% left_join(d)
