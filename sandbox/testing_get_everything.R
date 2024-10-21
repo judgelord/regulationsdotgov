@@ -207,7 +207,9 @@ save_comments <- function(docket){
 
   # for testing
   # docket <- "EPA-HQ-OAR-2021-0317"
-  docket <- "FBI-2024-0001"
+  docket <- "FBI-2024-0001" # final rule only
+  docket <- "IRS-2024-0045" # has one PR with comments one without
+
   documents <- get_documents(docket, api_keys = keys)
 
   # documents |> count(documentType)
