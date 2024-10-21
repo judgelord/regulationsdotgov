@@ -6,7 +6,7 @@
 
 format_date <- function(lastModifiedDate){
   
-  if(!str_detect(lastModifiedDate, "[0-9]{4}-[0-9]{2}-[0-9]{2}\\S[0-9]{2}:[0-9]{2}:[0-9]{2}\\S")){
+  if(!stringr::str_detect(lastModifiedDate, "[0-9]{4}-[0-9]{2}-[0-9]{2}\\S[0-9]{2}:[0-9]{2}:[0-9]{2}\\S")){
     timezone <- base::format(lastModifiedDate, format="%Z")
     
     # Convert to POSIXct
@@ -23,8 +23,8 @@ format_date <- function(lastModifiedDate){
   
   else{
     formatted_date <- lastModifiedDate |>
-      str_replace("T", "%20") |>
-      str_remove_all("[A-Z]")
+      stringr::str_replace("T", "%20") |>
+      stringr::str_remove_all("[A-Z]")
     
     return(formatted_date)
   }

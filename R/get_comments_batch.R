@@ -20,8 +20,8 @@ get_comments_batch <- function(commentOnId,
   for (i in path){
       
     # map GET function over pages
-    result <- GET(i)
-    
+    result <- httr::GET(i)
+
     # report result status
     status <- result$status_code
     url <- result$url
@@ -50,11 +50,11 @@ get_comments_batch <- function(commentOnId,
     #)
     
     if(status == 200){
-      metadata[[i]] <- fromJSON(rawToChar(result$content))
+      metadata[[i]] <- jsonlite::fromJSON(rawToChar(result$content))
     }
     
     # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
-    remaining <<- result$headers$`x-ratelimit-remaining` %>% as.numeric()
+    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
     
     if(remaining < 2){
       
@@ -73,7 +73,7 @@ get_comments_batch <- function(commentOnId,
   }
 
   # map the list into a dataframe with the information we care about
-  d <- map_dfr(metadata, make_dataframe)
+  d <- purrr::map_dfr(metadata, make_dataframe)
 
   # add back in the id for the document being commented on
   d$commentOnId <- commentOnId
