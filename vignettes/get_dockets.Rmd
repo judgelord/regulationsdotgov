@@ -1,6 +1,6 @@
 ---
 title: "Dockets"
-logo: '`r here::here("man/figures/logo.png")`'
+logo: 
 author: "Devin Judge-Lord"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -60,17 +60,17 @@ head <- function(x){
 
 ```{r warning=FALSE, message=FALSE}
 # you need an API key
-source("~/api-key.R")
+#source("~/api-key.R")
 
 library(regulationsdotgov)
 
-devtools::load_all() # FIXME This is only here because library() was not loading the functions, possibly due to lack of documentation
+
 ```
 
 ```{r warning=FALSE}
-
+\donttest{
 # get FBI dockets
 FBI_dockets <- get_dockets("FBI")
 
-FBI_dockets
+FBI_dockets}
 ```
