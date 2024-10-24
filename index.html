@@ -53,16 +53,13 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="regulationsdotgov">regulationsdotgov<a class="anchor" aria-label="anchor" href="#regulationsdotgov"></a>
 </h1></div>
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-<p>Get data from regulations.gov</p>
-<!-- badges: start -->
-<!-- badges: end -->
-<div class="section level2">
+<!-- README.md is generated from README.Rmd. Please edit that file --><p>Get data from regulations.gov</p>
+<!-- badges: start --><!-- badges: end --><div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of regulationsdotgov from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages("pak")</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"judgelord/regulationsdotgov"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pak")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"judgelord/regulationsdotgov"</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://judgelord.github.io/regulationsdotgov/">regulationsdotgov</a></span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -70,33 +67,17 @@
 <h2 id="metadata">Metadata<a class="anchor" aria-label="anchor" href="#metadata"></a>
 </h2>
 <p>Regulations.gov metadata is organized in a hierarchical database.</p>
-<ul>
-<li>Agencies
-<ul>
-<li>Dockets are “folders” where agencies keep documents for each policymaking process (including rulemaking and non-rulemaking dockets)
-<ul>
-<li>Documents (including proposed rules, rules, and supplementary materials)
-<ul>
-<li>Comments on those documents (high-level metadata)
-<ul>
-<li>Comment Details for each comment (detailed metadata)</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<ul><li>Agencies<ul><li>Dockets are “folders” where agencies keep documents for each policymaking process (including rulemaking and non-rulemaking dockets)<ul><li>Documents (including proposed rules, rules, and supplementary materials)<ul><li>Comments on those documents (high-level metadata)<ul><li>Comment Details for each comment (detailed metadata)</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
 <p>The <code>regulationsdotgov</code> package is organized with a parallel set of functions to retrieve metadata:</p>
 <div class="section level4">
 <h4 id="get-dockets-from-an-agency">Get dockets from an agency<a class="anchor" aria-label="anchor" href="#get-dockets-from-an-agency"></a>
 </h4>
-<ul>
-<li>
-<code>get_dockets("[agency_acronym]")</code> retrieves dockets for an agency (see official acronyms on regulations.gov)</li>
-</ul>
+<ul><li>
+<code>get_dockets("[agency_acronym]")</code> retrieves dockets for an agency (see official acronyms on regulations.gov)</li></ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># you need an API key</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"~/api-key.R"</span><span class="op">)</span></span>
@@ -105,34 +86,32 @@
 <span><span class="va">FBI_dockets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dockets.html">get_dockets</a></span><span class="op">(</span><span class="st">"FBI"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">FBI_dockets</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">data</span> <span class="co"># FIXME we should not need the [[1]]$data when this no longer returns a list</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#&gt;               id    type attributes.docketType attributes.lastModifiedDate attributes.highlightedContent attributes.agencyId</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; 1  FBI-2024-0001 dockets            Rulemaking        2024-07-26T09:29:34Z                            NA                 FBI</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; 2  FBI-2023-0001 dockets            Rulemaking        2024-01-26T09:17:09Z                            NA                 FBI</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; 3 FBI_FRDOC_0001 dockets            Rulemaking        2023-08-25T08:08:48Z                            NA                 FBI</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 4  FBI-2013-0001 dockets            Rulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 5  FBI-2008-0001 dockets            Rulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 6  FBI-2008-0003 dockets         Nonrulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 7  FBI-2016-0001 dockets            Rulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; 8  FBI-2008-0002 dockets            Rulemaking        2014-11-05T13:55:47Z                            NA                 FBI</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; 9  FBI-2011-0001 dockets            Rulemaking        2011-11-08T11:21:06Z                            NA                 FBI</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;                                                                                                    attributes.title attributes.objectId                                                  self</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 1 Bipartisan Safer Communities Act -- Access to Records of Stolen Firearms in the National Crime Information Center    0b000064865d93e3  https://api.regulations.gov/v4/dockets/FBI-2024-0001</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 2                                   Child Protection Improvements Act Criteria for Designated Entity Determinations    0b00006485f05dad  https://api.regulations.gov/v4/dockets/FBI-2023-0001</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 3                                                                            Recently Posted FBI Rules and Notices.    0b00006481939821 https://api.regulations.gov/v4/dockets/FBI_FRDOC_0001</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 4                                                              National Instant Criminal Background\r\nCheck System    0b000064811e5c8c  https://api.regulations.gov/v4/dockets/FBI-2013-0001</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 5                                                      FBI Criminal Justice Information Services Division User Fees    0b0000648062f3e1  https://api.regulations.gov/v4/dockets/FBI-2008-0001</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 6                                     FBI Records Management Division National Name Check Program Section User Fees    0b000064807284a0  https://api.regulations.gov/v4/dockets/FBI-2008-0003</span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 7                                                                     National Environmental Policy Act\nProcedures    0b0000648201ffea  https://api.regulations.gov/v4/dockets/FBI-2016-0001</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 8                                                          National Motor Vehicle Title Information System (NMVTIS)    0b0000648071e23f  https://api.regulations.gov/v4/dockets/FBI-2008-0002</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 9                                                  Federal Bureau of Investigation Anti-Piracy Warning Seal Program    0b00006480f1cd29  https://api.regulations.gov/v4/dockets/FBI-2011-0001</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               id    type attributes.docketType attributes.lastModifiedDate attributes.highlightedContent attributes.agencyId</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  FBI-2024-0001 dockets            Rulemaking        2024-07-26T09:29:34Z                            NA                 FBI</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  FBI-2023-0001 dockets            Rulemaking        2024-01-26T09:17:09Z                            NA                 FBI</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 FBI_FRDOC_0001 dockets            Rulemaking        2023-08-25T08:08:48Z                            NA                 FBI</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  FBI-2013-0001 dockets            Rulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  FBI-2008-0001 dockets            Rulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  FBI-2008-0003 dockets         Nonrulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7  FBI-2016-0001 dockets            Rulemaking        2021-05-02T01:06:49Z                            NA                 FBI</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8  FBI-2008-0002 dockets            Rulemaking        2014-11-05T13:55:47Z                            NA                 FBI</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9  FBI-2011-0001 dockets            Rulemaking        2011-11-08T11:21:06Z                            NA                 FBI</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                                                                                                    attributes.title attributes.objectId                                                  self</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Bipartisan Safer Communities Act -- Access to Records of Stolen Firearms in the National Crime Information Center    0b000064865d93e3  https://api.regulations.gov/v4/dockets/FBI-2024-0001</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2                                   Child Protection Improvements Act Criteria for Designated Entity Determinations    0b00006485f05dad  https://api.regulations.gov/v4/dockets/FBI-2023-0001</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                                                                            Recently Posted FBI Rules and Notices.    0b00006481939821 https://api.regulations.gov/v4/dockets/FBI_FRDOC_0001</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4                                                              National Instant Criminal Background\r\nCheck System    0b000064811e5c8c  https://api.regulations.gov/v4/dockets/FBI-2013-0001</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5                                                      FBI Criminal Justice Information Services Division User Fees    0b0000648062f3e1  https://api.regulations.gov/v4/dockets/FBI-2008-0001</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6                                     FBI Records Management Division National Name Check Program Section User Fees    0b000064807284a0  https://api.regulations.gov/v4/dockets/FBI-2008-0003</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7                                                                     National Environmental Policy Act\nProcedures    0b0000648201ffea  https://api.regulations.gov/v4/dockets/FBI-2016-0001</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8                                                          National Motor Vehicle Title Information System (NMVTIS)    0b0000648071e23f  https://api.regulations.gov/v4/dockets/FBI-2008-0002</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9                                                  Federal Bureau of Investigation Anti-Piracy Warning Seal Program    0b00006480f1cd29  https://api.regulations.gov/v4/dockets/FBI-2011-0001</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="get-documents-from-a-docket-folder">Get documents from a docket folder<a class="anchor" aria-label="anchor" href="#get-documents-from-a-docket-folder"></a>
 </h4>
-<ul>
-<li>
-<code>get_documents("[docket_id]")</code> retrieves documents for a docket</li>
-</ul>
+<ul><li>
+<code>get_documents("[docket_id]")</code> retrieves documents for a docket</li></ul>
 </div>
 <div class="section level4">
 <h4 id="get-metadata-for-comments-on-a-document-or-docket">Get metadata for comments on a document or docket<a class="anchor" aria-label="anchor" href="#get-metadata-for-comments-on-a-document-or-docket"></a>
@@ -152,22 +131,16 @@
 <h2 id="search">Search<a class="anchor" aria-label="anchor" href="#search"></a>
 </h2>
 <p>The package also contains functions to use the API’s search function to search the text of documents or comments:</p>
-<ul>
-<li><code>get_searchTerm(searchTerm = "[searchTerm]", documents = c("documents", "comments"), agency_acronym = c("all", "[agency_acronym]"), docket_id = c("all", "[docket_id]"), document_id = c("all", "[document_id]")  )</code></li>
-</ul>
+<ul><li><code>get_searchTerm(searchTerm = "[searchTerm]", documents = c("documents", "comments"), agency_acronym = c("all", "[agency_acronym]"), docket_id = c("all", "[docket_id]"), document_id = c("all", "[document_id]")  )</code></li></ul>
 </div>
 <div class="section level2">
 <h2 id="download">Download<a class="anchor" aria-label="anchor" href="#download"></a>
 </h2>
 <p>Finally, using URLs returned from <code><a href="reference/get_documents.html">get_documents()</a></code> and <code>get_comment_details()</code>, we can download files (e.g., pdfs)</p>
-<ul>
-<li>
-<code>download_regulationsdotgov("[url]")</code> saves local copies of desired files in a standard file structure mirroring that above in a “files” folder: “files/agency_acronym/docket_id/document_id/document_name.extension” (e.g., “files/ACF/ACF-2009-0005/ACF-2009-0005-0018_1.doc” is a public comment on ACF Notice ACF-2009-0005-0002. This notice is located at “files/ACF/ACF-2009-0005/ACF-2009-0005-0002.pdf”)</li>
-</ul>
+<ul><li>
+<code>download_regulationsdotgov("[url]")</code> saves local copies of desired files in a standard file structure mirroring that above in a “files” folder: “files/agency_acronym/docket_id/document_id/document_name.extension” (e.g., “files/ACF/ACF-2009-0005/ACF-2009-0005-0018_1.doc” is a public comment on ACF Notice ACF-2009-0005-0002. This notice is located at “files/ACF/ACF-2009-0005/ACF-2009-0005-0002.pdf”)</li></ul>
 <p>To specify your own file structure, simply use the base download function</p>
-<ul>
-<li><code>download.file(url = "[url]", destfile = "[path]")</code></li>
-</ul>
+<ul><li><code>download.file(url = "[url]", destfile = "[path]")</code></li></ul>
 </div>
 <div class="section level2">
 <h2 id="important-notes">Important notes<a class="anchor" aria-label="anchor" href="#important-notes"></a>
