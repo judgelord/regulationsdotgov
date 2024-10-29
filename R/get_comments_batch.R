@@ -24,7 +24,7 @@ get_comments_batch <- function(commentOnId,
                                   api_key)
 
     # map GET function over pages
-    result <- httr::GET(i)
+    result <- httr::GET(path)
 
     # report result status
     status <- result$status_code
@@ -57,7 +57,7 @@ get_comments_batch <- function(commentOnId,
     #)
 
     if(status == 200){
-      content <- fromJSON(rawToChar(result$content))
+      content <- jsonlite::fromJSON(rawToChar(result$content))
       metadata[[i]] <- content
     }
 

@@ -11,7 +11,7 @@ make_path_commentOnId <- function(commentOnId,
          "filter[commentOnId]=", commentOnId, "&",
          "filter[lastModifiedDate][le]=", format_date(lastModifiedDate), "&", #less than or equal to (vs [ge] in the api docs)
          "page[size]=250", "&",
-         "page[number]=", page, "&", #FIXME replace with 2 with 20 when done testing
+         "page[number]=", page, "&", 
          "sort=-lastModifiedDate,documentId", "&",
          "api_key=", api_key)
 }

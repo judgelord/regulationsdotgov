@@ -28,7 +28,7 @@ get_dockets <- function(agency,
       
       # Append next batch to metadata
       metadata <- suppressMessages(
-        bind_rows(metadata, nextbatch)
+        dplyr::bind_rows(metadata, nextbatch)
       )
       
       message(paste(" = ", nrow(metadata)))

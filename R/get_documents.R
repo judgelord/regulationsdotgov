@@ -8,7 +8,7 @@ get_documents <- function(docketId,
   # Fetch the initial 5k and establish the base dataframe
   metadata <- get_documents_batch(docketId,
                                   lastModifiedDate,
-                                  api_keys = keys)
+                                  api_keys = api_keys)
 
   if(nrow(metadata) == 0){
     metadata <- tibble(lastpage = TRUE)
@@ -26,7 +26,7 @@ get_documents <- function(docketId,
 
     # Append next batch to comments
     metadata <- suppressMessages(
-      full_join(metadata, nextbatch)
+      dplyr::full_join(metadata, nextbatch)
     )
 
     message(paste(" = ", nrow(metadata)))
