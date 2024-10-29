@@ -4,7 +4,7 @@ library(httr)
 library(jsonlite)
 library(magrittr)
 
-documents <- get_documents("EPA-HQ-OAR-2021-0317")
+documents <- get_documents("EPA-HQ-OAR-2021-0317", api_keys = api_keys)
 documents |> count(documentType)
 
 documents |> filter(documentType == "Proposed Rule") |> select(commentEndDate, withdrawn, subtype, objectId)
@@ -23,8 +23,14 @@ d <- documents |>
  c %<>% left_join(d)
 
 
+# Testing objectId vs documentId 
+ 
+objectId <- "090000648551e28a"
+documentId <- "EPA-HQ-OAR-2021-0317-1460"
 
+c <- get_commentsOnId(commentOnId = objectId, api_keys = api_keys)
 
+c2 <- get_commentsOnId(commentOnId = documentId, api_keys = api_keys)
 
 
 

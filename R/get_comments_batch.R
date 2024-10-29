@@ -1,7 +1,3 @@
-# Function to grab metadata for the first 5,000 comments on a document
-
-
-
 #' @keywords internal
 
 get_comments_batch <- function(commentOnId,
