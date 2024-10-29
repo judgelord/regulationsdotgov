@@ -224,7 +224,7 @@ save_comments <- function(docket){
            commentOnId = objectId,
            document_title = title) |>
     #FIXME not sure if a 0 comment document was the source of the error I got
-    drop_na(commentStartDate)
+    filter(!is.na(commentStartDate)) # trying to get away from using drop_na in tidyr
 
 
   # get comments
