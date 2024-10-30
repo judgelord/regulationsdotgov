@@ -13,8 +13,10 @@ Get data from regulations.gov
 You can install the development version of regulationsdotgov from
 [GitHub](https://github.com/) with:
 
-    # install.packages("pak")
-    pak::pak("judgelord/regulationsdotgov")
+``` r
+if (!requireNamespace('pak')) install.packages('pak')
+pak::pak("judgelord/regulationsdotgov")
+```
 
 ``` r
 library(regulationsdotgov)
@@ -24,14 +26,16 @@ library(regulationsdotgov)
 
 Regulations.gov metadata is organized in a hierarchical database.
 
--   Agencies
-    -   Dockets are “folders” where agencies keep documents for each
-        policymaking process (including rulemaking and non-rulemaking
-        dockets)
-        -   Documents (including proposed rules, rules, and
-            supplementary materials)
-            -   Comments on those documents (high-level metadata)
-                -   Comment Details for each comment (detailed metadata)
+**Agencies**
+  ¦ 
+  ¦-- **Dockets** are “folders” where agencies keep documents for each
+        ¦     policymaking process (including rulemaking and non-rulemaking dockets)
+        ¦
+        ¦-- **Documents** (including proposed rules, rules, and supplementary materials)
+              ¦  
+              ¦-- **Comments** on those documents (high-level metadata)
+                    ¦  
+                    ¦-- **Comment Details** for each comment (detailed metadata)
 
 The `regulationsdotgov` package is organized with a parallel set of
 functions to retrieve metadata:
