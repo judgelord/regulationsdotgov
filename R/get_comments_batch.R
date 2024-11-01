@@ -69,7 +69,7 @@ get_comments_batch <- function(commentOnId,
       api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
       api_key <- api_keys[1]
       #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
-      message(paste("Rotating to api key ending in", api_key |> str_replace(".{35}", "...")))
+      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
 
       Sys.sleep(.60)
     }
@@ -86,7 +86,7 @@ get_comments_batch <- function(commentOnId,
 
   # if there was none, make an empty dataframe
   if(nrow(d)==0){
-    d <- tibble(lastpage = TRUE)
+    d <- dplyr::tibble(lastpage = TRUE)
   }
 
   # add back in the id for the document being commented on

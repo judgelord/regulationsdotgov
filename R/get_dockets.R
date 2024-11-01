@@ -14,7 +14,7 @@ get_dockets <- function(agency,
     
     # Make a near-empty dataframe if the results are empty
     if (nrow(metadata) == 0) {
-      metadata <- tibble(lastpage = TRUE)
+      metadata <- dplyr::tibble(lastpage = TRUE)
     }
     
     # Loop until last page is TRUE
