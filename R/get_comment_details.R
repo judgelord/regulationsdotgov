@@ -19,8 +19,8 @@ get_comment_details <- function(id,
   #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
   # a default for possibly to return if the call fails
   path <- make_path_comment_details(unique_ids[1], api_keys[1])
-  result_init <- GET(path)
-  content_init <- fromJSON(rawToChar(result_init$content))
+  result_init <- httr::GET(path)
+  content_init <- jsonlite::fromJSON(rawToChar(result_init$content))
   content_init$data$id <- NULL
 
 
@@ -30,12 +30,12 @@ get_comment_details <- function(id,
   #FIXME batch this by 5k, saving to a temp file
   content <- purrr::map(unique_ids,
                         api_keys = api_keys,
-                        possibly(get_comment_details_content,
+                        purrr::possibly(get_comment_details_content,
                                  otherwise = content_init) # FIXME replace with NULL, and then drop NULLs before next step? We might also be able to try the failed ones again.
   )
 
   # nulls are 404 errors on comment ids
-  nulls <- purrr::map(content, ~.x$data$id) |> map_lgl(is.null )
+  nulls <- purrr::map(content, ~.x$data$id) |> purrr::map_lgl(is.null )
 
   if( sum(nulls) > 0 ){
   message(paste("404 error:", paste(id[nulls], collapse = ",")))
@@ -45,9 +45,9 @@ get_comment_details <- function(id,
   content <- content[!nulls]
 
   # note that document call return attachment file names in attributes, but comments are in included
-  metadata <- purrr::map_dfr(content, ~.x |> pluck("data", "attributes")) |> # purrr::map_dfr(content, ~.x$data$attributes) |>
-    select(-starts_with("display")) |>
-    distinct()
+  metadata <- purrr::map_dfr(content, ~.x |> purrr::pluck("data", "attributes")) |> # purrr::map_dfr(content, ~.x$data$attributes) |>
+    dplyr::select(-starts_with("display")) |>
+    dplyr::distinct()
 
   #FIXME ISSUE #6
   # add id back in (we could just use the ids supplied to the function,  but the API returns more than one row for a single supplied document ID (at least for documents other than comments, it seems). I am hoping that by extracting it back out of the result, we get a vector of the correct length)
@@ -69,13 +69,13 @@ get_comment_details <- function(id,
   # ids <- modify(content, ~ifelse(is.null(.x), NA, .x) ) %>% .[[4872]]  #map_chr(content, ~.x$data$id)
 
   # ids <- purrr::map(content, ~.x$data$id) |> as.character()
-  ids <- map_chr(content, ~.x |> pluck("data", "id"))
+  ids <- purrr::map_chr(content, ~.x |> purrr::pluck("data", "id"))
 
   metadata$id <- ids  #unique()
 
   #extract attachment file urls from included$attributes
   # attachments <- purrr::map_dfr(content, ~.x$included$attributes$fileFormats)
-  attachments <- purrr::map(content, ~.x |> pluck("included", "attributes", "fileFormats"))
+  attachments <- purrr::map(content, ~.x |> purrr::pluck("included", "attributes", "fileFormats"))
 
   #TODO REPLACE NULL WITH A DATA FRAME OF NAs SO THAT THIS WORKS?
   # attachments <- map(attachments, flatten) |> map(as.data.frame)

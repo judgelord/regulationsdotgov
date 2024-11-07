@@ -33,6 +33,11 @@ d <- documents |>
 objectId <- "090000648551e28a"
 documentId <- "EPA-HQ-OAR-2021-0317-1460"
 
+library(purrr)
+library(dplyr)
+
+c <- map_dfr(check, get_commentsOnId, api_keys = api_keys)
+
 c <- get_commentsOnId(commentOnId = objectId, api_keys = api_keys)
 
 c2 <- get_commentsOnId(commentOnId = documentId, api_keys = api_keys)
