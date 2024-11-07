@@ -8,7 +8,7 @@ get_comment_details <- function(id,
                                 api_keys) {
 
   if(length(id) != length(id |> unique()) ){
-    message("Duplicate ids dropped to save API calls (result will be shorter than length of id vector)")
+    message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
   }
 
   unique_ids <- unique(id)
