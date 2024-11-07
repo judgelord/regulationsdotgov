@@ -6,7 +6,6 @@ get_documents_batch <- function(docketId,
 
   api_key <- api_keys[1]
 
-  # call the make path function to make paths for the first 20 pages of 250 results each
   i <- 1
   metadata <- list()
   
@@ -19,7 +18,6 @@ get_documents_batch <- function(docketId,
                                   page = i,
                                   api_key)
     
-    # map GET function over pages
     result <- httr::GET(path)
     
     # report result status
