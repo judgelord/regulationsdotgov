@@ -13,83 +13,90 @@ get_searchTerm_batch <- function(searchTerm,
                                  documents,
                                  #commentOnId, #TODO feature to search comments on a specific docket or document
                                  lastModifiedDate,
-                                 apikeys
+                                 api_keys
                                  ){
 
   api_key <- apikeys[1]
-
+  
+  i <- 1
+  metadata <- list()
+  
   message(paste0("Searching for ", documents,
                  ' containing "', searchTerm,
                  '" posted before ',lastModifiedDate)
           )
+  
+  for (i in 1:20){
+    
+    message(paste("Page", i))
 
-  # call the make path function to make paths for the first 20 pages of 250 results each
-  path <- make_path_searchTerm(searchTerm,
+    path <- make_path_searchTerm(searchTerm,
                                documents,
-                               lastModifiedDate)
+                               lastModifiedDate, 
+                               page = i,
+                               api_key)
 
 
-  # map GET function over pages
-  result <- purrr::map(path, GET)
+    result <- httr::GET(path)
+    
+    # report result status
+    status <- result$status_code
+    url <- result$url
 
-  # report result status
-  status_codes <<- map(result, status_code)
-  status <<- status_codes |> tail(1) %>% as.numeric()
-
-  #FIXME TRY FAILED ATTEMPTS AGAIN
-
-  # message with error codes if not successful
-  if(status != 200){
-    message(paste(Sys.time() |> format("%X"),
-                  "| Status", status,
-                  "| URL:", result[[20]][1]$url,
-                  "Prior codes:", paste(status_codes, collapse = ","))
-            )
-
-    # small pause to give user a chance to cancel
-    Sys.sleep(6)
-  }
-
-  # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is less than 20 (since we call 20 pages at a time)
-  remaining <<-  map(result, headers) |>
-    tail(1) |>
-    pluck(1, "x-ratelimit-remaining") |>
-    as.numeric()
-
-  if(remaining < 20){
-
-    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
-
-    # ROTATE KEYS
-      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
-      api_key <- api_keys[1]
-      message(paste("Rotating api key to", api_key))
-
-    Sys.sleep(.60)
-  }
-
-
-  # map the content of successful api results into a list
-  metadata <- purrr::map_if(result, ~ status_code(.x) == 200, ~fromJSON(rawToChar(.x$content)))
-
-  # print unsuccessful api calls (might be helpful to know which URLs are failing)
-
-  purrr::walk2(result,
-               path,
-               function(response, url) {
-                 if (status_code(response) != 200) {
-                   message(paste(status_code(response),
-                                 "Failed URL:",
-                                 url)
+   #FIXME TRY FAILED ATTEMPTS AGAIN
+  
+   # message with error codes if not successful
+   if(status != 200){
+     message(paste(Sys.time() |> format("%X"),
+                   "| Status", status,
+                   "| Failed URL:", url
+                   #,"Prior codes:", paste(status_codes, collapse = ",") 
+                   #TODO add back in prior codes
                    )
-                 }
-               }
-  )
+             )
+  
+     # small pause to give user a chance to cancel
+     Sys.sleep(60)
+   }
+    
+  if(status == 200){
+      content <- jsonlite::fromJSON(rawToChar(result$content))
+      metadata[[i]] <- content
+    }
 
+    # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
+    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
+
+    if(remaining < 20){
+      
+      message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit |", remaining, "remaining"))
+      
+      # ROTATE KEYS
+      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
+      api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
+      api_key <- api_keys[1]
+      #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
+      message(paste("Rotating to api key ending in", api_key |> str_replace(".{35}", "...")))
+      
+      Sys.sleep(.60)
+    }
+
+    content$meta$lastPage
+    
+    if(!is.null(content$meta$lastPage)){
+      if(content$meta$lastPage == TRUE){break} # breaks loop when last page is reached
+    }
+  }
+  
   # map the list into a dataframe with the information we care about
-  d <- map_dfr(metadata, make_dataframe)
-
-  # add back in the id for the document being commented on
+  d <- purrr::map_dfr(metadata, make_dataframe)
+  
+  # if there was none, make an empty dataframe
+  if(nrow(d)==0){
+    d <- tibble(lastpage = TRUE)
+  }
+  
+  # add back in the search term 
   d$searchTerm <- searchTerm
 
   return(d)
