@@ -30,9 +30,9 @@ get_searchTerm <- function(searchTerm,
                                     documents,
                                     lastModifiedDate = tail(metadata$lastModifiedDate,
                                                             n = 1) |>
-                                      str_replace("T", "%20") |>
-                                      str_remove_all("[A-Z]"),
-                                    apikeys = api_keys
+                                      stringr::str_replace("T", "%20") |>
+                                      stringr::str_remove_all("[A-Z]"),
+                                    api_keys = api_keys
                                     )
 
     message(paste(nrow(metadata), "+", nrow(nextbatch)))

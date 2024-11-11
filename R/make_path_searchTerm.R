@@ -9,7 +9,7 @@ make_path_searchTerm <- function(searchTerm,
          "/v4/",
          ifelse(documents == "comments", "comments", "documents"),
          "?",
-         "&filter[searchTerm]=",  str_c("%22", searchTerm, "%22") |> str_replace_all(" ", "%2B"), "&",
+         "&filter[searchTerm]=",  stringr::str_c("%22", searchTerm, "%22") |> stringr::str_replace_all(" ", "%2B"), "&",
          "filter[lastModifiedDate][le]=", format_date(lastModifiedDate), "&", #less than or equal to (vs [ge] in the api docs)
          "page[size]=250", "&",
          "page[number]=", page, "&", 
