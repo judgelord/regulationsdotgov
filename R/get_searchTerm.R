@@ -34,17 +34,17 @@ get_searchTerm <- function(searchTerm,
                                       stringr::str_remove_all("[A-Z]"),
                                     api_keys = api_keys
                                     )
-
+    
     message(paste(nrow(metadata), "+", nrow(nextbatch)))
     
     metadata <- suppressMessages(
-      
-      dplyr::full_join(metadata, nextbatch))
+      dplyr::bind_rows(metadata, nextbatch)
+      )
     
     message(paste(" = ", nrow(metadata)))
-    
     }
-  },error = function(e) {
+    
+  }, error = function(e) {
     message("An error occurred: ", e$message)
     if (exists("metadata")) {
       save(metadata, file = metadata_temp)
