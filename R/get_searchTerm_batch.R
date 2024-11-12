@@ -6,17 +6,17 @@ if(F){
   #commentOnId = "09000064856107a5" # this is https://www.regulations.gov/document/OMB-2023-0001-0001
   commentOnId = "090000648592bfcc" #https://www.regulations.gov/document/OMB-2023-0001-12471 - less pages / calls
   # commentOnId = "09000064824e36b7"
-}
+  
+  }
 
 # the batch function
 get_searchTerm_batch <- function(searchTerm,
                                  documents,
                                  #commentOnId, #TODO feature to search comments on a specific docket or document
-                                 lastModifiedDate,
-                                 api_keys
-                                 ){
+                                 lastModifiedDate = Sys.time(),
+                                 api_keys){
 
-  api_key <- apikeys[1]
+  api_key <- api_keys[1]
   
   i <- 1
   metadata <- list()
@@ -102,3 +102,11 @@ get_searchTerm_batch <- function(searchTerm,
   return(d)
 }
 
+# FOR TESTING
+if(F){
+  
+  get_searchTerm_batch(searchTerm, 
+                       documents, 
+                       api_keys = api_keys)
+  
+}

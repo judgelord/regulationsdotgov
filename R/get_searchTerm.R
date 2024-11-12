@@ -15,8 +15,8 @@ get_searchTerm <- function(searchTerm,
     metadata <- get_searchTerm_batch(searchTerm = searchTerm,
                                    documents = documents,
                                    #commentOnId, #TODO feature to search comments on a specific docket or document
-                                   lastModifiedDate,
-                                   apikeys = api_keys)
+                                   lastModifiedDate = Sys.time(),
+                                   api_keys = api_keys)
     
     if(nrow(metadata) == 0){
       metadata <- dplyr::tibble(lastpage = TRUE)

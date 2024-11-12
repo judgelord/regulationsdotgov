@@ -7,6 +7,10 @@ if(F){
   d <- get_searchTerm(searchTerm) # documents, the default
 
   d <- get_searchTerm(searchTerm, documents = "comments") # comments
+  
+  d <- get_searchTerm(searchTerm = "abolition", 
+                 documents = "documents", 
+                 api_keys = api_keys)
 
 
 
