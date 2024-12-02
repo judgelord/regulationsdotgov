@@ -53,7 +53,6 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="regulationsdotgov">regulationsdotgov<a class="anchor" aria-label="anchor" href="#regulationsdotgov"></a>
 </h1></div>
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 <p>Get data from regulations.gov</p>
 <!-- badges: start -->
 <!-- badges: end -->
@@ -108,8 +107,9 @@
 <code>get_dockets("[agency_acronym]")</code> retrieves dockets for an agency (see official acronyms on regulations.gov)</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># you need an API key</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"~/api-keys.R"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># You need an API key, you can register for one at https://open.gsa.gov/api/regulationsgov/.</span></span>
+<span></span>
+<span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="st">"123tHiSkEyIsFaKe"</span></span>
 <span></span>
 <span><span class="co"># get FBI dockets</span></span>
 <span><span class="va">FBI_dockets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_dockets.html">get_dockets</a></span><span class="op">(</span>agency <span class="op">=</span> <span class="st">"FBI"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
@@ -138,67 +138,78 @@
 <code>get_documents("[docketId]")</code> retrieves documents for a docket</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">FBI_docket_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_documents.html">get_documents</a></span><span class="op">(</span>docketId <span class="op">=</span> <span class="st">"FBI-2024-0001"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">FBI_docket_2013</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_documents.html">get_documents</a></span><span class="op">(</span>docketId <span class="op">=</span> <span class="st">"FBI-2013-0001"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">FBI_docket_2024</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(FBI_docket_2024)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># A tibble: 1 × 16</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  documentType lastModifiedDate    highlightedContent frDocNum withdrawn agencyId commentEndDate title postedDate</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>        <span class="er">&lt;</span>chr<span class="sc">&gt;</span>               <span class="er">&lt;</span>chr<span class="sc">&gt;</span>              <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>chr<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     </span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="dv">1</span> Rule         <span class="dv">2024-07-26</span>T01<span class="sc">:</span><span class="dv">01</span><span class="sc">:</span><span class="dv">2</span>… <span class="st">""</span>                 <span class="dv">2024-14</span>… <span class="cn">FALSE</span>     FBI      <span class="dv">2024-08-01</span>T03… Bipa… <span class="dv">2024-07-0</span>…</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co"># ℹ 7 more variables: docketId &lt;chr&gt;, subtype &lt;lgl&gt;, commentStartDate &lt;chr&gt;, openForComment &lt;lgl&gt;,</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#   objectId &lt;chr&gt;, id &lt;chr&gt;, lastpage &lt;lgl&gt;</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">FBI_docket_2013</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(FBI_docket_2013)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># A tibble: 2 × 17</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  documentType  lastModifiedDate  highlightedContent frDocNum withdrawn agencyId allowLateComment commentEndDate title postedDate docketId subtype</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>         <span class="er">&lt;</span>chr<span class="sc">&gt;</span>             <span class="er">&lt;</span>chr<span class="sc">&gt;</span>              <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>            <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>chr<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>      <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>  </span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="dv">1</span> Proposed Rule <span class="dv">2013-03-30</span>T02<span class="sc">:</span><span class="dv">01</span>… <span class="st">""</span>                 <span class="dv">2013-01</span>… <span class="cn">FALSE</span>     FBI      <span class="cn">FALSE</span>            <span class="dv">2013-03-30</span>T03… Nati… <span class="dv">2013-01-2</span>… FBI<span class="dv">-201</span>… <span class="cn">NA</span>     </span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="dv">2</span> Notice        <span class="dv">2013-03-22</span>T20<span class="sc">:</span><span class="dv">22</span>… <span class="st">""</span>                 <span class="cn">NA</span>       <span class="cn">FALSE</span>     FBI      <span class="cn">FALSE</span>            <span class="cn">NA</span>             Dock… <span class="dv">2013-03-2</span>… FBI<span class="dv">-201</span>… <span class="cn">NA</span>     </span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co"># ℹ 5 more variables: commentStartDate &lt;chr&gt;, openForComment &lt;lgl&gt;, objectId &lt;chr&gt;, id &lt;chr&gt;, lastpage &lt;lgl&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">FBI_docket_2024</span><span class="op">$</span><span class="va">objectId</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="sc">&gt;</span> FBI_docket_2024<span class="sc">$</span>objectId</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"09000064865d514a"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Although the docket contains two documents, only the 'Proposed Rule' had a comment period, so we'll use the objectId for that document to collect comments.</span></span>
+<span><span class="va">FBI_docket_2013</span><span class="op">$</span><span class="va">objectId</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="sc">&gt;</span> FBI_docket_2013<span class="sc">$</span>objectId[<span class="dv">1</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"09000064811daace"</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="get-metadata-for-comments-on-a-document-or-docket">Get metadata for comments on a document or docket<a class="anchor" aria-label="anchor" href="#get-metadata-for-comments-on-a-document-or-docket"></a>
+<h4 id="get-metadata-for-all-comments-on-a-document">Get metadata for all comments on a document<a class="anchor" aria-label="anchor" href="#get-metadata-for-all-comments-on-a-document"></a>
 </h4>
 <p><code>get_commentsOnId("[objectId]")</code> retrieves comments on a specific document (e.g., a specific proposed rule)</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">commentsOn_FBI_docket_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_commentsOnId.html">get_commentsOnId</a></span><span class="op">(</span>commentOnId <span class="op">=</span> <span class="st">"09000064865d514a"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">commentsOn_FBI_docket_2013</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_commentsOnId.html">get_commentsOnId</a></span><span class="op">(</span>commentOnId <span class="op">=</span> <span class="st">"09000064811daace"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># There is only one comment on this document </span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">commentsOn_FBI_docket_2024</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># A tibble: 1 × 11</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  documentType    lastModifiedDate highlightedContent withdrawn agencyId title objectId postedDate id    lastpage</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>           <span class="er">&lt;</span>chr<span class="sc">&gt;</span>            <span class="er">&lt;</span>chr<span class="sc">&gt;</span>              <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>      <span class="er">&lt;</span>chr<span class="sc">&gt;</span> <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>   </span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="dv">1</span> Public Submiss… <span class="dv">2024-07-26</span>T13<span class="sc">:</span><span class="dv">2</span>… <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comm… <span class="dv">0900006</span>… <span class="dv">2024-07-2</span>… FBI<span class="sc">-</span>… <span class="cn">TRUE</span>    </span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co"># ℹ 1 more variable: commentOnId &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="co"># There are 36 comments on this document, we can see the metadata for the first 6 below</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">commentsOn_FBI_docket_2013</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(commentsOn_FBI_docket_2013)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co"># A tibble: 6 × 11</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  documentType      lastModifiedDate     highlightedContent withdrawn agencyId title                objectId postedDate id    lastpage commentOnId</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>             <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                <span class="er">&lt;</span>chr<span class="sc">&gt;</span>              <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                <span class="er">&lt;</span>chr<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>      <span class="er">&lt;</span>chr<span class="sc">&gt;</span> <span class="er">&lt;</span>lgl<span class="sc">&gt;</span>    <span class="er">&lt;</span>chr<span class="sc">&gt;</span>      </span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="dv">1</span> Public Submission <span class="dv">2013-04-01</span>T17<span class="sc">:</span><span class="dv">16</span><span class="sc">:</span><span class="dv">07</span>Z <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comment on FR Doc <span class="co">#… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="dv">2</span> Public Submission <span class="dv">2013-04-01</span>T17<span class="sc">:</span><span class="dv">15</span><span class="sc">:</span><span class="dv">49</span>Z <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comment on FR Doc <span class="co">#… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="dv">3</span> Public Submission <span class="dv">2013-04-01</span>T17<span class="sc">:</span><span class="dv">15</span><span class="sc">:</span><span class="dv">25</span>Z <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comment on FR Doc <span class="co">#… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="dv">4</span> Public Submission <span class="dv">2013-04-01</span>T17<span class="sc">:</span><span class="dv">15</span><span class="sc">:</span><span class="dv">07</span>Z <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comment on FR Doc <span class="co">#… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="dv">5</span> Public Submission <span class="dv">2013-04-01</span>T17<span class="sc">:</span><span class="dv">14</span><span class="sc">:</span><span class="dv">34</span>Z <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comment on FR Doc <span class="co">#… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="dv">6</span> Public Submission <span class="dv">2013-04-01</span>T17<span class="sc">:</span><span class="dv">14</span><span class="sc">:</span><span class="dv">13</span>Z <span class="st">""</span>                 <span class="cn">FALSE</span>     FBI      Comment on FR Doc <span class="co">#… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">commentsOn_FBI_docket_2024</span><span class="op">$</span><span class="va">id</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="sc">&gt;</span> commentsOn_FBI_docket_2024<span class="sc">$</span>id</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"FBI-2024-0001-0002"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Now we'll store the id for each comment on the document </span></span>
+<span><span class="va">comments_to_collect</span> <span class="op">&lt;-</span> <span class="va">commentsOn_FBI_docket_2013</span><span class="op">$</span><span class="va">id</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">comments_to_collect</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">head</span>(comments_to_collect)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"FBI-2013-0001-0038"</span> <span class="st">"FBI-2013-0001-0037"</span> <span class="st">"FBI-2013-0001-0036"</span> <span class="st">"FBI-2013-0001-0035"</span> <span class="st">"FBI-2013-0001-0034"</span> <span class="st">"FBI-2013-0001-0033"</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="get-detailed-metadata-about-a-comment">Get detailed metadata about a comment<a class="anchor" aria-label="anchor" href="#get-detailed-metadata-about-a-comment"></a>
+<h4 id="get-detailed-metadata-about-individual-comments">Get detailed metadata about individual comments<a class="anchor" aria-label="anchor" href="#get-detailed-metadata-about-individual-comments"></a>
 </h4>
 <p><code>get_comment_details_content("[id]")</code> retrieves comments on a specific document (e.g., a specific proposed rule)</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">comment</span> <span class="op">&lt;-</span> <span class="fu">get_comment_details</span><span class="op">(</span>id <span class="op">=</span> <span class="st">"FBI-2024-0001-0002"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">comments</span> <span class="op">&lt;-</span> <span class="fu">get_comment_details</span><span class="op">(</span>id <span class="op">=</span> <span class="va">comments_to_collect</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># We retrieve 19 attributes for this single comment </span></span>
+<span><span class="co"># We retrieve 21 attributes for these 36 comments </span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">comment</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">comments</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">colnames</span>(comment)</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a> [<span class="dv">1</span>] <span class="st">"commentOn"</span>           <span class="st">"commentOnDocumentId"</span> <span class="st">"duplicateComments"</span>   <span class="st">"agencyId"</span>            <span class="st">"comment"</span>             <span class="st">"docketId"</span>           </span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a> [<span class="dv">7</span>] <span class="st">"documentType"</span>        <span class="st">"objectId"</span>            <span class="st">"modifyDate"</span>          <span class="st">"organization"</span>        <span class="st">"pageCount"</span>           <span class="st">"postedDate"</span>         </span>
 <span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>[<span class="dv">13</span>] <span class="st">"receiveDate"</span>         <span class="st">"title"</span>               <span class="st">"trackingNbr"</span>         <span class="st">"withdrawn"</span>           <span class="st">"openForComment"</span>      <span class="st">"id"</span>                 </span>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>[<span class="dv">19</span>] <span class="st">"attachments"</span>  </span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">comment</span><span class="op">$</span><span class="va">comment</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="sc">&gt;</span> comment<span class="sc">$</span>comment</span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"See attached file(s)"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Let's take a look a closer look at one of the comments. </span></span>
+<span><span class="va">comments</span><span class="op">$</span><span class="va">comment</span><span class="op">[</span><span class="fl">23</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="sc">&gt;</span> comments<span class="sc">$</span>comment[<span class="dv">23</span>]</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"Docket No. FBI 152, Proposal 1 should be approved to stem gang violence and prevent youth suicide on Indian reservations."</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># We can use the following attachments attribute to download the file(s)</span></span>
-<span><span class="va">comment</span><span class="op">$</span><span class="va">attachments</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="sc">&gt;</span> comment<span class="sc">$</span>attachments</span>
+<code class="sourceCode R"><span><span class="co"># We can use the following attachments attribute to download any file(s) that may accompany the comment. </span></span>
+<span><span class="va">comments</span><span class="op">$</span><span class="va">attachments</span><span class="op">[</span><span class="fl">23</span><span class="op">]</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="sc">&gt;</span> comments<span class="sc">$</span>attachments[<span class="dv">23</span>]</span>
 <span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>[[<span class="dv">1</span>]]</span>
 <span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>[[<span class="dv">1</span>]][[<span class="dv">1</span>]]</span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>                                                                fileUrl format   size</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="dv">1</span> https<span class="sc">:</span><span class="er">//</span>downloads.regulations.gov<span class="sc">/</span>FBI<span class="dv">-2024-0001-0002</span><span class="sc">/</span>attachment_1.pdf    pdf <span class="dv">101230</span></span></code></pre></div>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>                                                                 fileUrl format   size</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="dv">1</span> https<span class="sc">:</span><span class="er">//</span>downloads.regulations.gov<span class="sc">/</span>FBI<span class="dv">-2013-0001-0015</span><span class="sc">/</span>attachment_1.docx   docx <span class="dv">153789</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="dv">2</span>  https<span class="sc">:</span><span class="er">//</span>downloads.regulations.gov<span class="sc">/</span>FBI<span class="dv">-2013-0001-0015</span><span class="sc">/</span>attachment_1.pdf    pdf  <span class="dv">74106</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
