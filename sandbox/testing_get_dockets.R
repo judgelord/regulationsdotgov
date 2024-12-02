@@ -1,7 +1,8 @@
 # Testing get_dockets 
 
 if(F){
-  agency <- "FBI"
+  agency <- "EPA"
 
   n <- get_dockets(agency, api_keys = api_keys)
+
 }
