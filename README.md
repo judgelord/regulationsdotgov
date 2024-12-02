@@ -1,8 +1,6 @@
 # regulationsdotgov
 
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 Get data from regulations.gov
 
 <!-- badges: start -->
@@ -47,8 +45,9 @@ functions to retrieve metadata:
     (see official acronyms on regulations.gov)
 
 ``` r
-# you need an API key
-source("~/api-keys.R")
+# You need an API key, you can register for one at https://open.gsa.gov/api/regulationsgov/.
+
+api_keys <- "123tHiSkEyIsFaKe"
 
 # get FBI dockets
 FBI_dockets <- get_dockets(agency = "FBI", api_keys = api_keys)
@@ -79,62 +78,71 @@ FBI_dockets$id
 -   `get_documents("[docketId]")` retrieves documents for a docket
 
 ``` r
-FBI_docket_2024 <- get_documents(docketId = "FBI-2024-0001", api_keys = api_keys)
+FBI_docket_2013 <- get_documents(docketId = "FBI-2013-0001", api_keys = api_keys)
 
-head(FBI_docket_2024)
+head(FBI_docket_2013)
 ```
 
-    > head(FBI_docket_2024)
-    # A tibble: 1 × 16
-      documentType lastModifiedDate    highlightedContent frDocNum withdrawn agencyId commentEndDate title postedDate
-      <chr>        <chr>               <chr>              <chr>    <lgl>     <chr>    <chr>          <chr> <chr>     
-    1 Rule         2024-07-26T01:01:2… ""                 2024-14… FALSE     FBI      2024-08-01T03… Bipa… 2024-07-0…
-    # ℹ 7 more variables: docketId <chr>, subtype <lgl>, commentStartDate <chr>, openForComment <lgl>,
-    #   objectId <chr>, id <chr>, lastpage <lgl>
+    > head(FBI_docket_2013)
+    # A tibble: 2 × 17
+      documentType  lastModifiedDate  highlightedContent frDocNum withdrawn agencyId allowLateComment commentEndDate title postedDate docketId subtype
+      <chr>         <chr>             <chr>              <chr>    <lgl>     <chr>    <lgl>            <chr>          <chr> <chr>      <chr>    <lgl>  
+    1 Proposed Rule 2013-03-30T02:01… ""                 2013-01… FALSE     FBI      FALSE            2013-03-30T03… Nati… 2013-01-2… FBI-201… NA     
+    2 Notice        2013-03-22T20:22… ""                 NA       FALSE     FBI      FALSE            NA             Dock… 2013-03-2… FBI-201… NA     
+    # ℹ 5 more variables: commentStartDate <chr>, openForComment <lgl>, objectId <chr>, id <chr>, lastpage <lgl>
 
 ``` r
-FBI_docket_2024$objectId
+# Although the docket contains two documents, only the 'Proposed Rule' had a comment period, so we'll use the objectId for that document to collect comments.
+FBI_docket_2013$objectId[1]
 ```
 
-    > FBI_docket_2024$objectId
-    [1] "09000064865d514a"
+    > FBI_docket_2013$objectId[1]
+    [1] "09000064811daace"
 
-#### Get metadata for comments on a document or docket
+#### Get metadata for all comments on a document
 
 `get_commentsOnId("[objectId]")` retrieves comments on a specific
 document (e.g., a specific proposed rule)
 
 ``` r
-commentsOn_FBI_docket_2024 <- get_commentsOnId(commentOnId = "09000064865d514a", api_keys = api_keys)
+commentsOn_FBI_docket_2013 <- get_commentsOnId(commentOnId = "09000064811daace", api_keys = api_keys)
 
-# There is only one comment on this document 
-head(commentsOn_FBI_docket_2024)
+# There are 36 comments on this document, we can see the metadata for the first 6 below
+head(commentsOn_FBI_docket_2013)
 ```
 
-    # A tibble: 1 × 11
-      documentType    lastModifiedDate highlightedContent withdrawn agencyId title objectId postedDate id    lastpage
-      <chr>           <chr>            <chr>              <lgl>     <chr>    <chr> <chr>    <chr>      <chr> <lgl>   
-    1 Public Submiss… 2024-07-26T13:2… ""                 FALSE     FBI      Comm… 0900006… 2024-07-2… FBI-… TRUE    
-    # ℹ 1 more variable: commentOnId <chr>
+    > head(commentsOn_FBI_docket_2013)
+    # A tibble: 6 × 11
+      documentType      lastModifiedDate     highlightedContent withdrawn agencyId title                objectId postedDate id    lastpage commentOnId
+      <chr>             <chr>                <chr>              <lgl>     <chr>    <chr>                <chr>    <chr>      <chr> <lgl>    <chr>      
+    1 Public Submission 2013-04-01T17:16:07Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
+    2 Public Submission 2013-04-01T17:15:49Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
+    3 Public Submission 2013-04-01T17:15:25Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
+    4 Public Submission 2013-04-01T17:15:07Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
+    5 Public Submission 2013-04-01T17:14:34Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
+    6 Public Submission 2013-04-01T17:14:13Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
 
 ``` r
-commentsOn_FBI_docket_2024$id
+# Now we'll store the id for each comment on the document 
+comments_to_collect <- commentsOn_FBI_docket_2013$id
+
+head(comments_to_collect)
 ```
 
-    > commentsOn_FBI_docket_2024$id
-    [1] "FBI-2024-0001-0002"
+    > head(comments_to_collect)
+    [1] "FBI-2013-0001-0038" "FBI-2013-0001-0037" "FBI-2013-0001-0036" "FBI-2013-0001-0035" "FBI-2013-0001-0034" "FBI-2013-0001-0033"
 
-#### Get detailed metadata about a comment
+#### Get detailed metadata about individual comments
 
 `get_comment_details_content("[id]")` retrieves comments on a specific
 document (e.g., a specific proposed rule)
 
 ``` r
-comment <- get_comment_details(id = "FBI-2024-0001-0002", api_keys = api_keys)
+comments <- get_comment_details(id = comments_to_collect, api_keys = api_keys)
 
-# We retrieve 19 attributes for this single comment 
+# We retrieve 21 attributes for these 36 comments 
 
-colnames(comment)
+colnames(comments)
 ```
 
     > colnames(comment)
@@ -144,22 +152,24 @@ colnames(comment)
     [19] "attachments"  
 
 ``` r
-comment$comment
+# Let's take a look a closer look at one of the comments. 
+comments$comment[23]
 ```
 
-    > comment$comment
-    [1] "See attached file(s)"
+    > comments$comment[23]
+    [1] "Docket No. FBI 152, Proposal 1 should be approved to stem gang violence and prevent youth suicide on Indian reservations."
 
 ``` r
-# We can use the following attachments attribute to download the file(s)
-comment$attachments
+# We can use the following attachments attribute to download any file(s) that may accompany the comment. 
+comments$attachments[23]
 ```
 
-    > comment$attachments
+    > comments$attachments[23]
     [[1]]
     [[1]][[1]]
-                                                                    fileUrl format   size
-    1 https://downloads.regulations.gov/FBI-2024-0001-0002/attachment_1.pdf    pdf 101230
+                                                                     fileUrl format   size
+    1 https://downloads.regulations.gov/FBI-2013-0001-0015/attachment_1.docx   docx 153789
+    2  https://downloads.regulations.gov/FBI-2013-0001-0015/attachment_1.pdf    pdf  74106
 
 ## Search
 
