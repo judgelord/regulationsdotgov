@@ -2,88 +2,75 @@
 
 #' @keywords internal
 
-get_dockets_batch <- function(agency,
-                        lastModifiedDate,
-                        api_keys){
-
+get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
   api_key <- api_keys[1]
-
-  # call the make path function to make paths for the first 20 pages of 250 results each
-  i <- 1
+  
+  # Initialize list & temp file 
   metadata <- list()
   metadata_temp <- tempfile(fileext = ".rda")
   
-  tryCatch({
-
-  for (i in 1:20){
-    
+  for (i in 1:20) {
     message(paste("Page", i))
     
-    path <- make_path_dockets(agency,
-                              lastModifiedDate,
-                              page = i,
-                              api_key)
-
-    # map GET function over pages
+    # Build the API path and make the GET request
+    path <- make_path_dockets(agency, lastModifiedDate, page = i, api_key)
     result <- httr::GET(path)
-
-    # report result status
     status <- result$status_code
     url <- result$url
-
-    if(status != 200){
-      message(paste(Sys.time() |> format("%X"),
-                    "| Status", status,
-                    "| Failed URL:", url))
-
-      # small pause to give user a chance to cancel
-      Sys.sleep(60)
-      
-      result <- httr::GET(path)
-    }
-
-    if(status == 200){
-      content <- jsonlite::fromJSON(rawToChar(result$content))
-      metadata[[i]] <- content
-    }
-
-    # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
-    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
-
-    if(remaining < 2){
-
-      message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit, will continue after one minute |", remaining, "remaining"))
-
-      # ROTATE KEYS
-      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
-      api_key <- api_keys[1]
-      #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
-      message(paste("Rotating api key to", api_key))
-
-      Sys.sleep(.60)
+    
+    if (status != 200) {
+      message(paste(Sys.time() |> format("%X"), "| Status", status, "| Failed URL:", url))
+      Sys.sleep(60)  # Pause before retrying
+      next
     }
     
-    content$meta$lastPage
-
-    if(!is.null(content$meta$lastPage)){
-      if(content$meta$lastPage == TRUE){break} # breaks loop when last page is reached
+    # Parse and store the content if the status is 200
+  
+    metadata[[i]] <- jsonlite::fromJSON(rawToChar(result$content))
+    
+    # Extract rate limit and pause if necessary
+    remaining <- as.numeric(result$headers$`x-ratelimit-remaining`)
+    if (!is.na(remaining) && remaining < 2) {
+      message(paste("|", Sys.time() |> format("%X"), "| Hit rate limit, will continue after one minute |", remaining, "remaining"))
+      
+      # Rotate API keys
+      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))  # Update the global API keys
+      api_key <- api_keys[1]
+      message(paste("Rotating API key to", api_key))
+      
+      Sys.sleep(60)
+    }
+    
+    # Break loop if the last page is reached
+    if (!is.null(content$meta) && content$meta$lastPage == TRUE) {
+      break
     }
   }
-
-  d <- purrr::map_dfr(metadata, make_dataframe)
   
-  }, error = function(e) {
-    if (!is.null(metadata)) {
-      save(d, file = metadata_temp)
-      message("Partially retrieved metadata saved to: ", metadata_temp)
-    }
-  })
-  
-  # if there was none, make an empty dataframe
-  if(nrow(d)==0){
-    d <- tibble(lastpage = TRUE)
+  # Process metadata into a dataframe
+  if (length(metadata) > 0) {
+    d <- tryCatch({
+      purrr::map_dfr(metadata, make_dataframe)
+    }, error = function(e) {
+      message("Failed to process metadata into a dataframe: ", e$message)
+      NULL
+    })
+  } else {
+    d <- NULL
   }
-
-  return(d)
-
+  
+  # Save data if successful
+  if (!is.null(d) && nrow(d) > 0) {
+    save(d, file = metadata_temp)
+    message("Partially retrieved metadata saved to: ", metadata_temp)
+  } else {
+    d <- tibble(lastpage = TRUE)  # Return an empty dataframe with a placeholder column
+  }
+  
+  return(d) 
 }
+
+
+
+get_dockets_batch(agency = "EPA", lastModifiedDate = Sys.time(), api_keys = api_keys)
+

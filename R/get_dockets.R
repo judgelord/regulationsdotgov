@@ -32,10 +32,11 @@ get_dockets <- function(agency,
     }
     
   }, error = function(e) {
-  if (!is.null(metadata)) {
-    save(metadata, file = metadata_temp)
-    message("Partially retrieved metadata saved to: ", metadata_temp)
-  }
+    message("An error occurred: ", e$message)
+    
+    if (!is.null(metadata)) {
+      save(metadata, file = metadata_temp)
+      message("Partially retrieved metadata saved to: ", metadata_temp)}
   })
   
   # Return the metadata (no saving on normal completion)

@@ -8,8 +8,11 @@ get_documents_batch <- function(docketId,
 
   i <- 1
   metadata <- list()
+  metadata_temp <- tempfile(fileext = ".rda")
   
-  for (i in 1:20){
+  tryCatch({
+    
+    for (i in 1:20){
     
     message(paste("Page", i))
     
@@ -35,20 +38,6 @@ get_documents_batch <- function(docketId,
       result <- httr::GET(path)
       
     }
-    
-    ## print unsuccessful api calls (might be helpful to know which URLs are failing)
-    #I don't think we need this? Repetitive?
-    #purrr::walk2(result,
-    #             path,
-    #             function(response, url) {
-    #               if (status_code(response) != 200) {
-    #                 message(paste(status_code(response),
-    #                               "Failed URL:",
-    #                               url)
-    #                 )
-    #               }
-    #             }
-    #)
     
     if(status == 200){
       content <- jsonlite::fromJSON(rawToChar(result$content))
@@ -81,6 +70,13 @@ get_documents_batch <- function(docketId,
   
   # map the list into a dataframe with the information we care about
   d <- purrr::map_dfr(metadata, make_dataframe)
+  
+  }, error = function(e) {
+    if (!is.null(metadata)) {
+      save(d, file = metadata_temp)
+      message("Partially retrieved metadata saved to: ", metadata_temp)
+    }
+  })
   
   # if there was none, make an empty dataframe
   if(nrow(d)==0){

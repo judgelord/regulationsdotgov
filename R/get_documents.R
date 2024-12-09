@@ -4,11 +4,10 @@
 get_documents <- function(docketId,
                           lastModifiedDate = Sys.time(),
                           api_keys){
-
-  metadata_temp <- tempfile(fileext = ".rda")
+  
     tryCatch({
 
-      # Fetch the initial 5k and establish the base datafram
+      # Fetch the initial 5k and establish the base dataframe
 
       metadata <- get_documents_batch(docketId,
                                   lastModifiedDate,
@@ -39,14 +38,11 @@ get_documents <- function(docketId,
         message(paste(" = ", nrow(metadata)))
 
       }
-      },error = function(e) {
-        message("An error occurred: ", e$message)
-        if (exists("metadata")) {
-          save(metadata, file = metadata_temp)
-          message("Document data saved to: ", metadata_temp)
-
-        }
-      })
+      }, error = function(e) {
+      if (!is.null(metadata)) {
+        save(metadata, file = metadata_temp)
+        message("Partially retrieved metadata saved to: ", metadata_temp)}
+    })
 
       return(metadata)
 }
