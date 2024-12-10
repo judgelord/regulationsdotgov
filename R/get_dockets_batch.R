@@ -69,6 +69,3 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
   return(d) 
 }
 
-
-get_dockets_batch(agency = "NOAA", lastModifiedDate = Sys.time(), api_keys = api_keys)
-
