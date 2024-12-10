@@ -55,7 +55,7 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
       if (!is.null(metadata)) {
         
         d <- purrr::map_dfr(metadata, make_dataframe)
-        
+
         save(d, file = metadata_temp)
         message("Partially retrieved metadata saved to: ", metadata_temp)
       }
