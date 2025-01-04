@@ -6,9 +6,9 @@ get_commentsOnId <- function(commentOnId,
   
   metadata_temp <- tempfile(fileext = ".rda")
   
+  message(paste("Getting comments on", commentOnId))
+  
   tryCatch({
-    
-    message(paste("Getting comments on", commentOnId))
     
     # Fetch the initial 5k and establish the base dataframe
     
@@ -35,13 +35,12 @@ get_commentsOnId <- function(commentOnId,
     message(paste(" = ", nrow(metadata)))
     
     }
-    }, error = function(e) {
-    message("An error occurred: ", e$message)
-    if (exists("metadata")) {
-      save(metadata, file = metadata_temp)
-      message("Docket data saved to: ", metadata_temp)}
-    }
-  )
+    },  error = function(e) {
+      if (!is.null(metadata)) {
+        save(metadata, file = metadata_temp)
+        message("Partially retrieved metadata saved to: ", metadata_temp)
+      }
+    })
   
   return(metadata)
 }

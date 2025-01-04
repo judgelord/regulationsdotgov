@@ -6,12 +6,6 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
   
   api_key <- api_keys[1]
   
-  # Initialize list & temp file 
-  metadata <- list()
-  metadata_temp <- tempfile(fileext = ".rda")
-  
-  tryCatch({
-  
     for (i in 1:20) {
       message(paste("Page", i))
       
@@ -51,15 +45,7 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
         break
       }
       
-    }}, error = function(e) {
-      if (!is.null(metadata)) {
-        
-        d <- purrr::map_dfr(metadata, make_dataframe)
-
-        save(d, file = metadata_temp)
-        message("Partially retrieved metadata saved to: ", metadata_temp)
-      }
-    })
+    }
   
   d <- purrr::map_dfr(metadata, make_dataframe)
   

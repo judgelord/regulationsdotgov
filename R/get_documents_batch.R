@@ -5,12 +5,8 @@ get_documents_batch <- function(docketId,
                                 lastModifiedDate, api_keys){
 
   api_key <- api_keys[1]
-
-  i <- 1
-  metadata <- list()
-  metadata_temp <- tempfile(fileext = ".rda")
   
-  tryCatch({
+  metadata <- list()
     
     for (i in 1:20){
     
@@ -70,13 +66,6 @@ get_documents_batch <- function(docketId,
   
   # map the list into a dataframe with the information we care about
   d <- purrr::map_dfr(metadata, make_dataframe)
-  
-  }, error = function(e) {
-    if (!is.null(metadata)) {
-      save(d, file = metadata_temp)
-      message("Partially retrieved metadata saved to: ", metadata_temp)
-    }
-  })
   
   # if there was none, make an empty dataframe
   if(nrow(d)==0){

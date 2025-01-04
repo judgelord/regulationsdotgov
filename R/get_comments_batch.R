@@ -7,7 +7,6 @@ get_comments_batch <- function(commentOnId,
   api_key <- api_keys[1]
 
   # call the make path function to make paths for the first 20 pages of 250 results each
-  i <- 1
   metadata <- list()
 
   for (i in 1:20){
@@ -37,20 +36,6 @@ get_comments_batch <- function(commentOnId,
       result <- httr::GET(path)
 
     }
-
-    ## print unsuccessful api calls (might be helpful to know which URLs are failing)
-    #I don't think we need this? Repetitive?
-    #purrr::walk2(result,
-    #             path,
-    #             function(response, url) {
-    #               if (status_code(response) != 200) {
-    #                 message(paste(status_code(response),
-    #                               "Failed URL:",
-    #                               url)
-    #                 )
-    #               }
-    #             }
-    #)
 
     if(status == 200){
       content <- jsonlite::fromJSON(rawToChar(result$content))

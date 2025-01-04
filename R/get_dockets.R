@@ -6,6 +6,9 @@ get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
                         api_keys) {
   
+  # Initialize temp file 
+  metadata_temp <- tempfile(fileext = ".rda")
+  
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
     metadata <- get_dockets_batch(agency, lastModifiedDate, api_keys)

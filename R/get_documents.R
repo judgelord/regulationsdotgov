@@ -5,7 +5,10 @@ get_documents <- function(docketId,
                           lastModifiedDate = Sys.time(),
                           api_keys){
   
-    tryCatch({
+  metadata <- list()
+  metadata_temp <- tempfile(fileext = ".rda")
+  
+  tryCatch({
 
       # Fetch the initial 5k and establish the base dataframe
 
