@@ -1,6 +1,6 @@
 #' @keywords internal
 
-get_comments_batch <- function(commentOnId,
+get_comments_batch <- function(objectId,
                                lastModifiedDate = Sys.time(),
                                api_keys){
 
@@ -13,7 +13,7 @@ get_comments_batch <- function(commentOnId,
 
     message(paste("Page", i))
 
-    path <- make_path_commentOnId(commentOnId,
+    path <- make_path_commentOnId(objectId,
                                   lastModifiedDate,
                                   page = i,
                                   api_key)
@@ -75,7 +75,7 @@ get_comments_batch <- function(commentOnId,
   }
 
   # add back in the id for the document being commented on
-  d$commentOnId <- commentOnId
+  d$objectId <- objectId
 
   return(d)
 }

@@ -1,18 +1,18 @@
 #' @export
 
-get_commentsOnId <- function(commentOnId,
+get_commentsOnId <- function(objectId,
                              lastModifiedDate = Sys.time(),
                              api_keys){
   
   metadata_temp <- tempfile(fileext = ".rda")
   
-  message(paste("Getting comments on", commentOnId))
+  message(paste("Getting comments on", objectId))
   
   tryCatch({
     
     # Fetch the initial 5k and establish the base dataframe
     
-    metadata <- get_comments_batch(commentOnId,
+    metadata <- get_comments_batch(objectId,
                                  lastModifiedDate,
                                  api_keys)
     
@@ -21,7 +21,7 @@ get_commentsOnId <- function(commentOnId,
     while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
     # Fetch the next batch of comments using the last modified date
-    nextbatch <- get_comments_batch(commentOnId,
+    nextbatch <- get_comments_batch(objectId,
                                     lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
                                     api_keys)
 

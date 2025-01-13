@@ -8,7 +8,7 @@ Get metadata for all comments on a document
 get_commentsOnId("[objectId]") retrieves metadata for all comments on a document
 }
 \usage{
-get_commentsOnId(objectId, lastModifiedDate, api_keys)
+get_commentsOnId(objectId, lastModifiedDate = Sys.time(), api_keys)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,7 +16,6 @@ get_commentsOnId(objectId, lastModifiedDate, api_keys)
 objectId obtained from a document's metadata 
 }
   \item{lastModifiedDate}{
-%%     ~~Describe \code{lastModifiedDate} here~~
 Filter results by their last modified date. Default is set to \code{Sys.time()}. 
 
 User-specified values must be formatted as \code{yyyy-MM-dd\%20HH:mm:ss}.
