@@ -1,13 +1,13 @@
-
-
 #' @export
 
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
-                        api_keys) {
+                        api_keys){
   
   # Initialize temp file 
   metadata_temp <- tempfile(fileext = ".rda")
+  
+  message(paste("Getting dockets for", agency))
   
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
@@ -43,6 +43,6 @@ get_dockets <- function(agency,
 
 # TESTING
 if(F){
-n <- get_dockets(agency = "NOAA", api_keys = api_keys)
+n <- get_dockets(agency = "NOAA", api_keys = keys)
 
 }
