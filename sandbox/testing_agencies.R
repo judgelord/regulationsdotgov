@@ -44,6 +44,7 @@ agencies_1.16 <- data.frame(agency = c("FDA","FAA","EPA","USCG","DOT","FMCSA","P
                                         6,6,5,5,4,4,4,4,3,3,3,3,2,2,2,2,2,2,1,1,
                                         1,1,1,1))
 
+
 save_dockets <- function(agency){
   message (agency)
   dockets <- map_dfr(agency, get_dockets, api_keys = keys)
@@ -62,6 +63,7 @@ agencies <- agencies_1.16[119:192,]$agency %>%
 
 walk(agencies, possibly(save_dockets, otherwise = print("nope")))
 
+get_dockets(agency = "USDAIG", api_keys = api_keys)
 
 
 
