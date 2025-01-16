@@ -6,6 +6,8 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
   
   api_key <- api_keys[1]
   
+  metadata <- NULL
+  
     for (i in 1:20) {
       message(paste("Page", i))
       
@@ -17,7 +19,7 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys) {
       
       if (status != 200) {
         message(paste(Sys.time() |> format("%X"), "| Status", status, "| Failed URL:", url))
-        Sys.sleep(60)  # Pause before retrying - 
+        #Sys.sleep(60)  # Pause before retrying - 
         #TODO retry path that failed
       }
       
