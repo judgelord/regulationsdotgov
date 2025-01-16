@@ -40,9 +40,3 @@ get_dockets <- function(agency,
   # Return the metadata (no saving on normal completion)
   return(metadata)
 }
-
-# TESTING
-if(F){
-n <- get_dockets(agency = "NOAA", api_keys = keys)
-
-}
