@@ -4,7 +4,6 @@ library(tidyverse)
 make_path_dockets(agency = "OMB", lastModifiedDate = Sys.time(), page = 1, api_key = api_keys)
 
 
-
 n <- httr::GET("https://api.regulations.gov/v4/dockets?filter[agencyId]=OMB&filter[lastModifiedDate][le]=2025-01-16%2015:33:35&page[size]=250&page[number]=1&sort=-lastModifiedDate&api_key=9azbQEqsdmKb7d3sb4ThbELXxMIk5CeYMhlUSd8o")
 
 content <- jsonlite::fromJSON(rawToChar(n$content))
@@ -45,26 +44,31 @@ agencies_1.16 <- data.frame(agency = c("FDA","FAA","EPA","USCG","DOT","FMCSA","P
                                         1,1,1,1))
 
 
-save_dockets <- function(agency){
-  message (agency)
-  dockets <- map_dfr(agency, get_dockets, api_keys = keys)
-  message(paste("|", agency, "| n =", nrow(dockets), "|"))
-  save(dockets, file = here::here("data",
-                                  agency,
-                                  paste0(agency, "_dockets.rda")
-  )
-  )
-}
+# Testing dockets N < 50 - ALL GOOD! 
 
-# Testing dockets N < 50 
-
-agencies <- agencies_1.16[119:192,]$agency %>%
-  walk(here::here("data",.), dir.create)
-
-walk(agencies, possibly(save_dockets, otherwise = print("nope")))
-
-get_dockets(agency = "USDAIG", api_keys = api_keys)
+agencies <- agencies_1.16[119:192,]$agency 
 
 
+# Testing dockets 50 < N < 500 - ALL GOOD! 
 
+agencies <- agencies_1.16[57:118,]$agency 
+
+walk(agencies, possibly(save_dockets, otherwise = function(e) message("Failed to save dockets for agency: ", .)))
+
+
+# Testing dockets 500 < N < 5000 - ALL GOOD! 
+
+agencies <- agencies_1.16[10:56,]$agency 
+
+walk(agencies, possibly(save_dockets, otherwise = function(e) message("Failed to save dockets for agency: ", .)))
+
+# Testing dockets 5000 < N < 10,000 - GOOD EXCEPT FOR PHMSA (too many dockets - but I think this is an issue on their end)
+
+agencies <- agencies_1.16[6:9,]$agency
+
+walk(agencies, possibly(save_dockets, otherwise = function(e) message("Failed to save dockets for agency: ", .)))
+
+agencies <- agencies_1.16[4:5,]$agency # USCG WORKED, DOT DID NOT - RAN FOREVER
+
+walk(agencies, possibly(save_dockets, otherwise = function(e) message("Failed to save dockets for agency: ", .)))
 
