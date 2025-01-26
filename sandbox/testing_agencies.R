@@ -72,3 +72,11 @@ agencies <- agencies_1.16[4:5,]$agency # USCG WORKED, DOT DID NOT - RAN FOREVER
 
 walk(agencies, possibly(save_dockets, otherwise = function(e) message("Failed to save dockets for agency: ", .)))
 
+dot_dockets <-get_dockets(agency = "DOT", api_keys = api_keys)
+
+save(, file = file.path(agency_dir, paste0(agency, "_dockets.rda")))
+
+epa_dockets <-get_dockets(agency = "EPA", api_keys = api_keys)
+
+save(, file = file.path(agency_dir, paste0(agency, "_dockets.rda")))
+
