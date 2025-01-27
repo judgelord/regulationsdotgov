@@ -5,9 +5,7 @@ get_dockets <- function(agency,
                         api_keys){
   
   # Initialize temp file 
-  metadata_temp <- tempfile(fileext = ".rda")
-  
-  message(paste("Getting dockets for", agency))
+  tempdata <- tempfile(fileext = ".rda")
   
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
@@ -31,9 +29,9 @@ get_dockets <- function(agency,
     }
     
   }, error = function(e) {
-    if (!is.null(metadata)) {
-      save(metadata, file = metadata_temp)
-      message("Partially retrieved metadata saved to: ", metadata_temp)
+    if (exists(metadata)) {
+      save(metadata, file = tempdata)
+      message("Partially retrieved metadata saved to: ", tempdata)
     }
   })
   
