@@ -10,12 +10,12 @@ get_searchTerm_batch <- function(searchTerm,
                                  api_keys){
 
   api_key <- api_keys[1]
+  api_key <- sample(api_keys, 1)
 
   i <- 1
   metadata <- list()
 
-  message(paste0("Searching for ", documents,
-                 ' containing "', searchTerm,
+  message(paste0(documents,' containing "', searchTerm,
                  '" posted before ',lastModifiedDate)
           )
 
