@@ -5,7 +5,7 @@
 get_dockets_batch <- function(agency, lastModifiedDate, api_keys){
   
   api_key <- api_keys[1]
-  metadata <- NULL
+  metadata <- list()
   
   for (i in 1:20) {
     message(paste("Page", i))
@@ -30,20 +30,24 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys){
     
     # Extract rate limit and pause if necessary
     remaining <- as.numeric(result$headers$`x-ratelimit-remaining`)
-    if (!is.na(remaining) && remaining < 2) {
-      message(paste("|", Sys.time() |> format("%X"), "| Hit rate limit, will continue after one minute |", remaining, "remaining"))
+    
+    if(remaining < 2){
       
-      # Rotate API keys
-      api_keys <- c(tail(api_keys, -1), head(api_keys, 1)) 
+      message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit |", remaining, "remaining"))
+      
+      # ROTATE KEYS
+      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
+      api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
       api_key <- api_keys[1]
-      message(paste("Rotating API key to", api_key))
+      #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
+      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
       
-      Sys.sleep(60)
+      Sys.sleep(.60)
     }
     
     # Break loop if the last page is reached
-    if (!is.null(content$meta) && content$meta$lastPage == TRUE) {
-      break
+    if(!is.null(content$meta$lastPage)){
+      if(content$meta$lastPage == TRUE){break} # breaks loop when last page is reached
     }
     
   }

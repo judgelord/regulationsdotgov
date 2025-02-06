@@ -28,8 +28,8 @@ get_dockets <- function(agency,
       message(paste(" = ", nrow(metadata)))
     }
     
-  }, error = function(e) {
-    if (exists(metadata)) {
+  },  error = function(e) {
+    if (!is.null(metadata)) {
       save(metadata, file = tempdata)
       message("Partially retrieved metadata saved to: ", tempdata)
     }
