@@ -4,45 +4,43 @@ load("../keys.rda")
 
 #TESTING
 if(F){
-  d <- get_searchTerm(searchTerm) # documents, the default
 
-  d <- get_searchTerm(searchTerm, documents = "comments") # comments
-  
-  d <- get_searchTerm(searchTerm = "abolition", 
-                 documents = "documents", 
-                 api_keys = api_keys)
-
-
-
-  # write_csv(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".csv")))
 
   searchTerm =  c("national congress of american indians", "cherokee nation")
-
   searchTerm = c("climate justice", "environmental justice")
-
-  searchTerm = c("environmental justice")
+  searchTerm = c("racial", "latino")
+  searchTerm = c("racial")
 
   documents = c("documents", "comments")
 
-  documents = c("comments")
-
-  documents = c("documents")
-
 
   search_to_csv <- function(searchTerm, documents){
-    d <- get_searchTerm(searchTerm, documents)
+    path <- here::here("data", "metadata", searchTerm)
 
-    write_csv(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".csv")))
+    dir.create(path)
+
+    d <- get_searchTerm(searchTerm, documents, api_keys = keys)
+
+    write_csv(d, file = here::here(path, paste0(searchTerm, "_", documents, ".csv")))
   }
 
   walk2(searchTerm, documents, .f = search_to_csv)
 
 
   search_to_rda <- function(searchTerm, documents){
-    d <- get_searchTerm(searchTerm, documents)
+    path <- here::here("data", "metadata", searchTerm)
 
-    save(d, file = here::here("data", "metadata", documents, paste0(searchTerm, ".rda")))
+    dir.create(path)
+
+    d <- get_searchTerm(searchTerm, documents, api_keys = keys)
+
+    save(d, file = here::here(path, paste0(searchTerm, "_", documents, ".rda")))
   }
 
-  walk2(searchTerm, documents, .f = search_to_rda)
+  for(documents in documents){
+    walk(searchTerm, documents, .f = search_to_rda)
+  }
+
+
+
 }
