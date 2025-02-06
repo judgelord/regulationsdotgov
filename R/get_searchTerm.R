@@ -5,19 +5,19 @@
 get_searchTerm <- function(searchTerm,
                            documents = "documents", # c("documents", "comments") defaults to documents
                            lastModifiedDate = Sys.time(), # , api_keys = api_keys #TODO test this
-                           api_keys){
-  
+                           api_keys = keys){
+
   metadata_temp <- tempfile(fileext = ".rda")
-  
-  tryCatch({  
-    
+
+  tryCatch({
+
     # Fetch the initial 5k and establish the base dataframe
     metadata <- get_searchTerm_batch(searchTerm = searchTerm,
                                    documents = documents,
                                    #commentOnId, #TODO feature to search comments on a specific docket or document
                                    lastModifiedDate = Sys.time(),
                                    api_keys = api_keys)
-    
+
     if(nrow(metadata) == 0){
       metadata <- dplyr::tibble(lastpage = TRUE)
     }
@@ -29,27 +29,25 @@ get_searchTerm <- function(searchTerm,
     nextbatch <- get_searchTerm_batch(searchTerm,
                                     documents,
                                     lastModifiedDate = tail(metadata$lastModifiedDate,
-                                                            n = 1) |>
-                                      stringr::str_replace("T", "%20") |>
-                                      stringr::str_remove_all("[A-Z]"),
+                                                            n = 1), # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
                                     api_keys = api_keys
                                     )
-    
+
     message(paste(nrow(metadata), "+", nrow(nextbatch)))
-    
+
     metadata <- suppressMessages(
       dplyr::bind_rows(metadata, nextbatch)
       )
-    
+
     message(paste(" = ", nrow(metadata)))
     }
-    
+
   }, error = function(e) {
     message("An error occurred: ", e$message)
     if (exists("metadata")) {
       save(metadata, file = metadata_temp)
       message("Document data saved to: ", metadata_temp)
-      
+
     }
   })
 
