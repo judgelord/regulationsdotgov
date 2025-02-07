@@ -25,11 +25,17 @@ get_searchTerm <- function(searchTerm,
     # Loop until last page is TRUE
     while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
+      newdate <-  tail(metadata$lastModifiedDate,  n = 1)
+
+      # subtract a second so we don't end up in endless loops  where more than 5000 comments come in a single second
+      # TODO can we make this conditional on the date being the same as it was before?
+      str_sub(newdate, -2, -2) <- ( as.numeric(newdate |> str_sub(-2, -2) ) -1 ) |>
+        str_replace("-1", "9")
+
     # Fetch the next batch of metadata using the last modified date
     nextbatch <- get_searchTerm_batch(searchTerm,
                                     documents,
-                                    lastModifiedDate = tail(metadata$lastModifiedDate,
-                                                            n = 1), # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
+                                    lastModifiedDate = newdate, # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
                                     api_keys = api_keys
                                     )
 

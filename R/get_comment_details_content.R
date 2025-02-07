@@ -7,7 +7,7 @@ get_comment_details_content <- function(id,
                                         api_keys){
 
 
-  path <- make_path_comment_details(id, api_keys[1])
+  path <- make_path_comment_details(id, sample(api_keys, 1) )
 
   result <- httr::GET(path)
 
@@ -24,13 +24,17 @@ get_comment_details_content <- function(id,
   # if previously failed due to rate limit, try again
   while( result$status_code == 429 ){
 
-    # ROTATE KEYS
-    api_keys <<- api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
+      message(paste("|", Sys.time()|> format("%X"),
+                    "| Hit rate limit |",
+                    remaining, "remaining | api key ending in",
+                    api_key |> stringr::str_replace(".{35}", "...")))
 
-    message(paste("429 - rotating to api key ending in", api_keys[1] |> str_remove(".{35}")))
+      # ROTATE KEYS
+      api_key <- sample(api_keys, 1)
+      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
 
     # try again
-    path <- make_path_comment_details(id, api_keys[1])
+    path <- make_path_comment_details(id, api_key)
     result <- httr::GET(path)
 
     remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()

@@ -4,7 +4,7 @@ get_comments_batch <- function(objectId,
                                lastModifiedDate = Sys.time(),
                                api_keys){
 
-  api_key <- api_keys[1]
+  api_key <- sample(api_keys, 1)
 
   # call the make path function to make paths for the first 20 pages of 250 results each
   metadata <- list()
@@ -44,16 +44,16 @@ get_comments_batch <- function(objectId,
 
     # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
     remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
-    
+
     if(remaining < 2){
 
-      message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit |", remaining, "remaining"))
+      message(paste("|", Sys.time()|> format("%X"),
+                    "| Hit rate limit |",
+                    remaining, "remaining | api key ending in",
+                    api_key |> stringr::str_replace(".{35}", "...")))
 
       # ROTATE KEYS
-      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
-      api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
-      api_key <- api_keys[1]
-      #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
+      api_key <- sample(api_keys, 1)
       message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
 
       Sys.sleep(.60)

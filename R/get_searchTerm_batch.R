@@ -9,7 +9,6 @@ get_searchTerm_batch <- function(searchTerm,
                                  lastModifiedDate,
                                  api_keys){
 
-  api_key <- api_keys[1]
   api_key <- sample(api_keys, 1)
 
   i <- 1
@@ -61,18 +60,18 @@ get_searchTerm_batch <- function(searchTerm,
 
     if(remaining < 20){
 
-      message(paste("|", Sys.time()|> format("%X"), "| Hit rate limit |", remaining, "remaining"))
+      message(paste("|", Sys.time()|> format("%X"),
+                    "| Hit rate limit |",
+                    remaining, "remaining | api key ending in",
+                    api_key |> stringr::str_replace(".{35}", "...")))
 
       # ROTATE KEYS
-      api_keys <<- c(tail(api_keys, -1), head(api_keys, 1))
-      api_keys <- c(tail(api_keys, -1), head(api_keys, 1))
-      api_key <- api_keys[1]
-      #api_key <<- apikeys[runif(1, min=1, max=3.999) |> floor() ]
-      message(paste("Rotating to api key ending in", api_key |>
-                      stringr::str_replace(".{35}", "...")))
+      api_key <- sample(api_keys, 1)
+      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
 
       Sys.sleep(.60)
     }
+
 
     content$meta$lastPage
 

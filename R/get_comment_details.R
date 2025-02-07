@@ -5,7 +5,7 @@
 # loop over a vector of comment ids, return a dataframe of comment details
 get_comment_details <- function(id,
                                 lastModifiedDate = Sys.time(),
-                                api_keys) {
+                                api_keys = keys) {
 
   if(length(id) != length(id |> unique()) ){
     message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
@@ -18,7 +18,7 @@ get_comment_details <- function(id,
 
   #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
   # a default for possibly to return if the call fails
-  path <- make_path_comment_details(unique_ids[1], api_keys[1])
+  path <- make_path_comment_details(unique_ids[1], sample(api_keys, 1) )
   result_init <- httr::GET(path)
   content_init <- jsonlite::fromJSON(rawToChar(result_init$content))
   content_init$data$id <- NULL
