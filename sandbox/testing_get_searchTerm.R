@@ -6,12 +6,16 @@ load("../keys.rda")
 if(F){
 
 
+  library(stringr)
+
   searchTerm =  c("national congress of american indians", "cherokee nation")
   searchTerm = c("climate justice", "environmental justice")
-  searchTerm = c("racial", "latino")
+  searchTerm = c("latina", "latino")
   searchTerm = c("racial")
 
   documents = c("documents", "comments")
+  documents = c("comments")
+
 
 
   search_to_csv <- function(searchTerm, documents){
@@ -38,7 +42,7 @@ if(F){
   }
 
   for(documents in documents){
-    walk(searchTerm, documents, .f = search_to_rda)
+    purrr::walk(searchTerm, documents, .f = search_to_rda)
   }
 
 
