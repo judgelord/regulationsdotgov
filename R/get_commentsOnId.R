@@ -68,7 +68,7 @@ get_commentsOnId <- function(objectId,
       }
     })
 
-  return(metadata)
+  return( dplyr::distinct(metadata) )
 }
 
 
