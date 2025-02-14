@@ -49,7 +49,9 @@ get_commentsOnId <- function(objectId,
     }
     ## END FIX
 
-    message(paste(nrow(metadata), "+", nrow(nextbatch)))
+    message(paste(
+      "Adding comments to", newdate, "|",
+      nrow(metadata), "+", nrow(nextbatch)))
 
     # Append next batch to comments
     metadata <- suppressMessages(
