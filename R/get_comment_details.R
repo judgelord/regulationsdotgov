@@ -13,6 +13,8 @@ get_comment_details <- function(id,
     message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
   }
 
+  message("Trying: ", make_path_comment_details(id[1], "XXXXXXXXXXXXXX") )
+
   unique_ids <- unique(id)
 
   message("| Comment details | input N = ", length(id), " | output N = ", length(unique_ids), " | \n| --- | --- | --- | ")
