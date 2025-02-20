@@ -27,14 +27,13 @@ get_commentsOnId <- function(objectId,
 
     ## Temporary partial fix to issue #24 and #25
     # make sure we advanced
-    newdate <- as.Date(nextbatch$lastModifiedDate) |> min()
-    olddate <- as.Date(metadata$lastModifiedDate) |> min()
+    newdate <-  min(nextbatch$lastModifiedDate)
+    olddate <-  min(metadata$lastModifiedDate)
 
     # if we did not
     if( newdate == olddate ){
       # go to next day to avoid getting stuck
-      newdate <-  min(nextbatch$lastModifiedDate)
-      olddate <-  min(metadata$lastModifiedDate)
+
 
       # subtract a day so we don't end up in endless loops  where more than 5000 comments come in a single day
       stringr::str_sub(newdate, 9, 10) <- ( as.numeric(newdate |> stringr::str_sub(9, 10) ) -1 ) |>

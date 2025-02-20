@@ -14,6 +14,8 @@ get_documents_batch <- function(docketId,
                                   page = i,
                                 sample(api_keys, 1) )
 
+    message(path |> stringr::str_replace("&api_key=.*", "&api_key=XXX") )
+
     result <- httr::GET(path)
 
     # report result status
@@ -23,7 +25,7 @@ get_documents_batch <- function(docketId,
     while(status != 200){
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
-                    "| Failed URL:", url))
+                    "| Failed URL:", url |> stringr::str_remove("&api.*") ))
 
       # remake path with other key
       path <- make_path_documents(docketId,
