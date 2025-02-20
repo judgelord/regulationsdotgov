@@ -4,6 +4,9 @@
 get_documents_batch <- function(docketId,
                                 lastModifiedDate, api_keys){
 
+  message("Trying: ", make_path_documents(docketId, lastModifiedDate, page = 1, "XXXXXXXXXXXXXXX") )
+
+
   metadata <- list()
 
     for (i in 1:20){
@@ -14,7 +17,6 @@ get_documents_batch <- function(docketId,
                                   page = i,
                                 sample(api_keys, 1) )
 
-    message(path |> stringr::str_replace("&api_key=.*", "&api_key=XXX") )
 
     result <- httr::GET(path)
 
@@ -25,13 +27,15 @@ get_documents_batch <- function(docketId,
     while(status != 200){
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
-                    "| Failed URL:", url |> stringr::str_remove("&api.*") ))
+                    "| Failed URL:", url |> stringr::str_replace("&api_key=.*", "&api_key=XXXXXXXXXXXXXXX") ))
 
       # remake path with other key
       path <- make_path_documents(docketId,
                                   lastModifiedDate,
                                   page = i,
                                   sample(api_keys, 1) )
+
+      message("Trying again in 1 minute")
 
       # small pause to give user a chance to cancel
       Sys.sleep(60)

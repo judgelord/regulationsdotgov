@@ -45,12 +45,12 @@ get_comment_details_content <- function(id,
 
     # pause to reset rate limit
     if(result$status_code == 429 | remaining < 2){
-    message(paste(Sys.time()|> format("%X"), "- Hit rate limit, will continue after one minute"))
+    message(paste(Sys.time()|> format("%X"), "- Hit rate limit again, will continue after one minute"))
     Sys.sleep(60)
     }
   }
 
-  Sys.sleep(0.01) # very small pause to allow rate limit reported to be more accurate
+  # Sys.sleep(0.01) # very small pause to allow rate limit reported to be more accurate
 
   # return content (small object than result)
   content <-  jsonlite::fromJSON(rawToChar(result$content))
