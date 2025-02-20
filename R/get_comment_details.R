@@ -7,11 +7,16 @@ get_comment_details <- function(id,
                                 lastModifiedDate = Sys.time(),
                                 api_keys = keys) {
 
+
+
   if(length(id) != length(id |> unique()) ){
     message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
   }
 
   unique_ids <- unique(id)
+
+  message("| Comment details | input N = ", length(id), " | output N = ", length(unique_ids), " | \n| --- | --- | --- | ")
+
 
   # TODO make batches that we save in a temp file?
   # batches <- length(id)/5000 |> round(1)
