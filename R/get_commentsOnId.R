@@ -33,7 +33,8 @@ get_commentsOnId <- function(objectId,
     # if we did not
     if( newdate == olddate ){
       # go to next day to avoid getting stuck
-      newdate <-  min(metadata$lastModifiedDate)
+      newdate <-  min(nextbatch$lastModifiedDate)
+      olddate <-  min(metadata$lastModifiedDate)
 
       # subtract a day so we don't end up in endless loops  where more than 5000 comments come in a single day
       stringr::str_sub(newdate, 9, 10) <- ( as.numeric(newdate |> stringr::str_sub(9, 10) ) -1 ) |>
@@ -41,16 +42,14 @@ get_commentsOnId <- function(objectId,
         stringr::str_pad(2, pad =  "0") |>
         stringr::str_replace("00", "01")
 
-      nextbatch <- get_searchTerm_batch(searchTerm,
-                                        documents,
-                                        lastModifiedDate = newdate, # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
-                                        api_keys = api_keys
-      )
+      nextbatch <- get_comments_batch(objectId,
+                                      lastModifiedDate = newdate,
+                                      api_keys)
     }
     ## END FIX
 
     message(paste(
-      "Adding comments to", newdate, "|",
+      "Adding comments from", olddate, "to", newdate, "|",
       nrow(metadata), "+", nrow(nextbatch)))
 
     # Append next batch to comments
