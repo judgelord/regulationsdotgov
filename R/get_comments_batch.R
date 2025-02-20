@@ -4,7 +4,7 @@ get_comments_batch <- function(objectId,
                                lastModifiedDate = Sys.time(),
                                api_keys){
 
-  api_key <- sample(api_keys, 1)
+  #api_key <- sample(api_keys, 1)
 
   # call the make path function to make paths for the first 20 pages of 250 results each
   metadata <- list()
@@ -16,7 +16,7 @@ get_comments_batch <- function(objectId,
     path <- make_path_commentOnId(objectId,
                                   lastModifiedDate,
                                   page = i,
-                                  api_key)
+                                  sample(api_keys, 1))
 
     # map GET function over pages
     result <- httr::GET(path)
@@ -31,7 +31,14 @@ get_comments_batch <- function(objectId,
                     "| Failed URL:", url))
 
       # small pause to give user a chance to cancel
-      Sys.sleep(60)
+      Sys.sleep(6)
+
+
+      # try again with new key
+      path <- make_path_commentOnId(objectId,
+                                    lastModifiedDate,
+                                    page = i,
+                                    sample(api_keys, 1))
 
       result <- httr::GET(path)
 
@@ -49,14 +56,13 @@ get_comments_batch <- function(objectId,
 
       message(paste("|", Sys.time()|> format("%X"),
                     "| Hit rate limit |",
-                    remaining, "remaining | api key ending in",
-                    api_key |> stringr::str_replace(".{35}", "...")))
+                    remaining, "remaining | "))#api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
 
-      # ROTATE KEYS
-      api_key <- sample(api_keys, 1)
-      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
+      # # ROTATE KEYS
+      # api_key <- sample(api_keys, 1)
+      # message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
 
-      Sys.sleep(.60)
+      Sys.sleep(60)
     }
 
     content$meta$lastPage
