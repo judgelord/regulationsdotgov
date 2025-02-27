@@ -6,7 +6,6 @@ get_comments_batch <- function(objectId,
 
   #api_key <- sample(api_keys, 1)
 
-  # call the make path function to make paths for the first 20 pages of 250 results each
   metadata <- list()
 
   message("Trying: ", make_path_commentOnId(objectId,
