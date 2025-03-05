@@ -3,6 +3,8 @@
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
                         api_keys){
+  
+  message("get_dockets for ", agency)
 
   # Initialize temp file
   tempdata <- tempfile(fileext = ".rda")
@@ -34,11 +36,9 @@ get_dockets <- function(agency,
           stringr::str_pad(2, pad =  "0") |>
           stringr::str_replace("00", "01")
 
-        nextbatch <- get_searchTerm_batch(searchTerm,
-                                          documents,
-                                          lastModifiedDate = newdate, # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
-                                          api_keys = api_keys
-        )
+        nextbatch <- get_dockets_batch(agency,
+                                       lastModifiedDate = newdate,
+                                       api_keys)
       }
       ## END FIX
 
@@ -53,6 +53,7 @@ get_dockets <- function(agency,
     }
 
   },  error = function(e) {
+    message("An error occurred: ", e$message)
     if (!is.null(metadata)) {
       save(metadata, file = tempdata)
       message("Partially retrieved metadata saved to: ", tempdata)
