@@ -57,13 +57,14 @@ get_commentsOnId <- function(objectId,
 
     # Append next batch to comments
     metadata <- suppressMessages(
-      bind_rows(metadata, nextbatch) #TODO want to try left_join to see if it yields better results
+      dplyr::bind_rows(metadata, nextbatch) #TODO want to try left_join to see if it yields better results
     )
 
     message(paste(" = ", nrow(metadata)))
 
     }
     },  error = function(e) {
+      message("An error occurred: ", e$message)
       if (!is.null(metadata)) {
         save(metadata, file = metadata_temp)
         message("Partially retrieved metadata saved to: ", metadata_temp)
