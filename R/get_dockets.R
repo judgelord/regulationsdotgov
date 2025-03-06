@@ -27,14 +27,10 @@ get_dockets <- function(agency,
 
       # if we did not
       if( newdate == olddate ){
-        # go to next day to avoid getting stuck
-        newdate <-  min(metadata$lastModifiedDate)
-
-        # subtract a day so we don't end up in endless loops  where more than 5000 comments come in a single day
-        stringr::str_sub(newdate, 9, 10) <- ( as.numeric(newdate |> stringr::str_sub(9, 10) ) -1 ) |>
-          abs() |> # FIXME this really should be subtracting one second from a native date time object---we can still get stuck at 00 here
-          stringr::str_pad(2, pad =  "0") |>
-          stringr::str_replace("00", "01")
+        newdate <- newdate |>
+          as.POSIXct(format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
+          (\(x) x - 86400)() |>
+          format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 
         nextbatch <- get_dockets_batch(agency,
                                        lastModifiedDate = newdate,
