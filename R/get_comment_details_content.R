@@ -27,11 +27,11 @@ get_comment_details_content <- function(id,
       message(paste("|", Sys.time()|> format("%X"),
                     "| Hit rate limit |",
                     remaining, "remaining | api key ending in",
-                    api_key |> stringr::str_replace(".{35}", "...")))
+                    api_key |> stringr::str_replace(".+(.{4})", "XXX\\1")))
 
       # ROTATE KEYS
       api_key <- sample(api_keys, 1)
-      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
+      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".+(.{4})", "XXX\\1")))
 
     # try again
     path <- make_path_comment_details(id, api_key)

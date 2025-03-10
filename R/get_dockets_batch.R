@@ -18,7 +18,9 @@ get_dockets_batch <- function(agency, lastModifiedDate, api_keys){
     url <- result$url
 
     if (status != 200) {
-      message(paste(Sys.time() |> format("%X"), "| Status", status, "| Failed URL:", url))
+      message(paste(Sys.time() |> format("%X"),
+                    "| Status", status,
+                    "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
       Sys.sleep(60)  # Pause before retrying -
       #TODO retry path that failed
     }

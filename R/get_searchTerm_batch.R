@@ -46,13 +46,7 @@ get_searchTerm_batch <- function(searchTerm,
     # message with error codes if not successful
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
-                    "| Failed URL:", url
-                    #,"Prior codes:", paste(status_codes, collapse = ",")
-                    #TODO add back in prior codes
-      ))
-
-      # small pause to give user a chance to cancel
-      Sys.sleep(6)
+                    "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
     }
 
     # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
@@ -63,7 +57,7 @@ get_searchTerm_batch <- function(searchTerm,
       message(paste("|", Sys.time()|> format("%X"),
                     "| Hit rate limit |",
                     remaining, "remaining | api key ending in",
-                    api_key |> stringr::str_replace(".{35}", "...")))
+                    api_key |> stringr::str_replace(".+(.{4})", "XXX\\1"))) #TODO check that this works properly
 
       # ROTATE KEYS
       api_key <- sample(api_keys, 1)
