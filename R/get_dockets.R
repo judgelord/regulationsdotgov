@@ -59,6 +59,10 @@ get_dockets <- function(agency,
     }
   })
   
+<<<<<<< HEAD
+=======
+  message("NOTE:Number of dockets may be lower due to dropping duplicate rows.")
+>>>>>>> 5b0c5ebfbac291ab75b3f0f253463becc20f528b
   metadata <- metadata |> dplyr::distinct() #removing rows that are entirely duplicated
 
   # Return the metadata (no saving on normal completion)
