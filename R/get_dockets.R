@@ -22,16 +22,16 @@ get_dockets <- function(agency,
 
       ## Temporary partial fix to issue #24 and #25
       # make sure we advanced
-      newdate <- as.Date(nextbatch$lastModifiedDate) |> min()
-      olddate <- as.Date(metadata$lastModifiedDate) |> min()
-
+      newdate <- nextbatch$lastModifiedDate |> min()
+      olddate <- metadata$lastModifiedDate |> min()
+      
       # if we did not
       if( newdate == olddate ){
         newdate <- newdate |>
           as.POSIXct(format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
           (\(x) x - 86400)() |>
           format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-
+        
         nextbatch <- get_dockets_batch(agency,
                                        lastModifiedDate = newdate,
                                        api_keys)
@@ -51,10 +51,14 @@ get_dockets <- function(agency,
   },  error = function(e) {
     message("An error occurred: ", e$message)
     if (!is.null(metadata)) {
+      
       save(metadata, file = tempdata)
       message("Partially retrieved metadata saved to: ", tempdata)
     }
   })
+  
+  message("NOTE:Number of dockets may be lower due to dropping duplicate rows.")
+  metadata <- metadata |> dplyr::distinct() #removing rows that are entirely duplicated
 
   # Return the metadata (no saving on normal completion)
   return(metadata)
