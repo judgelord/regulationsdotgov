@@ -7,8 +7,6 @@ get_comment_details <- function(id,
                                 lastModifiedDate = Sys.time(),
                                 api_keys = keys) {
 
-
-
   if(length(id) != length(id |> unique()) ){
     message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
   }
@@ -19,13 +17,9 @@ get_comment_details <- function(id,
 
   message("| Comment details | input N = ", length(id), " | output N = ", length(unique_ids), " | \n| --- | --- | --- | ")
 
-
-  # TODO make batches that we save in a temp file?
-  # batches <- length(id)/5000 |> round(1)
-
   #FIXME we need better error handling, for now using possibly(..., otherwise = content_init)
   # a default for possibly to return if the call fails
-  path <- make_path_comment_details(unique_ids[1], sample(api_keys, 1) )
+  path <- make_path_comment_details(unique_ids[1], sample(api_keys, 1))
   result_init <- httr::GET(path)
   content_init <- jsonlite::fromJSON(rawToChar(result_init$content))
   content_init$data$id <- NULL
@@ -34,7 +28,6 @@ get_comment_details <- function(id,
   # TESTING WITHOUT POSSIBLY TO SEE ERRORS
   # content <- purrr::map(unique_ids, get_comment_details_content, api_keys = api_keys)
 
-  #FIXME batch this by 5k, saving to a temp file
   content <- purrr::map(unique_ids,
                         api_keys = api_keys,
                         purrr::possibly(get_comment_details_content,
@@ -104,5 +97,88 @@ get_comment_details <- function(id,
 
   return(metadata)
 }
+
+
+# re-writing w error handling + batch tempfile 
+
+#get_comment_details <- function(id,
+#                                lastModifiedDate = Sys.time(),
+#                                api_keys) {
+#  
+#  if(length(id) != length(unique(id))) {
+#    message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
+#  }
+#  
+#  message("Trying: ", make_path_comment_details(id[1], "XXXXXXXXXXXXXX")) ## Switch this out for doc ID so its clearer? 
+#  
+#  unique_ids <- unique(id)
+#  
+#  message("| Comment details | input N = ", length(id), " | output N = ", length(unique_ids), " | \n| --- | --- | --- | ")
+#  
+#  # Are lines 16-19 needed? or were these just for error handling?  
+#  path <- make_path_comment_details(unique_ids[1], sample(api_keys, 1))
+#  result_init <- httr::GET(path)
+#  content_init <- jsonlite::fromJSON(rawToChar(result_init$content))
+#  content_init$data$id <- NULL
+#  
+#  temp_file <- tempfile(pattern = "comment_details_content_", fileext = ".rda")
+#  
+#  on.exit({
+#    if(exists("content") && is.null(return_value)) {
+#      save(content, file = temp_file)  
+#      message("\nFunction failed - saved content to temporary file: ", temp_file)
+#      message("To load: load('", temp_file, "')")
+#    }
+#  })
+#  
+#  content <- vector("list", length(unique_ids))
+#  return_value <- NULL  
+#  
+#  for(i in seq_along(unique_ids)) {
+#    tryCatch({
+#      content[[i]] <- get_comment_details_content(unique_ids[i], api_keys = api_keys)
+#    }, 
+#    error = function(e) {
+#      message("Error for id ", unique_ids[i], ": ", e$message)
+#      content[[i]] <<- NULL
+#    })
+#  }
+#  
+#  nulls <- vapply(content, is.null, logical(1))
+#  
+#  if(sum(nulls) > 0) {
+#    message(paste("Errors for ids:", paste(unique_ids[nulls], collapse = ",")))
+#  }
+#  
+#  # Drop nulls
+#  content <- content[!nulls]
+#  
+#  if(length(content) == 0) {
+#    warning("No valid comments retrieved")
+#    return(NULL)
+#  }
+#  
+#  # note that document call return attachment file names in attributes, but comments are in included
+#  metadata <- purrr::map_dfr(content, ~.x |> purrr::pluck("data", "attributes")) |> # purrr::map_dfr(content, ~.x$data$attributes) |>
+#    dplyr::select(-starts_with("display")) |>
+#    dplyr::distinct()
+#  
+#  # Get IDs
+#  ids <- sapply(content, function(x) x$data$id)
+#  metadata$id <- ids
+#  
+#  # Get attachments
+#  metadata$attachments <- lapply(content, function(x) {
+#    if(!is.null(x$included) && !is.null(x$included$attributes)) {
+#      x$included$attributes$fileFormats
+#    } else {
+#      NULL
+#    }
+#  })
+#  
+#  return_value <- metadata
+#  return(metadata)
+#}
+
 
 
