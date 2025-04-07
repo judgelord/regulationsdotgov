@@ -175,7 +175,6 @@ get_comment_details <- function(id,
 #    dplyr::distinct() |>
 #    dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
 #  
-#  
 #  # Get attachments
 #  metadata$attachments <- lapply(content, function(x) {
 #    if(!is.null(x$included) && !is.null(x$included$attributes)) {
