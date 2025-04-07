@@ -159,13 +159,22 @@ get_comment_details <- function(id,
 #  }
 #  
 #  # note that document call return attachment file names in attributes, but comments are in included
-#  metadata <- purrr::map_dfr(content, ~.x |> purrr::pluck("data", "attributes")) |> # purrr::map_dfr(content, ~.x$data$attributes) |>
-#    dplyr::select(-starts_with("display")) |>
-#    dplyr::distinct()
+#  metadata <- purrr::map_dfr(content, ~{
+#    # Extract attributes and replace NULLs with NA
+#    attrs <- purrr::pluck(.x, "data", "attributes") |>
+#      purrr::map(~ if(is.null(.x)) NA else .x) |>
+#      as.data.frame() |>
+#      dplyr::select(-starts_with("display"))
+#    
+#    # Add the id column
+#    attrs$id <- purrr::pluck(.x, "data", "id")
+#    
+#    # Return the augmented data
+#    attrs
+#  }) |>
+#    dplyr::distinct() |>
+#    dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
 #  
-#  # Get IDs
-#  ids <- sapply(content, function(x) x$data$id)
-#  metadata$id <- ids
 #  
 #  # Get attachments
 #  metadata$attachments <- lapply(content, function(x) {
@@ -179,6 +188,7 @@ get_comment_details <- function(id,
 #  return_value <- metadata
 #  return(metadata)
 #}
+
 
 
 
