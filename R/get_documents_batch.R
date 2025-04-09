@@ -79,7 +79,7 @@ get_documents_batch <- function(docketId,
 
   # if there was none, make an empty dataframe
   if(nrow(d)==0){
-    d <- tibble(lastpage = TRUE)
+    d <- dplyr::tibble(lastpage = TRUE)
   }
 
   return(d)
