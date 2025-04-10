@@ -17,7 +17,6 @@ get_document_details <- function(id,
   
   message("| Document details | input N = ", length(id), " | output N = ", length(unique_ids), " | \n| --- | --- | --- | ")
   
-  metadata <- list()
   success <- FALSE
   
   temp_file <- tempfile(pattern = "document_details_content_", fileext = ".rda")
@@ -49,7 +48,7 @@ get_document_details <- function(id,
   
   for(i in seq_along(unique_ids)) {
     tryCatch({
-      content[[i]] <- get_document_details_content(unique_ids[i], api_keys = api_keys)
+      content[[i]] <- get_document_details_content(unique_ids[i], api_keys = keys)
     }, 
     error = function(e) {
       message("Error for id ", unique_ids[i], ": ", e$message)
@@ -82,19 +81,18 @@ get_document_details <- function(id,
     # Add the id column
     attrs$id <- purrr::pluck(.x, "data", "id")
     
+    # Add attachments (fileFormats) if they exist
+    attrs$attachments <- if (!is.null(.x$included) && !is.null(.x$included$attributes)) {
+      file_formats <- .x$included$attributes$fileFormats
+      if (is.null(file_formats)) NA else file_formats
+    } else {
+      NA
+    }
+    
     # Return the augmented data
     attrs
   }) |>
     dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
-  
-  # Get attachments
-  metadata$attachments <- lapply(content, function(x) {
-    if(!is.null(x$included) && !is.null(x$included$attributes)) {
-      x$included$attributes$fileFormats
-    } else {
-      NULL
-    }
-  })
   
   success <- TRUE
   return(metadata)
