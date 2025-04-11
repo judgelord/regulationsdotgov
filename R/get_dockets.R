@@ -6,9 +6,19 @@ get_dockets <- function(agency,
   
   message("get_dockets for ", agency)
 
-  # Initialize temp file
-  tempdata <- tempfile(fileext = ".rda")
-
+  temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
+  
+  success <- FALSE
+  
+  on.exit({
+    if(!success && exists("metadata")) {
+      save(metadata, file = temp_file)  
+      message("\nFunction failed - saved content to temporary file: ", temp_file)
+      message("To load: load('", temp_file, "')")
+    }
+  })
+  
+  
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
     metadata <- get_dockets_batch(agency, lastModifiedDate, api_keys)
@@ -49,18 +59,12 @@ get_dockets <- function(agency,
       
       message("NOTE: Number of dockets may be lower due to dropping duplicate rows.")
     }
+    
+    success <- TRUE
+    
+    return(dplyr::distinct(metadata))
 
   },  error = function(e) {
     message("An error occurred: ", e$message)
-    if (!is.null(metadata)) {
-      
-      save(metadata, file = tempdata)
-      message("Partially retrieved metadata saved to: ", tempdata)
-    }
   })
-  
-  metadata <- metadata |> dplyr::distinct() #removing rows that are entirely duplicated
-
-  # Return the metadata (no saving on normal completion)
-  return(metadata)
 }

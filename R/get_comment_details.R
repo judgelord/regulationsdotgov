@@ -19,8 +19,10 @@ get_comment_details <- function(id,
   
   temp_file <- tempfile(pattern = "comment_details_content_", fileext = ".rda")
   
+  success <- FALSE
+  
   on.exit({
-    if(exists("content")) {
+    if(!success && exists("content")) {
       
       metadata <- purrr::map_dfr(content, ~{
         # Extract attributes and replace NULLs with NA
@@ -94,6 +96,7 @@ get_comment_details <- function(id,
     }
   })
   
+  success <- TRUE
   return(metadata)
 }
 

@@ -7,7 +7,17 @@ get_searchTerm <- function(searchTerm,
                            lastModifiedDate = Sys.time(), # , api_keys = api_keys #TODO test this
                            api_keys = keys){
 
-  metadata_temp <- tempfile(fileext = ".rda")
+  temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
+  
+  success <- FALSE
+  
+  on.exit({
+    if(!success && exists("metadata")) {
+      save(metadata, file = temp_file)  
+      message("\nFunction failed - saved content to temporary file: ", temp_file)
+      message("To load: load('", temp_file, "')")
+    }
+  })
 
   tryCatch({
 
@@ -65,17 +75,13 @@ get_searchTerm <- function(searchTerm,
 
     message(paste(" = ", nrow(metadata)))
     }
+    
+    success <- TRUE
+    return(metadata)
 
   }, error = function(e) {
     message("An error occurred: ", e$message)
-    if (exists("metadata")) {
-      save(metadata, file = metadata_temp)
-      message("Document data saved to: ", metadata_temp)
-
-    }
   })
-
-  return(metadata)
 }
 
 # FOR TESTING

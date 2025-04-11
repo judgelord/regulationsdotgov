@@ -4,7 +4,18 @@ get_commentsOnId <- function(objectId,
                              lastModifiedDate = Sys.time(),
                              api_keys){
 
-  metadata_temp <- tempfile(fileext = ".rda")
+  temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
+  
+  success <- FALSE
+  
+  on.exit({
+    if(!success && exists("metadata")) {
+      save(metadata, file = temp_file)  
+      message("\nFunction failed - saved content to temporary file: ", temp_file)
+      message("To load: load('", temp_file, "')")
+    }
+  })
+  
 
   message(paste("Getting comments on", objectId))
 
@@ -61,17 +72,14 @@ get_commentsOnId <- function(objectId,
     )
 
     message(paste(" = ", nrow(metadata)))
-
     }
+    
+    success <- TRUE
+    return( dplyr::distinct(metadata) )
+    
     },  error = function(e) {
       message("An error occurred: ", e$message)
-      if (!is.null(metadata)) {
-        save(metadata, file = metadata_temp)
-        message("Partially retrieved metadata saved to: ", metadata_temp)
-      }
-    })
-
-  return( dplyr::distinct(metadata) )
+      })
 }
 
 
