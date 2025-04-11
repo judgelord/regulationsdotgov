@@ -3,9 +3,12 @@
 #' @export
 
 get_searchTerm <- function(searchTerm,
-                           documents = "documents", # c("documents", "comments") defaults to documents
+                           endpoint,
                            lastModifiedDate = Sys.time(), # , api_keys = api_keys #TODO test this
-                           api_keys = keys){
+                           agencyId,
+                           docketId, 
+                           commentOnId, 
+                           api_keys){
 
   temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
   
@@ -23,7 +26,7 @@ get_searchTerm <- function(searchTerm,
 
     # Fetch the initial 5k and establish the base dataframe
     metadata <- get_searchTerm_batch(searchTerm = searchTerm,
-                                   documents = documents,
+                                   endpoint,
                                    #commentOnId, #TODO feature to search comments on a specific docket or document
                                    lastModifiedDate = Sys.time(),
                                    api_keys = api_keys)
@@ -39,7 +42,7 @@ get_searchTerm <- function(searchTerm,
 
     # Fetch the next batch of metadata using the last modified date
     nextbatch <- get_searchTerm_batch(searchTerm,
-                                    documents,
+                                    endpoint,
                                     lastModifiedDate = min(metadata$lastModifiedDate), # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
                                     api_keys = api_keys
                                     )
@@ -60,7 +63,7 @@ get_searchTerm <- function(searchTerm,
         stringr::str_replace("00", "01")
 
       nextbatch <- get_searchTerm_batch(searchTerm,
-                                        documents,
+                                        endpoint,
                                         lastModifiedDate = newdate, # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
                                         api_keys = api_keys
       )
@@ -86,8 +89,8 @@ get_searchTerm <- function(searchTerm,
 
 # FOR TESTING
 if(F){
-  get_searchTerm("racism",
-                 "comments",
+  get_searchTerm(searchTerm = "racism",
+                 endpoint = "comments",
                  api_keys = keys,
                  lastModifiedDate = "2024-01-00T14:48:17Z")
 }

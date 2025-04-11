@@ -1,18 +1,43 @@
 #' @keywords internal
 
-make_path_searchTerm <- function(searchTerm, 
-                                 documents, 
-                                 lastModifiedDate, 
-                                 page,
-                                 api_key){
-  paste0("https://api.regulations.gov",
-         "/v4/",
-         ifelse(documents == "comments", "comments", "documents"),
-         "?",
-         "&filter[searchTerm]=",  stringr::str_c("%22", searchTerm, "%22") |> stringr::str_replace_all(" ", "%2B"), "&",
-         "filter[lastModifiedDate][le]=", format_date(lastModifiedDate), "&", #less than or equal to (vs [ge] in the api docs)
-         "page[size]=250", "&",
-         "page[number]=", page, "&", 
-         "sort=-lastModifiedDate,documentId", "&",
-         "api_key=", api_key)
+make_path_searchTerm <- function(searchTerm,
+                                 endpoint,
+                                 lastModifiedDate = Sys.time(),
+                                 agencyId = NULL,
+                                 docketId = NULL,
+                                 commentOnId = NULL,
+                                 page = 1,
+                                 api_key) {
+  
+  # Base URL 
+  base_url <- "https://api.regulations.gov/v4"
+  endpoint <- match.arg(endpoint, c("documents", "comments"))
+  
+  # Helper function to wrap in quotes and URL encode
+  wrap_encode <- function(x) {
+    if (is.null(x)) return(NULL)
+    URLencode(paste0('"', x, '"'), reserved = TRUE)
+  }
+  
+  # Query parameters
+  query <- list(
+    `filter[searchTerm]` = wrap_encode(searchTerm),
+    `filter[agencyId]` = wrap_encode(agencyId),
+    `filter[lastModifiedDate][le]` = format_date(lastModifiedDate),
+    `filter[docketId]` = if (endpoint == "documents") wrap_encode(docketId),
+    `filter[commentOnId]` = if (endpoint == "comments") wrap_encode(commentOnId),
+    `page[size]` = 250,
+    `page[number]` = page,
+    `sort` = "-lastModifiedDate,documentId",
+    `api_key` = api_key
+  )
+  
+  # Remove NULL parameters
+  query <- Filter(Negate(is.null), query)
+  
+  # Construct final URL with proper encoding
+  sprintf("%s/%s?%s",
+          base_url,
+          endpoint,
+          paste0(names(query), "=", unlist(query), collapse = "&"))
 }
