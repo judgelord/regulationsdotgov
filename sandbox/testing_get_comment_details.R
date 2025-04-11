@@ -5,13 +5,19 @@ if(F){
 }
 
   # load saved comment metadata for testing
-  load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
+  #load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
+load(here::here("data",
+                "search",
+                "environmental justice",
+                "environmental justices_comments.rda"))
+
+comment_metadata <- d
 
   # to get all
   ids <- comment_metadata$id
 
   # for testing with 200
-  ids <- comment_metadata$id[1:200]
+  ids <- comment_metadata$id#[1:200]
 
 
   # for a notice (the API appears to return the same document details with /comments/ instead of /documents/ in the path)
@@ -107,16 +113,19 @@ map_dfr(comment_attachments, ~.x)
 
 
   if(F){
-    get_comment_details(id = c("DOC-2024-0007-0020",  "USDA-2024-0003-0115"), api_keys = api_keys)
+    d < - get_commentsOnId(id = "", api_keys = api_keys)
 
     # not to self: what I really need is the biden era comments
     details5k <- get_comment_details(id = d$id[1:5000],
-                                     api_keys = api_keys)
+                                     api_keys = keys)
     details10k <- get_comment_details(id = d$id[5000:10000],
                                       api_keys = api_keys)
     details15k <- get_comment_details(id = d$id[10000:15000],
                                       api_keys = api_keys)
     details20k <- get_comment_details(id = d$id[15000:20000],
                                       api_keys = api_keys)
-    save(details, here::here("data", "details_temp.rda"))
+
+    details <- full_join(details5k, details10k) |> full_join(details15k) | full_join(details20k)
+
+    save(details, file = here::here("data", "details_temp.rda"))
   }

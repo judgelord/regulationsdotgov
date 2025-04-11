@@ -2,7 +2,7 @@
 
 get_commentsOnId <- function(objectId,
                              lastModifiedDate = Sys.time(),
-                             api_keys){
+                             api_keys = keys){
 
   metadata_temp <- tempfile(fileext = ".rda")
 
@@ -15,6 +15,8 @@ get_commentsOnId <- function(objectId,
     metadata <- get_comments_batch(objectId,
                                  lastModifiedDate,
                                  api_keys)
+
+    # message("Docket =", unique(metadata$id |> stringr::str_remove("-[0-9]*$")))
 
     # Loop until last page is TRUE
 

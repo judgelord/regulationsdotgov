@@ -102,6 +102,8 @@ get_comment_details <- function(id,
   #   metadata <- left_join(metadata, attachments_with_urls, by = "id")
   # }
 
+  metadata <- dplyr::distinct(metadata)
+
   return(metadata)
 }
 
