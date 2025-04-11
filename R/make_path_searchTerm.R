@@ -5,7 +5,7 @@ make_path_searchTerm <- function(searchTerm,
                                  lastModifiedDate = Sys.time(),
                                  agencyId = NULL,
                                  docketId = NULL,
-                                 docketType = NULL, #c("Rulemaking", "Non-rulemaking")
+                                 docketType = NULL, #c("Rulemaking", "Nonrulemaking")
                                  commentOnId = NULL,
                                  page = 1,
                                  api_key) {

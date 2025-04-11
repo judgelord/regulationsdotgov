@@ -52,8 +52,9 @@ c2 <- get_commentsOnId(commentOnId = documentId, api_keys = api_keys)
   commentOnId = "09000064824e36b7"
   commentOnId = "09000064856107a5"
   commentOnId <- "0900006484e4bd65"
+  commentOnId <- "09000064855c8190"
 
-  n <- get_commentsOnId(commentOnId,  keys)
+  n <- get_commentsOnId(objectId = commentOnId, api_keys = keys)
 
   c <- unique(n$objectId)
 
