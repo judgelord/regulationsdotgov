@@ -4,7 +4,18 @@ get_commentsOnId <- function(objectId,
                              lastModifiedDate = Sys.time(),
                              api_keys = keys){
 
-  metadata_temp <- tempfile(fileext = ".rda")
+  temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
+  
+  success <- FALSE
+  
+  on.exit({
+    if(!success && exists("metadata")) {
+      save(metadata, file = temp_file)  
+      message("\nFunction failed - saved content to temporary file: ", temp_file)
+      message("To load: load('", temp_file, "')")
+    }
+  })
+  
 
   message(paste("Getting comments on", objectId))
 
@@ -35,17 +46,21 @@ get_commentsOnId <- function(objectId,
     # if we did not
     if( newdate == olddate ){
       # go to next day to avoid getting stuck
+      
+      newdate <- newdate |>
+        as.POSIXct(format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
+        (\(x) x - 86400)() |>
+        format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+        
+     # # subtract a day so we don't end up in endless loops  where more than 5000 comments come in a single day
+     # stringr::str_sub(newdate, 9, 10) <- ( as.numeric(newdate |> stringr::str_sub(9, 10) ) -1 ) |>
+     #   abs() |> # FIXME this really should be subtracting one second from a native date time object---we can still get stuck at 00 here
+     #   stringr::str_pad(2, pad =  "0") |>
+     #   stringr::str_replace("00", "01")
 
-
-      # subtract a day so we don't end up in endless loops  where more than 5000 comments come in a single day
-      stringr::str_sub(newdate, 9, 10) <- ( as.numeric(newdate |> stringr::str_sub(9, 10) ) -1 ) |>
-        abs() |> # FIXME this really should be subtracting one second from a native date time object---we can still get stuck at 00 here
-        stringr::str_pad(2, pad =  "0") |>
-        stringr::str_replace("00", "01")
-
-      nextbatch <- get_comments_batch(objectId,
-                                      lastModifiedDate = newdate,
-                                      api_keys)
+     nextbatch <- get_comments_batch(objectId,
+                                     lastModifiedDate = newdate,
+                                     api_keys)
     }
     ## END FIX
 
@@ -55,20 +70,18 @@ get_commentsOnId <- function(objectId,
 
     # Append next batch to comments
     metadata <- suppressMessages(
-      bind_rows(metadata, nextbatch) #TODO want to try left_join to see if it yields better results
+      dplyr::bind_rows(metadata, nextbatch) #TODO want to try left_join to see if it yields better results
     )
 
     message(paste(" = ", nrow(metadata)))
-
     }
+    
+    success <- TRUE
+    return( dplyr::distinct(metadata) )
+    
     },  error = function(e) {
-      if (!is.null(metadata)) {
-        save(metadata, file = metadata_temp)
-        message("Partially retrieved metadata saved to: ", metadata_temp)
-      }
-    })
-
-  return( dplyr::distinct(metadata) )
+      message("An error occurred: ", e$message)
+      })
 }
 
 

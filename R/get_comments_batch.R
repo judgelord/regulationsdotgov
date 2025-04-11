@@ -6,7 +6,6 @@ get_comments_batch <- function(objectId,
 
   #api_key <- sample(api_keys, 1)
 
-  # call the make path function to make paths for the first 20 pages of 250 results each
   metadata <- list()
 
   message("Trying: ", make_path_commentOnId(objectId,
@@ -33,7 +32,7 @@ get_comments_batch <- function(objectId,
     while(status != 200){
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
-                    "| Failed URL:", path |> stringr::str_replace("&api_key=.*", "&api_key=XXX")  ))
+                    "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
 
       # small pause to give user a chance to cancel
       Sys.sleep(6)

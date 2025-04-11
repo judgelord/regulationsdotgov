@@ -27,7 +27,7 @@ get_documents_batch <- function(docketId,
     while(status != 200){
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
-                    "| Failed URL:", url |> stringr::str_replace("&api_key=.*", "&api_key=XXXXXXXXXXXXXXX") ))
+                    "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
 
       # remake path with other key
       path <- make_path_documents(docketId,
@@ -79,7 +79,7 @@ get_documents_batch <- function(docketId,
 
   # if there was none, make an empty dataframe
   if(nrow(d)==0){
-    d <- tibble(lastpage = TRUE)
+    d <- dplyr::tibble(lastpage = TRUE)
   }
 
   return(d)

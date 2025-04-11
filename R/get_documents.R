@@ -4,9 +4,18 @@
 get_documents <- function(docketId,
                           lastModifiedDate = Sys.time(),
                           api_keys){
-
+  
   metadata <- list()
-  metadata_temp <- tempfile(fileext = ".rda")
+  success <- FALSE
+  
+  # Save temp file on error
+  temp_file <- tempfile(pattern = "documents_", fileext = ".rda") 
+  
+  on.exit({
+    if(!success && exists("metadata")) {
+      save(metadata, file = temp_file)  
+      message("\nTemporary file: ", temp_file)
+      message("To load: load('", temp_file, "')")}})
 
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
@@ -28,24 +37,22 @@ get_documents <- function(docketId,
 
       ## Temporary partial fix to issue #24 and #25
       # make sure we advanced
-      newdate <-  min(nextbatch$lastModifiedDate)
-      olddate <-  min(metadata$lastModifiedDate)
+      newdate <- nextbatch$lastModifiedDate |> min()
+      olddate <- metadata$lastModifiedDate |> min()
 
       # if we did not
       if( newdate == olddate ){
         # go to next day to avoid getting stuck
 
         # subtract a day so we don't end up in endless loops  where more than 5000 comments come in a single day
-        stringr::str_sub(newdate, 9, 10) <- ( as.numeric(newdate |> stringr::str_sub(9, 10) ) -1 ) |>
-          abs() |> # FIXME this really should be subtracting one second from a native date time object---we can still get stuck at 00 here
-          stringr::str_pad(2, pad =  "0") |>
-          stringr::str_replace("00", "01")
+        newdate <- newdate |>
+          as.POSIXct(format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC") |>
+          (\(x) x - 86400)() |>
+          format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 
-        nextbatch <- get_searchTerm_batch(searchTerm,
-                                          documents,
-                                          lastModifiedDate = newdate, # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
-                                          api_keys = api_keys
-        )
+       nextbatch <- get_documents_batch(docketId,
+                                      lastModifiedDate = newdate,
+                                      api_keys)
       }
 
       message(paste(nrow(metadata), "+", nrow(nextbatch)))
@@ -54,25 +61,14 @@ get_documents <- function(docketId,
       metadata <- dplyr::full_join(metadata, nextbatch)
 
       message(paste(" = ", nrow(metadata)))
-
-      # Debugging: Print the tempfile path to ensure it's valid
-      message("Saving metadata to temporary file: ", metadata_temp)
-
-      # Save metadata to tempfile
-      save(metadata, file = metadata_temp)
     }
+    
+    success <- TRUE
+    return(metadata)
 
   }, error = function(e) {
-
     message("An error occurred: ", e$message)
-
-    if (length(metadata) > 0) {
-      message("Saving partial metadata to: ", metadata_temp)
-      save(metadata, file = metadata_temp)
-    }
   })
-
-  return(metadata)
 }
 
 

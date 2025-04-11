@@ -3,9 +3,10 @@
 
 # the batch function
 get_searchTerm_batch <- function(searchTerm,
-                                 documents,
-                                 # docket, #TODO feature to search comments on a specific docket or document
-                                 #commentOnId, #TODO feature to search comments on a specific docket or document
+                                 endpoint,
+                                 agencyId,
+                                 docketId, 
+                                 commentOnId,
                                  lastModifiedDate,
                                  api_keys){
 
@@ -14,7 +15,7 @@ get_searchTerm_batch <- function(searchTerm,
   i <- 1
   metadata <- list()
 
-  message(paste0(documents,' containing "', searchTerm,
+  message(paste0(endpoint,' containing "', searchTerm,
                  '" posted before ',lastModifiedDate)
           )
 
@@ -23,10 +24,10 @@ get_searchTerm_batch <- function(searchTerm,
     message(paste("Page", i))
 
     path <- make_path_searchTerm(searchTerm,
-                               documents,
+                               endpoint,
                                lastModifiedDate,
                                page = i,
-                               api_key)
+                               api_key = api_key)
 
 
     result <- httr::GET(path)
@@ -46,13 +47,7 @@ get_searchTerm_batch <- function(searchTerm,
     # message with error codes if not successful
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
-                    "| Failed URL:", url
-                    #,"Prior codes:", paste(status_codes, collapse = ",")
-                    #TODO add back in prior codes
-      ))
-
-      # small pause to give user a chance to cancel
-      Sys.sleep(6)
+                    "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
     }
 
     # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
@@ -63,7 +58,7 @@ get_searchTerm_batch <- function(searchTerm,
       message(paste("|", Sys.time()|> format("%X"),
                     "| Hit rate limit |",
                     remaining, "remaining | api key ending in",
-                    api_key |> stringr::str_replace(".{35}", "...")))
+                    api_key |> stringr::str_replace(".+(.{4})", "XXX\\1"))) #TODO check that this works properly
 
       # ROTATE KEYS
       api_key <- sample(api_keys, 1)
@@ -85,7 +80,7 @@ get_searchTerm_batch <- function(searchTerm,
 
   # if there was none, make an empty dataframe
   if(nrow(d)==0){
-    d <- tibble(lastpage = TRUE)
+    d <- dplyr::tibble(lastpage = TRUE)
   }
 
   # add back in the search term
@@ -97,8 +92,9 @@ get_searchTerm_batch <- function(searchTerm,
 # FOR TESTING
 if(F){
 
-  get_searchTerm_batch(searchTerm,
-                       documents,
-                       api_keys = api_keys)
+  get_searchTerm_batch(searchTerm = "racism",
+                       endpoint = "documents", 
+                       lastModifiedDate = Sys.time(),
+                       api_keys = keys)
 
 }
