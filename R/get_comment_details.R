@@ -98,7 +98,7 @@ get_comment_details <- function(id,
     if (!is.null(x$included) && !is.null(x$included$attributes)) {
       fileFormats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
 
-      if (!is.null(attachments)){
+      if (!is.null(fileFormats)){
         attrs$attachments <- list(fileFormats) # |>  tidyr::nest(.key = "fileFormats") #FIXME this is too nested
       } else {
         attrs$attachments <- NA_character_
