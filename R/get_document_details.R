@@ -86,10 +86,20 @@ get_document_details <- function(id,
 # a function to extract attributes
   extract_attrs <- function(content) {
 
-    x <- content
+    x <- content#[[1]]
 
     # Extract attributes and replace NULLs with NA
-    attrs <- purrr::pluck(x, "data", "attributes") |>
+    attrs <- purrr::pluck(x, "data", "attributes")
+
+    attrs$displayProperties <- NULL
+
+    # nest attachments
+    if(!is.null(attrs$fileFormats )){
+    attrs$fileFormats <-  tidyr::nest(attrs$fileFormats, .key = "fileFormats")
+    }
+
+
+    attrs <- attrs |>
       purrr::map(~ if(is.null(.x)) NA_character_ else .x) |>
       as.data.frame() #|>
     #dplyr::select(-starts_with("display")) # Possibly add this back in after testing?
