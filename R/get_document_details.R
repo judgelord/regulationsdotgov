@@ -5,7 +5,7 @@
 # loop over a vector of comment ids, return a dataframe of comment details
 get_document_details <- function(id,
                                 lastModifiedDate = Sys.time(),
-                                api_keys) {
+                                api_keys = keys) {
 
   if(length(id) != length(unique(id))) {
     message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
@@ -48,7 +48,7 @@ get_document_details <- function(id,
 
   for(i in seq_along(unique_ids)) {
     tryCatch({
-      content[[i]] <- get_document_details_content(unique_ids[i], api_keys = keys)
+      content[[i]] <- get_document_details_content(unique_ids[i], api_keys = api_keys)
     },
     error = function(e) {
       message("Error for id ", unique_ids[i], ": ", e$message)
