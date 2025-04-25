@@ -21,36 +21,13 @@ get_document_details <- function(id,
 
   temp_file <- tempfile(pattern = "document_details_content_", fileext = ".rda")
 
+
+
+
+
+
   on.exit({
     if(!success && exists("metadata")) {
-
-      metadata <- purrr::map_dfr(content, ~{
-
-        attrs <- purrr::pluck(.x, "data", "attributes") |>
-
-          purrr::map(~ if(is.null(.x)) NA_character_ else {
-            if(length(.x) > 1) toString(.x) else .x
-          }) |>
-          as.data.frame()
-
-        # Add the id column
-        attrs$id <- purrr::pluck(.x, "data", "id")
-
-        # Add attachments (fileFormats) if they exist
-        if (!is.null(x$included) && !is.null(x$included$attributes)) {
-          file_formats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
-
-          if (!is.null(file_formats)){
-            attrs$attachments <- tidyr::nest(file_formats)
-          } else {
-            attrs$attachments <- NA_character_
-          }
-        }
-
-        attrs
-      }) |>
-        dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
-
       save(metadata, file = temp_file)
       message("\nFunction failed - saved content to temporary file: ", temp_file)
       message("To load: load('", temp_file, "')")
@@ -95,28 +72,34 @@ get_document_details <- function(id,
 
     # nest attachments
     if(!is.null(attrs$fileFormats )){
-    attrs$fileFormats <-  tidyr::nest(attrs$fileFormats, .key = "fileFormats")
+      fileFormats <- list(attrs$fileFormats )
+      attrs$fileFormats <- NULL
+      #attrs$fileFormats <- tidyr::nest(attrs$fileFormats, .key = "fileFormats")
     }
 
 
     attrs <- attrs |>
       purrr::map(~ if(is.null(.x)) NA_character_ else .x) |>
-      as.data.frame() #|>
-    #dplyr::select(-starts_with("display")) # Possibly add this back in after testing?
+      as.data.frame()
+
+    # add back in attachments
+    if(!is.null(fileFormats )){
+    attrs$fileFormats <- fileFormats
+    }
 
     # Add the id column
     attrs$id <- purrr::pluck(x, "data", "id")
 
-    # Add attachments (fileFormats) if they exist
-    if (!is.null(x$included) && !is.null(x$included$attributes)) {
-      file_formats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
-
-      if (!is.null(file_formats)){
-        attrs$attachments <- tidyr::nest(file_formats)
-        } else {
-          attrs$attachments <- NA_character_
-        }
-    }
+    # # Add attachments (fileFormats) if they exist
+    # if (!is.null(x$included) && !is.null(x$included$attributes)) {
+    #   fileFormats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
+    #
+    #   if (!is.null(file_formats)){
+    #     attrs$fileFormats <- tidyr::nest(fileFormats)
+    #     } else {
+    #       attrs$fileFormats <- NA_character_
+    #     }
+    # }
 
     # Return the augmented data
     return(attrs)

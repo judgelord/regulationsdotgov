@@ -48,11 +48,17 @@ comment_metadata <- d
   comment_details2 <- get_comment_details(id = c("OMB-2023-0001-15386",
                                                  "OMB-2023-0001-14801"))
 
+  comment_details2$attachments
 
+  class(comment_details2$attachments)
+
+
+  comment_details2$attachments  |> unnest(cols = c(fileUrl, format, size))
   comment_details$attachments  |> unnest(cols = c(fileUrl, format, size))
-  comment_details$attachments  |> unnest(cols = c(fileUrl, format, size))
 
+  comment_details2$attachments |> map_dfr(as_tibble)
 
+  comment_details2 |> unnest(attachments)
   ############### FOR DEVIN'S DATA ####################
   load(here::here("data", "comments_coded_details.rdata"))
   if(updating){
