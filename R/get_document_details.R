@@ -25,15 +25,28 @@ get_document_details <- function(id,
     if(!success && exists("metadata")) {
 
       metadata <- purrr::map_dfr(content, ~{
-        # Extract attributes and replace NULLs with NA
+
         attrs <- purrr::pluck(.x, "data", "attributes") |>
-          purrr::map(~ if(is.null(.x)) NA else .x) |>
+
+          purrr::map(~ if(is.null(.x)) NA_character_ else {
+            if(length(.x) > 1) toString(.x) else .x
+          }) |>
           as.data.frame()
 
         # Add the id column
         attrs$id <- purrr::pluck(.x, "data", "id")
 
-        # Return the augmented data
+        # Add attachments (fileFormats) if they exist
+        if (!is.null(x$included) && !is.null(x$included$attributes)) {
+          file_formats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
+
+          if (!is.null(file_formats)){
+            attrs$attachments <- tidyr::nest(file_formats)
+          } else {
+            attrs$attachments <- NA_character_
+          }
+        }
+
         attrs
       }) |>
         dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
@@ -73,9 +86,11 @@ get_document_details <- function(id,
 # a function to extract attributes
   extract_attrs <- function(content) {
 
+    x <- content
+
     # Extract attributes and replace NULLs with NA
     attrs <- purrr::pluck(x, "data", "attributes") |>
-      purrr::map(~ if(is.null(.x)) NA else .x) |>
+      purrr::map(~ if(is.null(.x)) NA_character_ else .x) |>
       as.data.frame() #|>
     #dplyr::select(-starts_with("display")) # Possibly add this back in after testing?
 
@@ -89,12 +104,12 @@ get_document_details <- function(id,
       if (!is.null(file_formats)){
         attrs$attachments <- tidyr::nest(file_formats)
         } else {
-          attrs$attachments <- NA
+          attrs$attachments <- NA_character_
         }
     }
 
     # Return the augmented data
-    attrs
+    return(attrs)
   }
 
   # note that document call return attachment file names in attributes, but comments are in included

@@ -1,8 +1,20 @@
 ################
 # TESTING #####
+# install regulationsdotgov
+devtools::load_all()
+# keys saved up one directory
+load("../keys.rda")
+
+library(tidyverse)
+library(httr)
+library(jsonlite)
+library(magrittr)
+
 if(F){
   get_comment_details_content(id = "CEQ-2019-0003-197917", api_keys = api_keys)
 }
+
+comment_details <- get_comment_details(id = "EPA-HQ-OA-2004-0002-0001")
 
   # load saved comment metadata for testing
   #load(here::here("data", "comment_metadata_09000064856107a5.rdata"))
@@ -36,6 +48,9 @@ comment_metadata <- d
   comment_details2 <- get_comment_details(id = c("OMB-2023-0001-15386",
                                                  "OMB-2023-0001-14801"))
 
+
+  comment_details$attachments  |> unnest(cols = c(fileUrl, format, size))
+  comment_details$attachments  |> unnest(cols = c(fileUrl, format, size))
 
 
   ############### FOR DEVIN'S DATA ####################

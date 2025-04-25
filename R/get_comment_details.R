@@ -73,29 +73,54 @@ get_comment_details <- function(id,
 
   # note that document call return attachment file names in attributes, but comments are in included
 
-  metadata <- purrr::map_dfr(content, ~{
+  # a function to extract attributes
+  extract_attrs <- function(content) {
+
+    x <- content#[[1]]
+
     # Extract attributes and replace NULLs with NA
-    attrs <- purrr::pluck(.x, "data", "attributes") |>
-      purrr::map(~ if(is.null(.x)) NA else .x) |>
+    attrs <- purrr::pluck(x, "data", "attributes")
+
+    # nest attachments
+    # attrs$fileFormats <-  tidyr::nest(attrs$fileFormats, .key = "fileFormats")
+
+
+    attrs <- attrs |>
+      purrr::map(~ if(is.null(.x)) NA_character_ else .x) |>
       as.data.frame() #|>
-      #dplyr::select(-starts_with("display")) # Possibly add this back in after testing?
+    #dplyr::select(-starts_with("display")) # Possibly add this back in after testing?
 
     # Add the id column
-    attrs$id <- purrr::pluck(.x, "data", "id")
+    attrs$id <- purrr::pluck(x, "data", "id")
+
+    # Add attachments (fileFormats) if they exist
+    if (!is.null(x$included) && !is.null(x$included$attributes)) {
+      file_formats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
+
+      if (!is.null(file_formats)){
+        attrs$attachments <- tidyr::nest(file_formats)
+      } else {
+        attrs$attachments <- NA_character_
+      }
+    }
 
     # Return the augmented data
-    attrs
-  }) |>
+    return(attrs)
+  }
+
+
+
+  metadata <- purrr::map_dfr(content, extract_attrs) |>
     dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
 
-  # Get attachments
-  metadata$attachments <- lapply(content, function(x) {
-    if(!is.null(x$included) && !is.null(x$included$attributes)) {
-      x$included$attributes$fileFormats
-    } else {
-      NULL
-    }
-  })
+  # # Get attachments
+  # metadata$attachments <- lapply(content, function(x) {
+  #   if(!is.null(x$included) && !is.null(x$included$attributes)) {
+  #    tidyr::nest(x$included$attributes$fileFormats)
+  #   } else {
+  #     NULL
+  #   }
+  # })
 
   metadata <- dplyr::distinct(metadata)
 
