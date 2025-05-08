@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   get_dockets: get_dockets.html
-last_built: 2025-04-25T20:02Z
+last_built: 2025-05-08T18:12Z
 urls:
   reference: https://judgelord.github.io/regulationsdotgov/reference
   article: https://judgelord.github.io/regulationsdotgov/articles
