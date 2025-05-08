@@ -7,10 +7,10 @@
 format_date <- function(lastModifiedDate){
   
   if(!stringr::str_detect(lastModifiedDate, "[0-9]{4}-[0-9]{2}-[0-9]{2}\\S[0-9]{2}:[0-9]{2}:[0-9]{2}\\S")){
-    timezone <- base::format(lastModifiedDate, format="%Z")
+    timezone <- Sys.timezone()
     
     # Convert to POSIXct
-    date_posixct <- as.POSIXct(lastModifiedDate, format = "%Y-%m-%d %H:%M:%S", tz = "EDT")
+    date_posixct <- as.POSIXct(lastModifiedDate, format = "%Y-%m-%d %H:%M:%S", tz = timezone)
     
     # Convert to UTC
     date_utc <- format(date_posixct, tz = "UTC", usetz = FALSE)
@@ -30,3 +30,4 @@ format_date <- function(lastModifiedDate){
   }
 
 }
+
