@@ -2,17 +2,26 @@
 
 #' @keywords internal
 
-get_dockets_batch <- function(agency, lastModifiedDate, api_keys){
+get_dockets_batch <- function(agency,
+                              lastModifiedDate,
+                              lastModifiedDate_mod = "le", #c("le", "ge")
+                              docketType = NULL, #c("Rulemaking", "Nonrulemaking")
+                              api_keys){
 
   api_key <- sample(api_keys, 1)
-
-    metadata <- list()
+  
+  metadata <- list()
 
   for (i in 1:20) {
     message(paste("Page", i))
 
     # Build the API path and make the GET request
-    path <- make_path_dockets(agency, lastModifiedDate, page = i, api_key)
+    path <- make_path_dockets(agency, 
+                              lastModifiedDate, 
+                              lastModifiedDate_mod =  lastModifiedDate_mod,
+                              page = i, 
+                              api_key = api_key)
+    
     result <- httr::GET(path)
     status <- result$status_code
     url <- result$url

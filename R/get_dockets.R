@@ -2,11 +2,13 @@
 
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
+                        lastModifiedDate_mod = NULL, #c("le", "ge")
+                        docketType = NULL, #c("Rulemaking", "Nonrulemaking")
                         api_keys){
   
   message("get_dockets for ", agency)
 
-  temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
+  temp_file <- tempfile(pattern = "dockets_", fileext = ".rda")
   
   success <- FALSE
   
@@ -21,15 +23,21 @@ get_dockets <- function(agency,
   
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
-    metadata <- get_dockets_batch(agency, lastModifiedDate, api_keys)
+    metadata <- get_dockets_batch(agency, 
+                                  lastModifiedDate,
+                                  lastModifiedDate_mod,
+                                  docketType,
+                                  api_keys)
 
     # Loop until last page is TRUE
     while (!tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0) {
       # Fetch the next batch of comments using the last modified date
-      nextbatch <- get_dockets_batch(agency,
+      nextbatch <- get_dockets_batch(agency, 
                                      lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                     lastModifiedDate_mod,
+                                     docketType,
                                      api_keys)
-
+      
       ## Temporary partial fix to issue #24 and #25
       # make sure we advanced
       newdate <- nextbatch$lastModifiedDate |> min()
@@ -42,8 +50,10 @@ get_dockets <- function(agency,
           (\(x) x - 86400)() |>
           format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
         
-        nextbatch <- get_dockets_batch(agency,
-                                       lastModifiedDate = newdate,
+        nextbatch <- get_dockets_batch(agency, 
+                                       lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                       lastModifiedDate_mod,
+                                       docketType,
                                        api_keys)
       }
       ## END FIX
