@@ -4,13 +4,15 @@
 
 get_searchTerm <- function(searchTerm,
                            endpoint,
-                           lastModifiedDate = Sys.time(), # , api_keys = api_keys #TODO test this
-                           agencyId,
-                           docketId, 
-                           commentOnId, 
+                           lastModifiedDate = Sys.time(),
+                           lastModifiedDate_mod = "le", #c("le", "ge", "NULL"),
+                           agencyId = NULL,
+                           docketId = NULL,
+                           docketType = NULL, #c("Rulemaking", "Nonrulemaking")
+                           commentOnId = NULL,
                            api_keys){
 
-  temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
+  temp_file <- tempfile(fileext = ".rda")
   
   success <- FALSE
   
@@ -25,11 +27,15 @@ get_searchTerm <- function(searchTerm,
   tryCatch({
 
     # Fetch the initial 5k and establish the base dataframe
-    metadata <- get_searchTerm_batch(searchTerm = searchTerm,
-                                   endpoint,
-                                   #commentOnId, #TODO feature to search comments on a specific docket or document
-                                   lastModifiedDate = Sys.time(),
-                                   api_keys = api_keys)
+    metadata <- get_searchTerm_batch(searchTerm,
+                                     endpoint,
+                                     lastModifiedDate,
+                                     lastModifiedDate_mod, 
+                                     agencyId,
+                                     docketId,
+                                     docketType, 
+                                     commentOnId,
+                                     api_keys = api_keys)
 
     if(nrow(metadata) == 0){
       metadata <- dplyr::tibble(lastpage = TRUE)
@@ -38,14 +44,16 @@ get_searchTerm <- function(searchTerm,
     # Loop until last page is TRUE
     while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
-
-
     # Fetch the next batch of metadata using the last modified date
     nextbatch <- get_searchTerm_batch(searchTerm,
                                     endpoint,
                                     lastModifiedDate = min(metadata$lastModifiedDate), # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
-                                    api_keys = api_keys
-                                    )
+                                    lastModifiedDate_mod, 
+                                    agencyId,
+                                    docketId,
+                                    docketType, 
+                                    commentOnId,
+                                    api_keys = api_keys)
 
     # make sure we advanced
     newdate <- as.Date(nextbatch$lastModifiedDate) |> min()
@@ -65,6 +73,11 @@ get_searchTerm <- function(searchTerm,
       nextbatch <- get_searchTerm_batch(searchTerm,
                                         endpoint,
                                         lastModifiedDate = newdate, # DONE BY format_date() in make_path()  |> stringr::str_replace("T", "%20") |> stringr::str_remove_all("[A-Z]"),
+                                        lastModifiedDate_mod, 
+                                        agencyId,
+                                        docketId,
+                                        docketType, 
+                                        commentOnId,
                                         api_keys = api_keys
       )
     }
@@ -90,9 +103,9 @@ get_searchTerm <- function(searchTerm,
 # FOR TESTING
 if(F){
   get_searchTerm(searchTerm = "racism",
-                 endpoint = "comments",
+                 endpoint = "documents",
                  api_keys = keys,
-                 lastModifiedDate = "2024-01-00T14:48:17Z")
+                 lastModifiedDate = "2024-01-00T14:48:17Z") # this timestamp won't work
 }
 
 

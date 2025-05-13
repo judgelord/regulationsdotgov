@@ -4,10 +4,12 @@
 # the batch function
 get_searchTerm_batch <- function(searchTerm,
                                  endpoint,
-                                 agencyId,
-                                 docketId, 
-                                 commentOnId,
                                  lastModifiedDate,
+                                 lastModifiedDate_mod = "le", #c("le", "ge", "NULL"),
+                                 agencyId = NULL,
+                                 docketId = NULL,
+                                 docketType = NULL, #c("Rulemaking", "Nonrulemaking")
+                                 commentOnId = NULL,
                                  api_keys){
 
   api_key <- sample(api_keys, 1)
@@ -24,10 +26,15 @@ get_searchTerm_batch <- function(searchTerm,
     message(paste("Page", i))
 
     path <- make_path_searchTerm(searchTerm,
-                               endpoint,
-                               lastModifiedDate,
-                               page = i,
-                               api_key = api_key)
+                                 endpoint,
+                                 lastModifiedDate,
+                                 lastModifiedDate_mod, 
+                                 agencyId,
+                                 docketId,
+                                 docketType,
+                                 commentOnId,
+                                 page = i,
+                                 api_key = api_key)
 
 
     result <- httr::GET(path)
