@@ -34,6 +34,6 @@ make_path_dockets <- function(agency,
   # Remove NULL parameters
   query <- Filter(Negate(is.null), query)
   
-  # Construct final URL with proper encoding
+  # Construct final URL 
   paste0(base_url, "?", paste0(names(query), "=", unlist(query), collapse = "&"))
 }

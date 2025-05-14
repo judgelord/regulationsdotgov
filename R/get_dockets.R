@@ -2,7 +2,7 @@
 
 get_dockets <- function(agency,
                         lastModifiedDate = Sys.time(),
-                        lastModifiedDate_mod = NULL, #c("le", "ge")
+                        lastModifiedDate_mod = "le", #c("le", "ge", "NULL")
                         docketType = NULL, #c("Rulemaking", "Nonrulemaking")
                         api_keys){
   
