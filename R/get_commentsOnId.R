@@ -1,8 +1,10 @@
 #' @export
 
-get_commentsOnId <- function(objectId,
+get_commentsOnId <- function(objectId = NULL, 
+                             agencyId = NULL,
                              lastModifiedDate = Sys.time(),
-                             api_keys = keys){
+                             lastModifiedDate_mod = "le", #c("le", "ge", "NULL")
+                             api_keys){
 
   temp_file <- tempfile(pattern = "commentsOnId_", fileext = ".rda")
   
@@ -24,8 +26,10 @@ get_commentsOnId <- function(objectId,
     # Fetch the initial 5k and establish the base dataframe
 
     metadata <- get_comments_batch(objectId,
-                                 lastModifiedDate,
-                                 api_keys)
+                                   agencyId, 
+                                   lastModifiedDate,
+                                   lastModifiedDate_mod,
+                                   api_keys)
 
     # message("Docket =", unique(metadata$id |> stringr::str_remove("-[0-9]*$")))
 
@@ -35,7 +39,9 @@ get_commentsOnId <- function(objectId,
 
     # Fetch the next batch of comments using the last modified date
     nextbatch <- get_comments_batch(objectId,
+                                    agencyId, 
                                     lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                    lastModifiedDate_mod,
                                     api_keys)
 
     ## Temporary partial fix to issue #24 and #25
@@ -59,7 +65,9 @@ get_commentsOnId <- function(objectId,
      #   stringr::str_replace("00", "01")
 
      nextbatch <- get_comments_batch(objectId,
+                                     agencyId, 
                                      lastModifiedDate = newdate,
+                                     lastModifiedDate_mod,
                                      api_keys)
     }
     ## END FIX

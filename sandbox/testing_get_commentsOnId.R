@@ -38,12 +38,12 @@ library(dplyr)
 
 c <- map_dfr(check, get_commentsOnId, api_keys = api_keys)
 
-c <- get_commentsOnId(commentOnId, api_keys = api_keys)
+c <- get_commentsOnId(agencyId = "OMB", api_keys = api_keys)
 
 c2 <- get_commentsOnId(commentOnId = documentId, api_keys = api_keys)
 
 
-
+get_comments_batch(agencyId = "FBI", api_keys = api_keys, lastModifiedDate = Sys.time())
 
 
 

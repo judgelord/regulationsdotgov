@@ -1,26 +1,27 @@
 #' @keywords internal
 
-get_comments_batch <- function(objectId,
-                               lastModifiedDate = Sys.time(),
+get_comments_batch <- function(objectId = NULL, 
+                               agencyId = NULL,
+                               lastModifiedDate,
+                               lastModifiedDate_mod = "le", #c("le", "ge", "NULL")
                                api_keys){
 
-  #api_key <- sample(api_keys, 1)
+  api_key <- sample(api_keys, 1)
 
   metadata <- list()
-
-  message("Trying: ", make_path_commentOnId(objectId,
-                                lastModifiedDate,
-                                page = 1,
-                                "XXX") )
 
   for (i in 1:20){
 
     message(paste("Page", i))
 
     path <- make_path_commentOnId(objectId,
+                                  agencyId,
                                   lastModifiedDate,
+                                  lastModifiedDate_mod,
                                   page = i,
-                                  sample(api_keys, 1))
+                                  api_key = api_key)
+    
+    message("Trying: ", path)
 
     # map GET function over pages
     result <- httr::GET(path)
@@ -40,9 +41,11 @@ get_comments_batch <- function(objectId,
 
       # try again with new key
       path <- make_path_commentOnId(objectId,
+                                    agencyId,
                                     lastModifiedDate,
+                                    lastModifiedDate_mod,
                                     page = i,
-                                    sample(api_keys, 1))
+                                    api_key = api_key)
 
       result <- httr::GET(path)
 
