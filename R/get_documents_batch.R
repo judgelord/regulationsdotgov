@@ -1,22 +1,28 @@
 
 #' @keywords internal
 
-get_documents_batch <- function(docketId,
-                                lastModifiedDate, api_keys){
-
-  message("Trying: ", make_path_documents(docketId, lastModifiedDate, page = 1, "XXXXXXXXXXXXXXX") )
-
-
+get_documents_batch <- function(agencyId = NULL,
+                        docketId = NULL,
+                        lastModifiedDate,
+                        lastModifiedDate_mod = "le", #c("le", "ge", "NULL")
+                        documentType = NULL, #c("Notice", "Rule", "Proposed Rule", "Supporting & Related Material", "Other")
+                        api_keys){
+  
+  api_key <- sample(api_keys, 1)
+  
   metadata <- list()
-
-    for (i in 1:20){
-
-
-    path <- make_path_documents(docketId,
-                                  lastModifiedDate,
-                                  page = i,
-                                sample(api_keys, 1) )
-
+  
+  for (i in 1:20){
+    
+    path <- make_path_documents(agencyId,
+                                docketId,
+                                lastModifiedDate,
+                                lastModifiedDate_mod, 
+                                documentType, 
+                                page = i,
+                                api_key = api_key)
+    
+    message("Trying:", path)
 
     result <- httr::GET(path)
 
@@ -30,10 +36,13 @@ get_documents_batch <- function(docketId,
                     "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
 
       # remake path with other key
-      path <- make_path_documents(docketId,
+      path <- make_path_documents(agencyId,
+                                  docketId,
                                   lastModifiedDate,
+                                  lastModifiedDate_mod, 
+                                  documentType, 
                                   page = i,
-                                  sample(api_keys, 1) )
+                                  api_key = api_key)
 
       message("Trying again in 1 minute")
 

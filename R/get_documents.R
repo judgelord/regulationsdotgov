@@ -1,8 +1,11 @@
 #' @export
 
 
-get_documents <- function(docketId,
+get_documents <- function(agencyId = NULL,
+                          docketId = NULL,
                           lastModifiedDate = Sys.time(),
+                          lastModifiedDate_mod = "le", #c("le", "ge", "NULL")
+                          documentType = NULL, #c("Notice", "Rule", "Proposed Rule", "Supporting & Related Material", "Other")
                           api_keys){
   
   metadata <- list()
@@ -19,9 +22,12 @@ get_documents <- function(docketId,
 
   tryCatch({
     # Fetch the initial 5k and establish the base dataframe
-    metadata <- get_documents_batch(docketId,
+    metadata <- get_documents_batch(agencyId,
+                                    docketId,
                                     lastModifiedDate,
-                                    api_keys = api_keys)
+                                    lastModifiedDate_mod, 
+                                    documentType, 
+                                    api_keys)
 
     if(nrow(metadata) == 0){
       metadata <- dplyr::tibble(lastpage = TRUE)
@@ -31,8 +37,11 @@ get_documents <- function(docketId,
     while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
       # Fetch the next batch of comments using the last modified date
-      nextbatch <- get_documents_batch(docketId,
+      nextbatch <- get_documents_batch(agencyId,
+                                       docketId,
                                        lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                       lastModifiedDate_mod, 
+                                       documentType, 
                                        api_keys)
 
       ## Temporary partial fix to issue #24 and #25
@@ -50,9 +59,12 @@ get_documents <- function(docketId,
           (\(x) x - 86400)() |>
           format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 
-       nextbatch <- get_documents_batch(docketId,
-                                      lastModifiedDate = newdate,
-                                      api_keys)
+       nextbatch <- get_documents_batch(agencyId,
+                           docketId,
+                           lastModifiedDate = newdate,
+                           lastModifiedDate_mod, 
+                           documentType, 
+                           api_keys)
       }
 
       message(paste(nrow(metadata), "+", nrow(nextbatch)))
