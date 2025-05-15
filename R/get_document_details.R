@@ -21,11 +21,6 @@ get_document_details <- function(id,
 
   temp_file <- tempfile(pattern = "document_details_content_", fileext = ".rda")
 
-
-
-
-
-
   on.exit({
     if(!success && exists("metadata")) {
       save(metadata, file = temp_file)
@@ -58,51 +53,6 @@ get_document_details <- function(id,
   if(length(content) == 0) {
     warning("No valid comments retrieved")
     return(NULL)
-  }
-
-# a function to extract attributes
-  extract_attrs <- function(content) {
-
-    x <- content#[[1]]
-
-    # Extract attributes and replace NULLs with NA
-    attrs <- purrr::pluck(x, "data", "attributes")
-
-    attrs$displayProperties <- NULL
-
-    # nest attachments
-    if(!is.null(attrs$fileFormats )){
-      fileFormats <- list(attrs$fileFormats )
-      attrs$fileFormats <- NULL
-      #attrs$fileFormats <- tidyr::nest(attrs$fileFormats, .key = "fileFormats")
-    }
-
-
-    attrs <- attrs |>
-      purrr::map(~ if(is.null(.x)) NA_character_ else .x) |>
-      as.data.frame()
-
-    # add back in attachments
-    if(!is.null(fileFormats )){
-    attrs$fileFormats <- fileFormats
-    }
-
-    # Add the id column
-    attrs$id <- purrr::pluck(x, "data", "id")
-
-    # # Add attachments (fileFormats) if they exist
-    # if (!is.null(x$included) && !is.null(x$included$attributes)) {
-    #   fileFormats <- x$included$attributes$fileFormats |> map_dfr(~ as.data.frame(.x) )
-    #
-    #   if (!is.null(file_formats)){
-    #     attrs$fileFormats <- tidyr::nest(fileFormats)
-    #     } else {
-    #       attrs$fileFormats <- NA_character_
-    #     }
-    # }
-
-    # Return the augmented data
-    return(attrs)
   }
 
   # note that document call return attachment file names in attributes, but comments are in included
