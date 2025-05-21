@@ -12,7 +12,7 @@ get_comments_batch <- function(objectId = NULL,
 
   for (i in 1:20){
 
-    message(paste("Page", i))
+    #message(paste("Page", i))
 
     path <- make_path_commentOnId(objectId,
                                   agencyId,
@@ -21,7 +21,7 @@ get_comments_batch <- function(objectId = NULL,
                                   page = i,
                                   api_key = api_key)
     
-    message("Trying: ", path)
+    #message("Trying: ", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1"))
 
     # map GET function over pages
     result <- httr::GET(path)
@@ -30,48 +30,67 @@ get_comments_batch <- function(objectId = NULL,
     status <- result$status_code
     url <- result$url
 
-    while(status != 200){
+    # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
+    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
+    
+    message(paste("|", "Trying:", ifelse(is.null(objectId), agencyId, objectId),
+                  "| status:", status,
+                  "| limit-remaining", remaining, "|"))
+    
+    if(status != 200 & status != 429){
       message(paste(Sys.time() |> format("%X"),
                     "| Status", status,
                     "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
-
+      
       # small pause to give user a chance to cancel
       Sys.sleep(6)
-
-
-      # try again with new key
+    }
+    
+    # if previously failed due to rate limit, try again
+    while(status == 429 ){
+      
+      message(paste(Sys.time() |> format("%X"),
+                    "| Status", status,
+                    "| Failed URL:", path |> stringr::str_replace("&api_key=.+(.{4})", "&api_key=XXX\\1")))
+      
+      message(paste("|", Sys.time()|> format("%X"),
+                    "| Hit rate limit |",
+                    remaining, "remaining | api key ending in",
+                    api_key |> stringr::str_replace(".+(.{4})", "XXX\\1")))
+      
+      # ROTATE KEYS
+      api_key <- sample(api_keys, 1)
+      message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".+(.{4})", "XXX\\1")))
+      
+      # try again
       path <- make_path_commentOnId(objectId,
                                     agencyId,
                                     lastModifiedDate,
                                     lastModifiedDate_mod,
                                     page = i,
                                     api_key = api_key)
-
       result <- httr::GET(path)
+      
+      status <- result$status_code
+      
+      remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
 
+      message(paste("|", "Trying:", ifelse(is.null(objectId), agencyId, objectId),"again",
+                    "| now:", status,
+                    "| limit-remaining", remaining, "|"))
+      
+      # pause to reset rate limit
+      if(status == 429 | remaining < 2){
+        message(paste(Sys.time()|> format("%X"), "- Hit rate limit again, will continue after one minute"))
+        Sys.sleep(60)
+      }
     }
-
+    
     if(status == 200){
       content <- jsonlite::fromJSON(rawToChar(result$content))
       metadata[[i]] <- content
     }
-
-    # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
-    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
-
-    if(remaining < 2){
-
-      message(paste("|", Sys.time()|> format("%X"),
-                    "| Hit rate limit |",
-                    remaining, "remaining | "))#api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
-
-      # # ROTATE KEYS
-      # api_key <- sample(api_keys, 1)
-      # message(paste("Rotating to api key ending in", api_key |> stringr::str_replace(".{35}", "...")))
-
-      Sys.sleep(60)
-    }
-
+    
     content$meta$lastPage
 
     if(!is.null(content$meta$lastPage)){

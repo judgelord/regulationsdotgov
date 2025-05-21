@@ -17,9 +17,6 @@ get_commentsOnId <- function(objectId = NULL,
       message("To load: load('", temp_file, "')")
     }
   })
-  
-
-  message(paste("Getting comments on", objectId))
 
   tryCatch({
 

@@ -8,7 +8,7 @@ make_path_commentOnId <- function(objectId = NULL,
                                   api_key) {
   
   # Base URL 
-  base_url <- "https://api.regulations.gov/v4/documents"
+  base_url <- "https://api.regulations.gov/v4/comments"
   
   # Format the last modified date with modifier if present
   lastModifiedDate_param <- if (!is.null(lastModifiedDate_mod)) {
