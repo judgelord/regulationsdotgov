@@ -9,6 +9,6 @@
 ^LICENSE\.md$
 ^Icon$
 ^sandbox$
-^vignettes/*_files$
 ^doc$
 ^Meta$
+^vignettes/*_files$

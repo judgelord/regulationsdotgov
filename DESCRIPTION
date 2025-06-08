@@ -19,7 +19,6 @@ Imports:
     jsonlite,
     purrr,
     stringr,
-    tibble,
-    knitr
+    tibble
 VignetteBuilder:
-    knitr
+    quarto
