@@ -44,18 +44,29 @@ get_commentsOnId("[objectId]") retrieves metadata for all comments on a document
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_commentsOnId</span><span class="op">(</span><span class="va">objectId</span>, lastModifiedDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">api_keys</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_commentsOnId</span><span class="op">(</span><span class="va">objectId</span>, <span class="va">agencyId</span>, lastModifiedDate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">lastModifiedDate_mod</span>, <span class="va">api_keys</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <p></p>
 <dl><dt id="arg-objectid">objectId<a class="anchor" aria-label="anchor" href="#arg-objectid"></a></dt>
-<dd><p>objectId obtained from a document's metadata</p></dd>
+<dd><p>objectId obtained from a document's metadata</p>
+<p>Default is set to <code>NULL</code>. User must specify either an objectId or agencyId.</p></dd>
+
+<dt id="arg-agencyid">agencyId<a class="anchor" aria-label="anchor" href="#arg-agencyid"></a></dt>
+<dd><p>Agency acronym (see official acronyms on regulations.gov)</p>
+<p>Default is set to <code>NULL</code>. User must specify either an objectId or agencyId.</p></dd>
 
   <dt id="arg-lastmodifieddate">lastModifiedDate<a class="anchor" aria-label="anchor" href="#arg-lastmodifieddate"></a></dt>
 <dd><p>Filter results by their last modified date. Default is set to <code><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time()</a></code>.</p>
 <p>User-specified values must be formatted as <code>yyyy-MM-dd%20HH:mm:ss</code>.</p></dd>
+
+<dt id="arg-lastmodifieddate-mod">lastModifiedDate_mod<a class="anchor" aria-label="anchor" href="#arg-lastmodifieddate-mod"></a></dt>
+<dd><p>Parameter that modifies lastModifiedDate.</p>
+<p>Default is set to <code>lastModifiedDate_mod = "le"</code> to collect all results before current date.</p>
+<p>Use <code>lastModifiedDate_mod = NULL</code> to collect results for a single date.</p>
+<p>Use <code>lastModifiedDate_mod = "ge"</code> to collect results greater than a date.</p></dd>
 
   <dt id="arg-api-keys">api_keys<a class="anchor" aria-label="anchor" href="#arg-api-keys"></a></dt>
 <dd><p>API key(s) from api.data.gov.</p></dd>

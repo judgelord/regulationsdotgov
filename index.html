@@ -186,7 +186,7 @@
 </h4>
 <p><code>get_comment_details_content("[id]")</code> retrieves comments on a specific document (e.g., a specific proposed rule)</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">comments</span> <span class="op">&lt;-</span> <span class="fu">get_comment_details</span><span class="op">(</span>id <span class="op">=</span> <span class="va">comments_to_collect</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">comments</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_comment_details.html">get_comment_details</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">comments_to_collect</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># We retrieve 21 attributes for these 36 comments </span></span>
 <span></span>
@@ -223,7 +223,7 @@
 <div class="section level2">
 <h2 id="download">Download<a class="anchor" aria-label="anchor" href="#download"></a>
 </h2>
-<p>Finally, using URLs returned from <code><a href="reference/get_documents.html">get_documents()</a></code> and <code>get_comment_details()</code>, we can download files (e.g., pdfs)</p>
+<p>Finally, using URLs returned from <code><a href="reference/get_documents.html">get_documents()</a></code> and <code><a href="reference/get_comment_details.html">get_comment_details()</a></code>, we can download files (e.g., pdfs)</p>
 <ul>
 <li>
 <code>download_regulationsdotgov("[url]")</code> saves local copies of desired files in a standard file structure mirroring that above in a “files” folder: “files/agency_acronym/docket_id/document_id/document_name.extension” (e.g., “files/ACF/ACF-2009-0005/ACF-2009-0005-0018_1.doc” is a public comment on ACF Notice ACF-2009-0005-0002. This notice is located at “files/ACF/ACF-2009-0005/ACF-2009-0005-0002.pdf”)</li>
