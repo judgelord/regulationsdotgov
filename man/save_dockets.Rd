@@ -9,7 +9,7 @@ Save docket metadata in directory.
 save_dockets("[agency_acronym]") creates a data directory for collecting agency docket metadata within a folder structure. 
 }
 \usage{
-save_dockets <- function(agency)
+save_dockets(agency)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -42,8 +42,8 @@ Stores data as a .rmd file.
 }
 \examples{
 
-agencies <- c("NLRB", "OMB", "TSA")
+agency <- c("OMB")
 
-save_dockets(agencies)
+save_dockets(agency)
 
 }

@@ -2,3 +2,8 @@ url: https://judgelord.github.io/regulationsdotgov/
 template:
   bootstrap: 5
 
+reference:
+  - title: All functions
+    contents:
+    - starts_with("get_")
+    - starts_with("save_")

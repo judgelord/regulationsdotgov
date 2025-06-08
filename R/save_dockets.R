@@ -1,4 +1,4 @@
-
+#' @export
 
 save_dockets <- function(agency){
   
@@ -10,7 +10,7 @@ save_dockets <- function(agency){
   }
 
   # Retrieve the dockets
-  dockets <- map_dfr(agency, get_dockets, api_keys = api_keys)
+  dockets <- map_dfr(agency, regulationsdotgov::get_dockets, api_keys = api_keys)
 
   # Print the size of the dockets for debugging
   message(paste("|", agency, "| n =", nrow(dockets), "|"))
