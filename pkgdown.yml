@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   get_dockets: get_dockets.html
-last_built: 2025-06-08T23:12Z
+last_built: 2025-06-08T23:44Z
 urls:
   reference: https://judgelord.github.io/regulationsdotgov/reference
   article: https://judgelord.github.io/regulationsdotgov/articles
