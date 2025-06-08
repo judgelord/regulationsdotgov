@@ -1,4 +1,3 @@
-#' @export
 
 pdf_to_text <- function(files) {
   # Initialize a list to store text from each PDF

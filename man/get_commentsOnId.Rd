@@ -8,17 +8,34 @@ Get metadata for all comments on a document
 get_commentsOnId("[objectId]") retrieves metadata for all comments on a document
 }
 \usage{
-get_commentsOnId(objectId, lastModifiedDate = Sys.time(), api_keys)
+get_commentsOnId(objectId, agencyId, lastModifiedDate = Sys.time(), lastModifiedDate_mod, api_keys)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{objectId}{
 objectId obtained from a document's metadata 
+
+Default is set to \code{NULL}. User must specify either an objectId or agencyId. 
+}
+\item{agencyId}{
+  Agency acronym (see official acronyms on regulations.gov)
+  
+  Default is set to \code{NULL}. User must specify either an objectId or agencyId. 
 }
   \item{lastModifiedDate}{
 Filter results by their last modified date. Default is set to \code{Sys.time()}. 
 
 User-specified values must be formatted as \code{yyyy-MM-dd\%20HH:mm:ss}.
+
+}
+\item{lastModifiedDate_mod}{
+Parameter that modifies lastModifiedDate. 
+
+Default is set to \code{lastModifiedDate_mod = "le"} to collect all results before current date. 
+
+Use \code{lastModifiedDate_mod = NULL} to collect results for a single date. 
+
+Use \code{lastModifiedDate_mod = "ge"} to collect results greater than a date. 
 
 }
   \item{api_keys}{API key(s) from api.data.gov. 

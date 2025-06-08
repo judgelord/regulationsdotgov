@@ -17,10 +17,9 @@ Imports:
     here,
     httr,
     jsonlite,
-    pdftools,
     purrr,
-    quarto,
     stringr,
-    tibble
+    tibble,
+    knitr
 VignetteBuilder:
-    quarto
+    knitr
