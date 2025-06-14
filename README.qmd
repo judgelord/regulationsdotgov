@@ -20,7 +20,7 @@ devtools::load_all()
 
 # regulationsdotgov
 
-![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg){width=70%}
+![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg){width=10%}
 
 Get data from regulations.gov 
 
