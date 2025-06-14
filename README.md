@@ -1,7 +1,10 @@
 # regulationsdotgov
 
 
-Get data from regulations.gov
+# regulationsdotgov
+
+![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg) Get
+data from regulations.gov
 
 <!-- badges: start -->
 <!-- badges: end -->
