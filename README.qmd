@@ -1,5 +1,4 @@
 ---
-title: "regulationsdotgov"
 format: md
 ---
 
@@ -21,7 +20,9 @@ devtools::load_all()
 
 # regulationsdotgov
 
-![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg) Get data from regulations.gov 
+![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg){width=70%}
+
+Get data from regulations.gov 
 
 <!-- badges: start -->
 <!-- badges: end -->

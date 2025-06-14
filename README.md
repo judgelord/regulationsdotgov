@@ -1,10 +1,15 @@
-# regulationsdotgov
 
 
 # regulationsdotgov
 
-![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg) Get
-data from regulations.gov
+<figure>
+<img src="man/figures/logo.jpeg" style="width:70.0%"
+alt="judgelord.github.io/regulationsdotgov/" />
+<figcaption
+aria-hidden="true">judgelord.github.io/regulationsdotgov/</figcaption>
+</figure>
+
+Get data from regulations.gov
 
 <!-- badges: start -->
 <!-- badges: end -->
