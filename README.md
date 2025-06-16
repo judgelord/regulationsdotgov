@@ -1,6 +1,6 @@
 
 
-# regulationsdotgov
+# regulationsdotgov <img src="man/figures/logo.jpeg" align="left" width="138"/>
 
 Get data from regulations.gov
 
