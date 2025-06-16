@@ -2,10 +2,10 @@
 
 # regulationsdotgov <img src="man/figures/logo.jpeg" align="left" width="138"/>
 
-Get data from regulations.gov
-
 <!-- badges: start -->
 <!-- badges: end -->
+
+Get data from regulations.gov
 
 ## Installation
 
