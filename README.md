@@ -1,13 +1,7 @@
 
 
-# regulationsdotgov
-
-<figure>
-<img src="man/figures/logo.jpeg" style="width:10.0%"
-alt="judgelord.github.io/regulationsdotgov/" />
-<figcaption
-aria-hidden="true">judgelord.github.io/regulationsdotgov/</figcaption>
-</figure>
+<img src="man/figures/logo.jpeg" alt="" width="200" style="border: 2px solid black;"/>
+\# regulationsdotgov
 
 Get data from regulations.gov
 

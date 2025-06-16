@@ -18,9 +18,8 @@ knitr::opts_chunk$set(
 devtools::load_all()
 ```
 
+<img src="man/figures/logo.jpeg" alt="" width="200" style="border: 2px solid black;"/>
 # regulationsdotgov
-
-![judgelord.github.io/regulationsdotgov/](man/figures/logo.jpeg){width=10%}
 
 Get data from regulations.gov 
 
