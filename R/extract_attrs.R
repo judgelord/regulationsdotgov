@@ -3,20 +3,18 @@
 # a function to extract attributes
 extract_attrs <- function(content) {
   
-  x <- content#[[1]]
+  x <- content
   
   # Extract attributes and replace NULLs with NA
   attrs <- purrr::pluck(x, "data", "attributes")
   
-  
   # nest attachments
-  # attrs$fileFormats <-  tidyr::nest(attrs$fileFormats, .key = "fileFormats")
-  
+  attrs$fileFormats <-  tidyr::nest(attrs$fileFormats, .key = "fileFormats")
   
   attrs <- attrs |>
     purrr::map(~ ifelse(is.null(.x), NA_character_, .x)) |>
     as.data.frame() |>
-    dplyr::select(-starts_with("display")) # Possibly add this back in after testing?
+    dplyr::select(-dplyr::starts_with("display")) # Possibly add this back in after testing?
   
   # Add the id column
   attrs$id <- purrr::pluck(x, "data", "id")
