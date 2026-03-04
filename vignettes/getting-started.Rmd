@@ -1,7 +1,6 @@
 ---
 title: "Getting started with regulationsdotgov"
 logo: 
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started}
@@ -51,11 +50,11 @@ head <- function(x){
 }
 ```
 
-regulationsdotgov is a package that help researchers easily retrieve data from regulations.gov. 
+`regulationsdotgov` is a package that help researchers easily retrieve data from regulations.gov. 
 
 ## Installation
 
-You can install the development version of regulationsdotgov from
+You can install the development version of `regulationsdotgov` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -67,7 +66,19 @@ pak::pak("judgelord/regulationsdotgov")
 library(regulationsdotgov)
 ```
 
-## Metadata
+## Request an API key
+
+You will need an API key, you can register for one at https://open.gsa.gov/api/regulationsgov/. 
+
+You will want to store your API key locally as follows: 
+
+``` r
+
+api_keys <- "123tHiSkEyIsFaKe"
+
+```
+
+## How the data is structured 
 
 Regulations.gov metadata is organized in a hierarchical database.
 
@@ -84,7 +95,7 @@ Regulations.gov metadata is organized in a hierarchical database.
 The `regulationsdotgov` package is organized with a parallel set of
 functions to retrieve metadata:
 
-## Example: Retrieving FBI Metadata
+## Basic usage illustrated by retrieving FBI dockets, documents, and comments
 
 #### Get dockets from an agency
 
@@ -92,17 +103,12 @@ functions to retrieve metadata:
     (see official acronyms on regulations.gov)
 
 ``` r
-# You need an API key, you can register for one at https://open.gsa.gov/api/regulationsgov/.
-
-api_keys <- "123tHiSkEyIsFaKe"
-
 # get FBI dockets
 FBI_dockets <- get_dockets(agency = "FBI", api_keys = api_keys)
 
 head(FBI_dockets)
 ```
 
-    > head(FBI_dockets)
     # A tibble: 6 × 8
        docketType    lastModifiedDate     highlightedContent agencyId title                objectId id    lastpage
       <chr>         <chr>                <lgl>              <chr>    <chr>                <chr>    <chr> <lgl>   
