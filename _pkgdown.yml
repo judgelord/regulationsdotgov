@@ -1,6 +1,7 @@
 url: https://judgelord.github.io/regulationsdotgov/
 template:
   bootstrap: 5
+  bootswatch: united
 
 reference:
   - title: All functions
