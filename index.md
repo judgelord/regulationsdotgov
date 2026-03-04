@@ -1,9 +1,10 @@
 # regulationsdotgov ![](reference/figures/logo.jpeg)
 
 ![Static
-Badge](https://img.shields.io/badge/R-CMD-check-passing-brightgreen?style=for-the-badge)
+Badge](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)
 
-Get data from regulations.gov
+`regulationsdotgov` is a package that help researchers easily retrieve
+data from regulations.gov.
 
 ## Installation
 
