@@ -3,10 +3,10 @@
 # regulationsdotgov <img src="man/figures/logo.jpeg" align="left" width="138"/>
 
 <!-- badges: start -->
-![Static Badge](https://img.shields.io/badge/R-CMD-check-passing-brightgreen?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)
 <!-- badges: end -->
 
-Get data from regulations.gov
+`regulationsdotgov` is a package that help researchers easily retrieve data from regulations.gov. 
 
 ## Installation
 
