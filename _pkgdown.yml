@@ -1,7 +1,25 @@
 url: https://judgelord.github.io/regulationsdotgov/
+
 template:
   bootstrap: 5
-  bootswatch: united
+  bootswatch: lumen
+  navbar-bg: light
+  bslib:
+    headings-line-height: 2.2
+    paragraph-margin-bottom: 1.5rem
+  
+navbar:
+ structure:
+  left:  [start, reference, articles]
+ components:
+  start:
+    text: Get started
+    href: articles/getting-started.html
+  articles:
+    text: Articles
+    menu:
+      - text: Getting started with regulationsdotgov
+        href: articles/getting-started.html
 
 reference:
   - title: All functions
