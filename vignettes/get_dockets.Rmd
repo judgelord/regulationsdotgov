@@ -1,12 +1,10 @@
 ---
 title: "Dockets"
 logo: 
-author: "Devin Judge-Lord"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette's Title}
-  %\VignetteEngine{quarto::html}
+  %\VignetteIndexEntry{Dockets}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

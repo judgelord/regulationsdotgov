@@ -20,5 +20,7 @@ Imports:
     purrr,
     stringr,
     tibble
-VignetteBuilder:
-    quarto
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
