@@ -1,5 +1,8 @@
 # regulationsdotgov ![](reference/figures/logo.jpeg)
 
+![Static
+Badge](https://img.shields.io/badge/R-CMD-check-passing-brightgreen?style=for-the-badge)
+
 Get data from regulations.gov
 
 ## Installation
