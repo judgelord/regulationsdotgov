@@ -3,31 +3,31 @@ download_regulationsdotgov <- function(url, dir){
 
   d <- tibble::tibble(
     url = url) |>
-    distinct()
+    dplyr::distinct()
 
 
-  d %<>% mutate(
-    agency = str_extract(url, "[:upper:]+"),
-    document_id = str_extract(url, "([A-Z]|-|[0-9])+"),
-    docket_id = str_remove(document_id, "-[0-9]+$"),
+  d %<>% dplyr::mutate(
+    agency = stringr::str_extract(url, "[:upper:]+"),
+    document_id = stringr::str_extract(url, "([A-Z]|-|[0-9])+"),
+    docket_id = stringr::str_remove(document_id, "-[0-9]+$"),
     docket_path = paste(dir, agency, docket_id, sep = "/"),
-    file = url |> str_replace("/attachment_", "_") |>  str_remove_all(".*/"),
+    file = url |> stringr::str_replace("/attachment_", "_") |>  stringr::str_remove_all(".*/"),
     file_path = paste(dir, agency, docket_id, file, sep = "/")
   )
 
   # make needed agency and docket directories
   needed_dir <- setdiff(d$agency,
                         list.dirs(dir, recursive = F) |>
-                          str_remove(dir) |>
-                          str_remove("^/")
+                          stringr::str_remove(dir) |>
+                          stringr::str_remove("^/")
                         )
 
-  walk(here(dir, needed_dir), dir.create)
+  walk(here::here(dir, needed_dir), dir.create)
 
   needed_dir <- setdiff(d$docket_path |> unique(),
                         list.dirs(dir, recursive = F) )
 
-  walk(here(needed_dir), dir.create)
+  walk(here::here(needed_dir), dir.create)
 
   # Inspect
   d$file_path[1]
@@ -82,7 +82,7 @@ download_regulationsdotgov <- function(url, dir){
       error = function(e) {
         errorcount<<-errorcount+1
         print(errorcount)
-        if( str_detect(e[[1]][1], "cannot open URL") ){
+        if( stringr::str_detect(e[[1]][1], "cannot open URL") ){
           download$file_path[i] <<- "cannot open URL.csv" # this is a dummy file in the comments folder, which will cause this url to be filtered out
         }
         print(e)

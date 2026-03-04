@@ -60,7 +60,7 @@ get_documents_batch <- function(agencyId = NULL,
     }
 
     # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
-    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
+    remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
 
     message(paste("|", Sys.time()|> format("%X"),
                   "| Page", i,

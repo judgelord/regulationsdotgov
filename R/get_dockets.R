@@ -30,10 +30,10 @@ get_dockets <- function(agency,
                                   api_keys)
 
     # Loop until last page is TRUE
-    while (!tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0) {
+    while (!utils::tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0) {
       # Fetch the next batch of comments using the last modified date
       nextbatch <- get_dockets_batch(agency, 
-                                     lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                     lastModifiedDate = utils::tail(metadata$lastModifiedDate, n = 1),
                                      lastModifiedDate_mod,
                                      docketType,
                                      api_keys)
@@ -51,7 +51,7 @@ get_dockets <- function(agency,
           format("%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
         
         nextbatch <- get_dockets_batch(agency, 
-                                       lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                       lastModifiedDate = utils::tail(metadata$lastModifiedDate, n = 1),
                                        lastModifiedDate_mod,
                                        docketType,
                                        api_keys)

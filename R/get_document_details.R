@@ -1,10 +1,9 @@
 #' @export
 
-
 # loop over a vector of comment ids, return a dataframe of comment details
 get_document_details <- function(id,
                                 lastModifiedDate = Sys.time(),
-                                api_keys = keys) {
+                                api_keys) {
 
   if(length(id) != length(unique(id))) {
     message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
@@ -56,7 +55,7 @@ get_document_details <- function(id,
 
   # note that document call return attachment file names in attributes, but comments are in included
   metadata <- purrr::map_dfr(content, extract_attrs) |>
-    dplyr::select(where(~!all(is.na(.x)))) #Remove columns that are empty
+    dplyr::select(dplyr::where(~!all(is.na(.x)))) #Remove columns that are empty
 
   success <- TRUE
   return(metadata)

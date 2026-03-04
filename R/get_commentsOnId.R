@@ -32,12 +32,12 @@ get_commentsOnId <- function(objectId = NULL,
 
     # Loop until last page is TRUE
 
-    while( nrow(metadata) < 2000000 & (!tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0) ) {
+    while( nrow(metadata) < 2000000 & (!utils::tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0) ) {
 
     # Fetch the next batch of comments using the last modified date
     nextbatch <- get_comments_batch(objectId,
                                     agencyId, 
-                                    lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                    lastModifiedDate = utils::tail(metadata$lastModifiedDate, n = 1),
                                     lastModifiedDate_mod,
                                     api_keys)
 

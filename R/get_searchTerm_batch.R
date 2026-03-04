@@ -58,7 +58,7 @@ get_searchTerm_batch <- function(searchTerm,
     }
 
     # EXTRACT THE MOST RECENT x-ratelimit-remaining and pause if it is 0
-    remaining <<- result$headers$`x-ratelimit-remaining` |> as.numeric()
+    remaining <- result$headers$`x-ratelimit-remaining` |> as.numeric()
 
     if(remaining < 20){
 

@@ -34,12 +34,12 @@ get_documents <- function(agencyId = NULL,
     }
 
     # Loop until last page is TRUE
-    while( !tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
+    while( !utils::tail(metadata$lastpage, 1) | nrow(metadata) %% 5000 == 0 ) {
 
       # Fetch the next batch of comments using the last modified date
       nextbatch <- get_documents_batch(agencyId,
                                        docketId,
-                                       lastModifiedDate = tail(metadata$lastModifiedDate, n = 1),
+                                       lastModifiedDate = utils::tail(metadata$lastModifiedDate, n = 1),
                                        lastModifiedDate_mod, 
                                        documentType, 
                                        api_keys)
