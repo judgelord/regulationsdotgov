@@ -1,0 +1,5 @@
+name	user	system	elapsed
+get_commentsOnId	0.001	0.000	0.000	
+get_dockets	0.000	0.001	0.001	
+get_documents	0.000	0.001	0.000	
+get_searchTerm	0.000	0.000	0.001	

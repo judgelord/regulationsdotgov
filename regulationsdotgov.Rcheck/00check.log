@@ -1,0 +1,349 @@
+* using log directory ‘/Users/mayakhuzam/MENAcat/regulationsdotgov/regulationsdotgov.Rcheck’
+* using R version 4.4.2 (2024-10-31)
+* using platform: x86_64-apple-darwin20
+* R was compiled by
+    Apple clang version 14.0.0 (clang-1400.0.29.202)
+    GNU Fortran (GCC) 12.2.0
+* running under: macOS Sonoma 14.2.1
+* using session charset: UTF-8
+* using option ‘--as-cran’
+* checking for file ‘regulationsdotgov/DESCRIPTION’ ... OK
+* this is package ‘regulationsdotgov’ version ‘0.0.0.9000’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [5s/14s] NOTE
+Maintainer: ‘Devin Judge-Lord <judgelor@umich.edu>’
+
+New submission
+
+Version contains large components (0.0.0.9000)
+
+License components with restrictions and base license permitting such:
+  MIT + file LICENSE
+File 'LICENSE':
+  MIT License
+  
+  Copyright (c) 2024 Devin Judge-Lord & Maya Khuzam
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
+Package has a VignetteBuilder field but no prebuilt vignette index.
+
+The Description field should not start with the package name,
+  'This package' or similar.
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking serialization versions ... OK
+* checking whether package ‘regulationsdotgov’ can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... NOTE
+License stub is invalid DCF.
+* checking top-level files ... NOTE
+Files ‘README.md’ or ‘NEWS.md’ cannot be checked without ‘pandoc’ being installed.
+Non-standard file/directory found at top level:
+  ‘README.qmd’
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... NOTE
+Namespaces in Imports field not imported from:
+  ‘here’ ‘quarto’
+  All declared Imports should be used.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+download_regulationsdotgov: no visible global function definition for
+  ‘distinct’
+download_regulationsdotgov: no visible global function definition for
+  ‘%<>%’
+download_regulationsdotgov: no visible global function definition for
+  ‘mutate’
+download_regulationsdotgov: no visible global function definition for
+  ‘str_extract’
+download_regulationsdotgov: no visible global function definition for
+  ‘str_remove’
+download_regulationsdotgov: no visible binding for global variable
+  ‘document_id’
+download_regulationsdotgov: no visible binding for global variable
+  ‘agency’
+download_regulationsdotgov: no visible binding for global variable
+  ‘docket_id’
+download_regulationsdotgov: no visible global function definition for
+  ‘str_remove_all’
+download_regulationsdotgov: no visible global function definition for
+  ‘str_replace’
+download_regulationsdotgov: no visible global function definition for
+  ‘walk’
+download_regulationsdotgov: no visible global function definition for
+  ‘here’
+download_regulationsdotgov: no visible global function definition for
+  ‘%>%’
+download_regulationsdotgov: no visible global function definition for
+  ‘filter’
+download_regulationsdotgov: no visible binding for global variable
+  ‘file_path’
+download_regulationsdotgov: no visible global function definition for
+  ‘head’
+download_regulationsdotgov: no visible global function definition for
+  ‘download.file’
+download_regulationsdotgov: no visible binding for '<<-' assignment to
+  ‘errorcount’
+download_regulationsdotgov: no visible binding for global variable
+  ‘errorcount’
+download_regulationsdotgov : <anonymous>: no visible binding for '<<-'
+  assignment to ‘errorcount’
+download_regulationsdotgov : <anonymous>: no visible binding for global
+  variable ‘errorcount’
+download_regulationsdotgov : <anonymous>: no visible global function
+  definition for ‘str_detect’
+get_comment_details: no visible global function definition for
+  ‘starts_with’
+get_comment_details_content: no visible global function definition for
+  ‘tail’
+get_comment_details_content: no visible global function definition for
+  ‘head’
+get_comment_details_content: no visible global function definition for
+  ‘str_remove’
+get_commentsOnId: no visible global function definition for ‘tail’
+get_commentsOnId: no visible global function definition for ‘bind_rows’
+get_comments_batch: no visible binding for '<<-' assignment to
+  ‘remaining’
+get_comments_batch: no visible binding for global variable ‘remaining’
+get_comments_batch: no visible global function definition for ‘tail’
+get_comments_batch: no visible global function definition for ‘head’
+get_dockets: no visible global function definition for ‘tail’
+get_dockets_batch: no visible global function definition for ‘tail’
+get_dockets_batch: no visible global function definition for ‘head’
+get_dockets_batch: no visible global function definition for ‘tibble’
+get_documents: no visible global function definition for ‘tail’
+get_documents_batch: no visible binding for '<<-' assignment to
+  ‘remaining’
+get_documents_batch: no visible binding for global variable ‘remaining’
+get_documents_batch: no visible global function definition for ‘tail’
+get_documents_batch: no visible global function definition for ‘head’
+get_documents_batch: no visible global function definition for
+  ‘str_replace’
+get_documents_batch: no visible global function definition for ‘tibble’
+get_searchTerm: no visible global function definition for ‘tail’
+get_searchTerm_batch: no visible binding for '<<-' assignment to
+  ‘remaining’
+get_searchTerm_batch: no visible binding for global variable
+  ‘remaining’
+get_searchTerm_batch: no visible global function definition for ‘tail’
+get_searchTerm_batch: no visible global function definition for ‘head’
+get_searchTerm_batch: no visible global function definition for
+  ‘str_replace’
+get_searchTerm_batch: no visible global function definition for
+  ‘tibble’
+pdf_to_text: no visible global function definition for ‘str_detect’
+pdf_to_text: no visible global function definition for ‘%>%’
+pdf_to_text: no visible global function definition for ‘pdf_text’
+pdf_to_text: no visible global function definition for ‘here’
+pdf_to_text: no visible global function definition for
+  ‘str_replace_all’
+pdf_to_text: no visible global function definition for ‘str_trim’
+pdf_to_txt: no visible global function definition for ‘str_remove’
+pdf_to_txt: no visible global function definition for ‘str_extract’
+pdf_to_txt: no visible global function definition for ‘here’
+pdf_to_txt: no visible global function definition for ‘str_detect’
+pdf_to_txt: no visible global function definition for ‘%>%’
+pdf_to_txt: no visible global function definition for ‘write_file’
+pdf_to_txt: no visible global function definition for ‘str_replace’
+Undefined global functions or variables:
+  %<>% %>% agency bind_rows distinct docket_id document_id
+  download.file errorcount file_path filter head here mutate pdf_text
+  remaining starts_with str_detect str_extract str_remove
+  str_remove_all str_replace str_replace_all str_trim tail tibble walk
+  write_file
+Consider adding
+  importFrom("stats", "filter")
+  importFrom("utils", "download.file", "head", "tail")
+to your NAMESPACE file.
+* checking Rd files ... NOTE
+prepare_Rd: get_commentsOnId.Rd:27-29: Dropping empty section \details
+prepare_Rd: get_commentsOnId.Rd:30-36: Dropping empty section \value
+prepare_Rd: get_commentsOnId.Rd:43-45: Dropping empty section \note
+prepare_Rd: get_commentsOnId.Rd:40-42: Dropping empty section \author
+prepare_Rd: get_commentsOnId.Rd:37-39: Dropping empty section \references
+prepare_Rd: get_commentsOnId.Rd:49-51: Dropping empty section \seealso
+prepare_Rd: get_dockets.Rd:30-32: Dropping empty section \details
+prepare_Rd: get_dockets.Rd:33-39: Dropping empty section \value
+prepare_Rd: get_dockets.Rd:46-48: Dropping empty section \note
+prepare_Rd: get_dockets.Rd:43-45: Dropping empty section \author
+prepare_Rd: get_dockets.Rd:40-42: Dropping empty section \references
+prepare_Rd: get_dockets.Rd:52-54: Dropping empty section \seealso
+prepare_Rd: get_documents.Rd:30-32: Dropping empty section \details
+prepare_Rd: get_documents.Rd:33-39: Dropping empty section \value
+prepare_Rd: get_documents.Rd:46-48: Dropping empty section \note
+prepare_Rd: get_documents.Rd:43-45: Dropping empty section \author
+prepare_Rd: get_documents.Rd:40-42: Dropping empty section \references
+prepare_Rd: get_documents.Rd:52-54: Dropping empty section \seealso
+prepare_Rd: get_searchTerm.Rd:38-40: Dropping empty section \details
+prepare_Rd: get_searchTerm.Rd:41-47: Dropping empty section \value
+prepare_Rd: get_searchTerm.Rd:54-56: Dropping empty section \note
+prepare_Rd: get_searchTerm.Rd:51-53: Dropping empty section \author
+prepare_Rd: get_searchTerm.Rd:48-50: Dropping empty section \references
+prepare_Rd: get_searchTerm.Rd:60-62: Dropping empty section \seealso
+* checking Rd metadata ... OK
+* checking Rd line widths ... NOTE
+Rd file 'get_commentsOnId.Rd':
+  \examples lines wider than 100 characters:
+     #   documentType      lastModifiedDate    highlightedContent withdrawn agencyId title objectId postedDate id   
+     #   <chr>             <chr>               <chr>              <lgl>     <chr>    <chr> <chr>    <chr>      <chr>
+     # 1 Public Submission 2024-07-26T13:29:3… ""                 FALSE     FBI      Comm… 0900006… 2024-07-2… FBI-…
+
+Rd file 'get_dockets.Rd':
+  \examples lines wider than 100 characters:
+     #   docketType    lastModifiedDate     highlightedContent agencyId title                objectId id    lastpage
+     #   <chr>         <chr>                <lgl>              <chr>    <chr>                <chr>    <chr> <lgl>   
+     # 1 Rulemaking    2024-08-26T13:14:32Z NA                 FBI      "Bipartisan Safer C… 0b00006… FBI-… TRUE    
+     # 2 Rulemaking    2024-08-26T13:13:45Z NA                 FBI      "Child Protection I… 0b00006… FBI-… TRUE    
+     # 3 Rulemaking    2023-08-25T08:08:48Z NA                 FBI      "Recently Posted FB… 0b00006… FBI_… TRUE    
+     # 4 Rulemaking    2021-05-02T01:06:49Z NA                 FBI      "National Instant C… 0b00006… FBI-… TRUE    
+     # 5 Rulemaking    2021-05-02T01:06:49Z NA                 FBI      "FBI Criminal Justi… 0b00006… FBI-… TRUE    
+     # 6 Nonrulemaking 2021-05-02T01:06:49Z NA                 FBI      "FBI Records Manage… 0b00006… FBI-… TRUE 
+     #        message(paste(format(Sys.time(), "%X"), "- Hit rate limit, will continue after one minute"))
+
+Rd file 'get_documents.Rd':
+  \examples lines wider than 100 characters:
+     #   documentType lastModifiedDate     highlightedContent frDocNum   withdrawn agencyId # commentEndDate     title
+     #   <chr>        <chr>                <chr>              <chr>      <lgl>     <chr>    <chr>       #        <chr>
+     # 1 Rule         2024-07-26T01:01:24Z ""                 2024-14253 FALSE     FBI      2024-08# -01T03:59:… Bipa…
+
+These lines will be truncated in the PDF manual.
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... WARNING
+Undocumented code objects:
+  ‘get_comment_details’ ‘pdf_to_text’
+All user-level objects in a package should have documentation entries.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking files in ‘vignettes’ ... WARNING
+Files in the 'vignettes' directory but no files in 'inst/doc':
+  ‘get_dockets.Rmd’
+* checking examples ... OK
+* checking package vignettes ... NOTE
+Package has ‘vignettes’ subdirectory but apparently no vignettes.
+Perhaps the ‘VignetteBuilder’ information is missing from the
+DESCRIPTION file?
+* checking PDF version of manual ... WARNING
+LaTeX errors when creating PDF version.
+This typically indicates Rd problems.
+LaTeX errors found:
+! LaTeX Error: Unicode character ℹ (U+2139)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+! LaTeX Error: Unicode character ℹ (U+2139)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+* checking PDF version of manual without index ... ERROR
+* checking HTML version of manual ... NOTE
+Found the following HTML validation problems:
+get_commentsOnId.html:15:44 (get_commentsOnId.Rd:3): Error: <main> is not recognized!
+get_commentsOnId.html:15:44 (get_commentsOnId.Rd:3): Warning: discarding unexpected <main>
+get_commentsOnId.html:67:16 (get_commentsOnId.Rd:58): Warning: replacing invalid character code 151
+get_commentsOnId.html:70:42 (get_commentsOnId.Rd:61): Warning: replacing invalid character code 128
+get_commentsOnId.html:70:88 (get_commentsOnId.Rd:61): Warning: replacing invalid character code 128
+get_commentsOnId.html:70:99 (get_commentsOnId.Rd:61): Warning: replacing invalid character code 128
+get_commentsOnId.html:70:112 (get_commentsOnId.Rd:61): Warning: replacing invalid character code 128
+get_commentsOnId.html:70:120 (get_commentsOnId.Rd:61): Warning: replacing invalid character code 128
+get_commentsOnId.html:71:4 (get_commentsOnId.Rd:62): Warning: replacing invalid character code 132
+get_commentsOnId.html:74:1 (get_commentsOnId.Rd:62): Warning: discarding unexpected </main>
+get_commentsOnId.html:4:1 (get_commentsOnId.Rd:3): Warning: <link> inserting "type" attribute
+get_commentsOnId.html:12:1 (get_commentsOnId.Rd:3): Warning: <script> proprietary attribute "onload"
+get_commentsOnId.html:12:1 (get_commentsOnId.Rd:3): Warning: <script> inserting "type" attribute
+get_commentsOnId.html:17:1 (get_commentsOnId.Rd:3): Warning: <table> lacks "summary" attribute
+get_commentsOnId.html:37:1 (get_commentsOnId.Rd:15): Warning: <table> lacks "summary" attribute
+get_dockets.html:15:44 (get_dockets.Rd:4): Error: <main> is not recognized!
+get_dockets.html:15:44 (get_dockets.Rd:4): Warning: discarding unexpected <main>
+get_dockets.html:67:16 (get_dockets.Rd:61): Warning: replacing invalid character code 151
+get_dockets.html:70:88 (get_dockets.Rd:64): Warning: replacing invalid character code 128
+get_dockets.html:70:99 (get_dockets.Rd:64): Warning: replacing invalid character code 128
+get_dockets.html:70:107 (get_dockets.Rd:64): Warning: replacing invalid character code 128
+get_dockets.html:71:88 (get_dockets.Rd:65): Warning: replacing invalid character code 128
+get_dockets.html:71:99 (get_dockets.Rd:65): Warning: replacing invalid character code 128
+get_dockets.html:71:107 (get_dockets.Rd:65): Warning: replacing invalid character code 128
+get_dockets.html:72:88 (get_dockets.Rd:66): Warning: replacing invalid character code 128
+get_dockets.html:72:99 (get_dockets.Rd:66): Warning: replacing invalid character code 128
+get_dockets.html:72:107 (get_dockets.Rd:66): Warning: replacing invalid character code 128
+get_dockets.html:73:88 (get_dockets.Rd:67): Warning: replacing invalid character code 128
+get_dockets.html:73:99 (get_dockets.Rd:67): Warning: replacing invalid character code 128
+get_dockets.html:73:107 (get_dockets.Rd:67): Warning: replacing invalid character code 128
+get_dockets.html:74:88 (get_dockets.Rd:68): Warning: replacing invalid character code 128
+get_dockets.html:74:99 (get_dockets.Rd:68): Warning: replacing invalid character code 128
+get_dockets.html:74:107 (get_dockets.Rd:68): Warning: replacing invalid character code 128
+get_dockets.html:75:88 (get_dockets.Rd:69): Warning: replacing invalid character code 128
+get_dockets.html:75:99 (get_dockets.Rd:69): Warning: replacing invalid character code 128
+get_dockets.html:75:107 (get_dockets.Rd:69): Warning: replacing invalid character code 128
+get_dockets.html:108:1 (get_dockets.Rd:100): Warning: discarding unexpected </main>
+get_dockets.html:4:1 (get_dockets.Rd:4): Warning: <link> inserting "type" attribute
+get_dockets.html:12:1 (get_dockets.Rd:4): Warning: <script> proprietary attribute "onload"
+get_dockets.html:12:1 (get_dockets.Rd:4): Warning: <script> inserting "type" attribute
+get_dockets.html:17:1 (get_dockets.Rd:4): Warning: <table> lacks "summary" attribute
+get_dockets.html:37:1 (get_dockets.Rd:16): Warning: <table> lacks "summary" attribute
+get_documents.html:15:44 (get_documents.Rd:4): Error: <main> is not recognized!
+get_documents.html:15:44 (get_documents.Rd:4): Warning: discarding unexpected <main>
+get_documents.html:67:16 (get_documents.Rd:61): Warning: replacing invalid character code 151
+get_documents.html:70:108 (get_documents.Rd:64): Warning: replacing invalid character code 128
+get_documents.html:70:116 (get_documents.Rd:64): Warning: replacing invalid character code 128
+get_documents.html:71:4 (get_documents.Rd:65): Warning: replacing invalid character code 132
+get_documents.html:75:1 (get_documents.Rd:66): Warning: discarding unexpected </main>
+get_documents.html:4:1 (get_documents.Rd:4): Warning: <link> inserting "type" attribute
+get_documents.html:12:1 (get_documents.Rd:4): Warning: <script> proprietary attribute "onload"
+get_documents.html:12:1 (get_documents.Rd:4): Warning: <script> inserting "type" attribute
+get_documents.html:17:1 (get_documents.Rd:4): Warning: <table> lacks "summary" attribute
+get_documents.html:37:1 (get_documents.Rd:16): Warning: <table> lacks "summary" attribute
+get_searchTerm.html:15:44 (get_searchTerm.Rd:4): Error: <main> is not recognized!
+get_searchTerm.html:15:44 (get_searchTerm.Rd:4): Warning: discarding unexpected <main>
+get_searchTerm.html:80:1 (get_searchTerm.Rd:71): Warning: discarding unexpected </main>
+get_searchTerm.html:4:1 (get_searchTerm.Rd:4): Warning: <link> inserting "type" attribute
+get_searchTerm.html:12:1 (get_searchTerm.Rd:4): Warning: <script> proprietary attribute "onload"
+get_searchTerm.html:12:1 (get_searchTerm.Rd:4): Warning: <script> inserting "type" attribute
+get_searchTerm.html:17:1 (get_searchTerm.Rd:4): Warning: <table> lacks "summary" attribute
+get_searchTerm.html:37:1 (get_searchTerm.Rd:17): Warning: <table> lacks "summary" attribute
+* checking for non-standard things in the check directory ... NOTE
+Found the following files/directories:
+  ‘regulationsdotgov-manual.tex’
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 1 ERROR, 3 WARNINGs, 10 NOTEs

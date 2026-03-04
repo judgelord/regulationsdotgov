@@ -1,0 +1,4 @@
+get_commentsOnId        Get metadata for all comments on a document
+get_dockets             Get dockets from an agency
+get_documents           Get documents from a docket folder
+get_searchTerm          Search for a term
