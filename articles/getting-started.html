@@ -57,7 +57,6 @@
 
       <h1>Getting started with regulationsdotgov</h1>
             
-            <h4 data-toc-skip class="date">2026-03-04</h4>
       
 
       <div class="d-none name"><code>getting-started.Rmd</code></div>
@@ -65,12 +64,13 @@
 
     
     
-<p>regulationsdotgov is a package that help researchers easily retrieve
-data from regulations.gov.</p>
+<p><code>regulationsdotgov</code> is a package that help researchers
+easily retrieve data from regulations.gov.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of regulationsdotgov from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of
+<code>regulationsdotgov</code> from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">'pak'</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'pak'</span><span class="op">)</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"judgelord/regulationsdotgov"</span><span class="op">)</span></span></code></pre></div>
@@ -78,7 +78,16 @@ data from regulations.gov.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://judgelord.github.io/regulationsdotgov/">regulationsdotgov</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="metadata">Metadata<a class="anchor" aria-label="anchor" href="#metadata"></a>
+<h2 id="request-an-api-key">Request an API key<a class="anchor" aria-label="anchor" href="#request-an-api-key"></a>
+</h2>
+<p>You will need an API key, you can register for one at <a href="https://open.gsa.gov/api/regulationsgov/" class="external-link uri">https://open.gsa.gov/api/regulationsgov/</a>.</p>
+<p>You will want to store your API key locally as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="st">"123tHiSkEyIsFaKe"</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="how-the-data-is-structured">How the data is structured<a class="anchor" aria-label="anchor" href="#how-the-data-is-structured"></a>
 </h2>
 <p>Regulations.gov metadata is organized in a hierarchical database.</p>
 <ul>
@@ -113,7 +122,8 @@ metadata)</li>
 parallel set of functions to retrieve metadata:</p>
 </div>
 <div class="section level2">
-<h2 id="example-retrieving-fbi-metadata">Example: Retrieving FBI Metadata<a class="anchor" aria-label="anchor" href="#example-retrieving-fbi-metadata"></a>
+<h2 id="basic-usage-illustrated-by-retrieving-fbi-dockets-documents-and-comments">Basic usage illustrated by retrieving FBI dockets, documents, and
+comments<a class="anchor" aria-label="anchor" href="#basic-usage-illustrated-by-retrieving-fbi-dockets-documents-and-comments"></a>
 </h2>
 <div class="section level4">
 <h4 id="get-dockets-from-an-agency">Get dockets from an agency<a class="anchor" aria-label="anchor" href="#get-dockets-from-an-agency"></a>
@@ -123,17 +133,12 @@ parallel set of functions to retrieve metadata:</p>
 <code>get_dockets("[agency_acronym]")</code> retrieves dockets for
 an agency (see official acronyms on regulations.gov)</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># You need an API key, you can register for one at https://open.gsa.gov/api/regulationsgov/.</span></span>
-<span></span>
-<span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="st">"123tHiSkEyIsFaKe"</span></span>
-<span></span>
-<span><span class="co"># get FBI dockets</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get FBI dockets</span></span>
 <span><span class="va">FBI_dockets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dockets.html">get_dockets</a></span><span class="op">(</span>agency <span class="op">=</span> <span class="st">"FBI"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">FBI_dockets</span><span class="op">)</span></span></code></pre></div>
-<pre><code>&gt; head(FBI_dockets)
-# A tibble: 6 × 8
+<pre><code># A tibble: 6 × 8
    docketType    lastModifiedDate     highlightedContent agencyId title                objectId id    lastpage
   &lt;chr&gt;         &lt;chr&gt;                &lt;lgl&gt;              &lt;chr&gt;    &lt;chr&gt;                &lt;chr&gt;    &lt;chr&gt; &lt;lgl&gt;   
 1 Rulemaking    2024-08-26T13:14:32Z NA                 FBI      "Bipartisan Safer C… 0b00006… FBI-… TRUE    
@@ -142,7 +147,7 @@ an agency (see official acronyms on regulations.gov)</li>
 4 Rulemaking    2021-05-02T01:06:49Z NA                 FBI      "National Instant C… 0b00006… FBI-… TRUE    
 5 Rulemaking    2021-05-02T01:06:49Z NA                 FBI      "FBI Criminal Justi… 0b00006… FBI-… TRUE    
 6 Nonrulemaking 2021-05-02T01:06:49Z NA                 FBI      "FBI Records Manage… 0b00006… FBI-… TRUE </code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">FBI_dockets</span><span class="op">$</span><span class="va">id</span></span></code></pre></div>
 <pre><code>&gt; FBI_dockets$id
 [1] "FBI-2024-0001"  "FBI-2023-0001"  "FBI_FRDOC_0001" "FBI-2013-0001"  "FBI-2008-0001"  "FBI-2008-0003"  "FBI-2016-0001"  "FBI-2008-0002" "FBI-2011-0001" </code></pre>
@@ -155,7 +160,7 @@ an agency (see official acronyms on regulations.gov)</li>
 <code>get_documents("[docketId]")</code> retrieves documents for a
 docket</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">FBI_docket_2013</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_documents.html">get_documents</a></span><span class="op">(</span>docketId <span class="op">=</span> <span class="st">"FBI-2013-0001"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">FBI_docket_2013</span><span class="op">)</span></span></code></pre></div>
@@ -166,7 +171,7 @@ docket</li>
 1 Proposed Rule 2013-03-30T02:01… ""                 2013-01… FALSE     FBI      FALSE            2013-03-30T03… Nati… 2013-01-2… FBI-201… NA     
 2 Notice        2013-03-22T20:22… ""                 NA       FALSE     FBI      FALSE            NA             Dock… 2013-03-2… FBI-201… NA     
 # ℹ 5 more variables: commentStartDate &lt;chr&gt;, openForComment &lt;lgl&gt;, objectId &lt;chr&gt;, id &lt;chr&gt;, lastpage &lt;lgl&gt;</code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Although the docket contains two documents, only the 'Proposed Rule' had a comment period, so we'll use the objectId for that document to collect comments.</span></span>
 <span><span class="va">FBI_docket_2013</span><span class="op">$</span><span class="va">objectId</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div>
 <pre><code>&gt; FBI_docket_2013$objectId[1]
@@ -177,7 +182,7 @@ docket</li>
 </h4>
 <p><code>get_commentsOnId("[objectId]")</code> retrieves comments on a
 specific document (e.g., a specific proposed rule)</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">commentsOn_FBI_docket_2013</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_commentsOnId.html">get_commentsOnId</a></span><span class="op">(</span>commentOnId <span class="op">=</span> <span class="st">"09000064811daace"</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># There are 36 comments on this document, we can see the metadata for the first 6 below</span></span>
@@ -192,7 +197,7 @@ specific document (e.g., a specific proposed rule)</p>
 4 Public Submission 2013-04-01T17:15:07Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
 5 Public Submission 2013-04-01T17:14:34Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
 6 Public Submission 2013-04-01T17:14:13Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…</code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Now we'll store the id for each comment on the document </span></span>
 <span><span class="va">comments_to_collect</span> <span class="op">&lt;-</span> <span class="va">commentsOn_FBI_docket_2013</span><span class="op">$</span><span class="va">id</span></span>
 <span></span>
@@ -205,7 +210,7 @@ specific document (e.g., a specific proposed rule)</p>
 </h4>
 <p><code>get_comment_details_content("[id]")</code> retrieves comments
 on a specific document (e.g., a specific proposed rule)</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">comments</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_comment_details.html">get_comment_details</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">comments_to_collect</span>, api_keys <span class="op">=</span> <span class="va">api_keys</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># We retrieve 21 attributes for these 36 comments </span></span>
@@ -216,12 +221,12 @@ on a specific document (e.g., a specific proposed rule)</p>
  [7] "documentType"        "objectId"            "modifyDate"          "organization"        "pageCount"           "postedDate"         
 [13] "receiveDate"         "title"               "trackingNbr"         "withdrawn"           "openForComment"      "id"                 
 [19] "attachments"  </code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Let's take a look a closer look at one of the comments. </span></span>
 <span><span class="va">comments</span><span class="op">$</span><span class="va">comment</span><span class="op">[</span><span class="fl">23</span><span class="op">]</span></span></code></pre></div>
 <pre><code>&gt; comments$comment[23]
 [1] "Docket No. FBI 152, Proposal 1 should be approved to stem gang violence and prevent youth suicide on Indian reservations."</code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We can use the following attachments attribute to download any file(s) that may accompany the comment. </span></span>
 <span><span class="va">comments</span><span class="op">$</span><span class="va">attachments</span><span class="op">[</span><span class="fl">23</span><span class="op">]</span></span></code></pre></div>
 <pre><code>&gt; comments$attachments[23]
