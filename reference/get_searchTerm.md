@@ -1,62 +1,127 @@
-# Search for a term
+# Search Regulations.gov Content by Keyword
 
-get_searchTerm("\[searchTerm\]") returns documents, comments, or dockets
-filtered by specific term
+Searches for a specific term across regulations.gov content types.
+Returns documents, comments, or dockets that match the search term, with
+optional filters for date, agency, and other parameters.
 
 ## Usage
 
 ``` r
-get_searchTerm(searchTerm, documents, lastModifiedDate, api_keys)
+get_searchTerm(searchTerm, endpoint, 
+               lastModifiedDate = Sys.time(), 
+               lastModifiedDate_mod = "le", agencyId = NULL, 
+               docketId = NULL, docketType = NULL, 
+               commentOnId = NULL, api_keys)
 ```
 
 ## Arguments
 
 - searchTerm:
 
-  Term to filter by.
+  A character string containing the term to search for. Can include
+  multiple keywords (e.g., "climate change"). URL-encoding is handled
+  automatically by the function.
 
-- documents:
+- endpoint:
 
-  Object to return. Default is set to `documents`.
+  Character string specifying the content type to search within. Valid
+  options:
 
-  Valid options are `documents`, `comments`, or `dockets`.
+  "documents"
+
+  :   Search within regulatory documents
+
+  "comments"
+
+  :   Search within public comments
+
+  "dockets"
+
+  :   Search within docket metadata
 
 - lastModifiedDate:
 
-  Filter results by their last modified date. Default is set to
-  [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html).
+  Filter results by their last modified date. Default is current system
+  time. Format must be: `"yyyy-MM-dd%20HH:mm:ss"` (e.g.,
+  "2024-01-01%2000:00:00" for January 1, 2024).
 
-  User-specified values must be formatted as `yyyy-MM-dd%20HH:mm:ss`.
+- lastModifiedDate_mod:
+
+  Modifier for the date filter. Acceptable values:
+
+  "le"
+
+  :   Less than or equal to (default)
+
+  "ge"
+
+  :   Greater than or equal to
+
+  NULL
+
+  :   Collects results for a single exact date match
+
+- agencyId:
+
+  Optional character string to filter by agency acronym (e.g., "EPA",
+  "FCC", "CMS").
+
+- docketId:
+
+  Optional character string to filter by specific docket ID. Limits
+  search to content within a particular docket.
+
+- docketType:
+
+  Optional character string to filter by docket type (e.g.,
+  "Rulemaking", "Nonrulemaking").
+
+- commentOnId:
+
+  Optional character string to filter by the document ID that comments
+  are responding to. Only applicable when `endpoint = "comments"`.
 
 - api_keys:
 
-  API key(s) from api.data.gov.
-
-## Details
-
-## Value
+  Character string or vector containing API key(s) from api.data.gov. If
+  multiple keys are provided, the function will cycle through them to
+  manage rate limits.
 
 ## References
 
-## Author
+Regulations.gov API Documentation:
+<https://open.gsa.gov/api/regulationsgov/>
 
-## Note
-
-## See also
+Agency Acronym List: <https://www.regulations.gov/agencies>
 
 ## Examples
 
 ``` r
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--  or do  help(data=index)  for the standard data sets.
+if (FALSE) { # \dontrun{
+# Basic search for documents about "climate change"
+climate_results <- get_searchTerm("climate change", api_keys = "DEMO_KEY")
 
-## The function is currently defined as
-function (x) 
-{
-  }
-#> function (x) 
-#> {
-#> }
-#> <environment: 0x5616b9a317f8>
+# Search for comments containing "pesticide" from EPA
+epa_comments <- get_searchTerm("pesticide", 
+                               endpoint = "comments", 
+                               agencyId = "EPA")
+
+# Search within a specific docket for recent documents
+docket_search <- get_searchTerm("safety", 
+                               endpoint = "documents",
+                               docketId = "EPA-HQ-OPP-2023-0123",
+                               lastModifiedDate = "2024-01-01%2000:00:00",
+                               lastModifiedDate_mod = "ge")
+
+# Search for rulemaking dockets about healthcare
+healthcare_dockets <- get_searchTerm("healthcare", 
+                                    endpoint = "dockets",
+                                    docketType = "Rulemaking")
+
+# Using multiple API keys for higher rate limits
+keys <- c("api_key_1", "api_key_2", "api_key_3")
+results <- get_searchTerm("air quality", 
+                         endpoint = "documents",
+                         api_keys = keys)
+} # }
 ```

@@ -3,16 +3,16 @@
 ## All functions
 
 - [`get_comment_details()`](https://judgelord.github.io/regulationsdotgov/reference/get_comment_details.md)
-  : A Capitalized Title (ideally limited to 65 characters)
+  : Retrieve Full Comment Details and Content
 - [`get_commentsOnId()`](https://judgelord.github.io/regulationsdotgov/reference/get_commentsOnId.md)
-  : Get metadata for all comments on a document
+  : Retrieve Comments on a Specific Document or from an Agency
 - [`get_dockets()`](https://judgelord.github.io/regulationsdotgov/reference/get_dockets.md)
-  : Get dockets from an agency
+  : Retrieve Dockets from a Government Agency
 - [`get_document_details()`](https://judgelord.github.io/regulationsdotgov/reference/get_document_details.md)
-  : A Capitalized Title (ideally limited to 65 characters)
+  : Retrieve Full Document Details and Metadata
 - [`get_documents()`](https://judgelord.github.io/regulationsdotgov/reference/get_documents.md)
-  : Get documents from a docket folder
+  : Retrieve Documents from a Docket or Agency
 - [`get_searchTerm()`](https://judgelord.github.io/regulationsdotgov/reference/get_searchTerm.md)
-  : Search for a term
+  : Search Regulations.gov Content by Keyword
 - [`save_dockets()`](https://judgelord.github.io/regulationsdotgov/reference/save_dockets.md)
-  : Save docket metadata in directory.
+  : Save Docket Metadata to Local Directory

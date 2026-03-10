@@ -1,144 +1,90 @@
-# A Capitalized Title (ideally limited to 65 characters)
+# Retrieve Full Comment Details and Content
+
+Fetches complete comment details and content from regulations.gov using
+comment IDs. Returns a data frame containing the full text, metadata,
+and attachment information for each requested comment.
 
 ## Usage
 
 ``` r
-get_comment_details(id, lastModifiedDate = Sys.time(), api_keys = keys)
+get_comment_details(id, lastModifiedDate = Sys.time(), api_keys)
 ```
 
 ## Arguments
 
 - id:
 
+  Character string or vector containing comment ID(s) obtained from
+  [`get_commentsOnId`](https://judgelord.github.io/regulationsdotgov/reference/get_commentsOnId.md)
+  or other search functions. Duplicate IDs are automatically removed to
+  optimize API usage.
+
 - lastModifiedDate:
+
+  Filter comments by their last modified date. Default is current system
+  time. Format must be: `"yyyy-MM-dd%20HH:mm:ss"` (e.g.,
+  "2024-01-01%2000:00:00" for January 1, 2024).
 
 - api_keys:
 
+  Character string or vector containing API key(s) from api.data.gov. If
+  multiple keys are provided, the function will cycle through them to
+  manage rate limits.
+
 ## Details
 
-## Value
+This function retrieves the full content of public comments, including
+the comment text, submitter information, and any attachments. Unlike
+[`get_commentsOnId`](https://judgelord.github.io/regulationsdotgov/reference/get_commentsOnId.md)
+which returns only metadata, this function fetches the complete comment
+details from the regulations.gov API.
+
+If the function encounters errors during execution, it will save
+successfully retrieved comments to a temporary .rda file and provide the
+file path for recovery.
 
 ## References
 
-## Author
-
-## Note
-
-## See also
+Regulations.gov API Documentation:
+<https://open.gsa.gov/api/regulationsgov/>
 
 ## Examples
 
 ``` r
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--  or standard data sets, see data().
+if (FALSE) { # \dontrun{
+# Get details for a single comment using its ID
+comment_details <- get_comment_details(
+  id = "FBI-2024-0001-0002", 
+  api_keys = "DEMO_KEY"
+)
 
-## The function is currently defined as
-function (id, lastModifiedDate = Sys.time(), api_keys = keys) 
-{
-    if (length(id) != length(unique(id))) {
-        message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
-    }
-    message("Trying: ", make_path_comment_details(id[1], "XXXXXXXXXXXXXX"))
-    unique_ids <- unique(id)
-    message("| Comment details | input N = ", length(id), " | output N = ", 
-        length(unique_ids), " | \n| --- | --- | --- | ")
-    temp_file <- tempfile(pattern = "comment_details_content_", 
-        fileext = ".rda")
-    success <- FALSE
-    on.exit({
-        if (!success && exists("content")) {
-            metadata <- dplyr::select(purrr::map_dfr(content, 
-                ~{
-                  attrs <- as.data.frame(purrr::map(purrr::pluck(.x, 
-                    "data", "attributes"), ~if (is.null(.x)) NA else .x))
-                  attrs$id <- purrr::pluck(.x, "data", "id")
-                  attrs
-                }), where(~!all(is.na(.x))))
-            save(metadata, file = temp_file)
-            message("\nFunction failed - saved content to temporary file: ", 
-                temp_file)
-            message("To load: load('", temp_file, "')")
-        }
-    })
-    content <- vector("list", length(unique_ids))
-    for (i in seq_along(unique_ids)) {
-        tryCatch({
-            content[[i]] <- get_comment_details_content(unique_ids[i], 
-                api_keys = api_keys)
-        }, error = function(e) {
-            message("Error for id ", unique_ids[i], ": ", e$message)
-            content[[i]] <<- NULL
-        })
-    }
-    nulls <- vapply(content, is.null, logical(1))
-    if (sum(nulls) > 0) {
-        message(paste("Errors for ids:", paste(unique_ids[nulls], 
-            collapse = ",")))
-    }
-    content <- content[!nulls]
-    if (length(content) == 0) {
-        warning("No valid comments retrieved")
-        return(NULL)
-    }
-    metadata <- dplyr::select(purrr::map_dfr(content, extract_attrs), 
-        where(~!all(is.na(.x))))
-    metadata <- dplyr::distinct(metadata)
-    success <- TRUE
-    return(metadata)
-  }
-#> function (id, lastModifiedDate = Sys.time(), api_keys = keys) 
-#> {
-#>     if (length(id) != length(unique(id))) {
-#>         message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
-#>     }
-#>     message("Trying: ", make_path_comment_details(id[1], "XXXXXXXXXXXXXX"))
-#>     unique_ids <- unique(id)
-#>     message("| Comment details | input N = ", length(id), " | output N = ", 
-#>         length(unique_ids), " | \n| --- | --- | --- | ")
-#>     temp_file <- tempfile(pattern = "comment_details_content_", 
-#>         fileext = ".rda")
-#>     success <- FALSE
-#>     on.exit({
-#>         if (!success && exists("content")) {
-#>             metadata <- dplyr::select(purrr::map_dfr(content, 
-#>                 ~{
-#>                   attrs <- as.data.frame(purrr::map(purrr::pluck(.x, 
-#>                     "data", "attributes"), ~if (is.null(.x)) NA else .x))
-#>                   attrs$id <- purrr::pluck(.x, "data", "id")
-#>                   attrs
-#>                 }), where(~!all(is.na(.x))))
-#>             save(metadata, file = temp_file)
-#>             message("\nFunction failed - saved content to temporary file: ", 
-#>                 temp_file)
-#>             message("To load: load('", temp_file, "')")
-#>         }
-#>     })
-#>     content <- vector("list", length(unique_ids))
-#>     for (i in seq_along(unique_ids)) {
-#>         tryCatch({
-#>             content[[i]] <- get_comment_details_content(unique_ids[i], 
-#>                 api_keys = api_keys)
-#>         }, error = function(e) {
-#>             message("Error for id ", unique_ids[i], ": ", e$message)
-#>             content[[i]] <<- NULL
-#>         })
-#>     }
-#>     nulls <- vapply(content, is.null, logical(1))
-#>     if (sum(nulls) > 0) {
-#>         message(paste("Errors for ids:", paste(unique_ids[nulls], 
-#>             collapse = ",")))
-#>     }
-#>     content <- content[!nulls]
-#>     if (length(content) == 0) {
-#>         warning("No valid comments retrieved")
-#>         return(NULL)
-#>     }
-#>     metadata <- dplyr::select(purrr::map_dfr(content, extract_attrs), 
-#>         where(~!all(is.na(.x))))
-#>     metadata <- dplyr::distinct(metadata)
-#>     success <- TRUE
-#>     return(metadata)
-#> }
-#> <environment: 0x5616bd2db548>
+# View the full comment text
+cat(comment_details$comment)
+
+# Get details for multiple comments
+comment_ids <- c("FBI-2024-0001-0002", "FBI-2024-0001-0005", 
+                 "FBI-2024-0001-0007")
+                 
+multiple_comments <- get_comment_details(
+  id = comment_ids, 
+  api_keys = "DEMO_KEY"
+)
+
+# Using multiple API keys for higher rate limits
+keys <- c("api_key_1", "api_key_2", "api_key_3")
+results <- get_comment_details(
+  id = comment_ids, 
+  api_keys = keys
+)
+
+# Typical workflow: get metadata first, then full details
+# Get metadata for comments on a document
+metadata <- get_commentsOnId(objectId = "09000064865d514a", 
+                            api_keys = "DEMO_KEY")
+# Then fetch full details for specific comments of interest
+detailed <- get_comment_details(
+  id = metadata$id[1:10],  # First 10 comments
+  api_keys = "DEMO_KEY"
+)
+} # }
 ```

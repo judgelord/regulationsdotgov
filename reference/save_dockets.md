@@ -1,45 +1,35 @@
-# Save docket metadata in directory.
+# Save Docket Metadata to Local Directory
 
-save_dockets("\[agency_acronym\]") creates a data directory for
-collecting agency docket metadata within a folder structure.
+Retrieves docket metadata for specified agency(ies) and saves it to a
+structured local directory. Creates an organized folder system for
+storing and managing regulatory data over time.
 
 ## Usage
 
 ``` r
-save_dockets(agency)
+save_dockets(agency, api_keys)
 ```
 
 ## Arguments
 
 - agency:
 
-  Agency acronym(s) (see official acronyms on regulations.gov)
+  A character string containing the agency acronym. Must match official
+  agency acronyms used on regulations.gov (e.g., "EPA", "FCC", "CMS").
+
+- api_keys:
+
+  Character string or vector containing API key(s) from api.data.gov. If
+  multiple keys are provided, the function will cycle through them to
+  manage rate limits.
 
 ## Details
 
-This function uses the get_dockets function internally, so you will need
-to have an 'api_keys' stored in your environment in order for it to
-function properly.
+The function uses
+[`get_dockets`](https://judgelord.github.io/regulationsdotgov/reference/get_dockets.md)
+internally to fetch the latest docket metadata, so you will need to have
+an API key.
 
 ## Value
 
 Stores data as a .rmd file.
-
-## References
-
-## Author
-
-## Note
-
-## See also
-
-## Examples
-
-``` r
-agency <- c("OMB")
-
-save_dockets(agency)
-#> get_dockets for OMB
-#> An error occurred: argument "api_keys" is missing, with no default
-#> | OMB | n = 0 |
-```
