@@ -1,80 +1,83 @@
 \name{get_commentsOnId}
 \alias{get_commentsOnId}
 \title{
-Get metadata for all comments on a document
+Retrieve Comments on a Specific Document or from an Agency
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-get_commentsOnId("[objectId]") retrieves metadata for all comments on a document
+Fetches comment metadata from regulations.gov. Can retrieve all comments 
+on a specific document using its objectId, or all comments submitted to 
+an agency. Returns a data frame containing comment details based on 
+specified filters.
 }
 \usage{
-get_commentsOnId(objectId, agencyId, lastModifiedDate = Sys.time(), lastModifiedDate_mod, api_keys)
+get_commentsOnId(objectId = NULL, agencyId = NULL, 
+                 lastModifiedDate = Sys.time(), 
+                 lastModifiedDate_mod = "le", 
+                 api_keys)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{objectId}{
-objectId obtained from a document's metadata 
-
-Default is set to \code{NULL}. User must specify either an objectId or agencyId. 
+Optional character string containing the objectId from a document's metadata.
+When provided, returns all comments on that specific document. 
+Must specify either \code{objectId} or \code{agencyId}.
 }
-\item{agencyId}{
-  Agency acronym (see official acronyms on regulations.gov)
-  
-  Default is set to \code{NULL}. User must specify either an objectId or agencyId. 
+  \item{agencyId}{
+Optional character string containing the agency acronym.
+When provided, returns all comments submitted to the specified agency.
+Must specify either \code{objectId} or \code{agencyId}.
+Must match official agency acronyms used on regulations.gov 
+(e.g., "EPA", "FCC", "CMS").
 }
   \item{lastModifiedDate}{
-Filter results by their last modified date. Default is set to \code{Sys.time()}. 
-
-User-specified values must be formatted as \code{yyyy-MM-dd\%20HH:mm:ss}.
-
+Filter comments by their last modified date. Default is current system time.
+Format must be: \code{"yyyy-MM-dd\%20HH:mm:ss"} 
+(e.g., "2024-01-01\%2000:00:00" for January 1, 2024).
 }
-\item{lastModifiedDate_mod}{
-Parameter that modifies lastModifiedDate. 
-
-Default is set to \code{lastModifiedDate_mod = "le"} to collect all results before current date. 
-
-Use \code{lastModifiedDate_mod = NULL} to collect results for a single date. 
-
-Use \code{lastModifiedDate_mod = "ge"} to collect results greater than a date. 
-
-}
-  \item{api_keys}{API key(s) from api.data.gov. 
+  \item{lastModifiedDate_mod}{
+Modifier for the date filter.
+Acceptable values:
+\describe{
+  \item{"le"}{Less than or equal to (default)}
+  \item{"ge"}{Greater than or equal to}
+  \item{NULL}{Collects results for a single exact date match}
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
+  \item{api_keys}{
+Character string or vector containing API key(s) from api.data.gov. 
+If multiple keys are provided, the function will cycle through them 
+to manage rate limits.
 }
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
 }
 \references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
+Regulations.gov API Documentation: 
+\url{https://open.gsa.gov/api/regulationsgov/}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+Agency Acronym List: 
+\url{https://www.regulations.gov/agencies}
 }
 \examples{
+\dontrun{
+# Get comments on a specific document using objectId
+comment_metadata <- get_commentsOnId(
+  objectId = "09000064865d514a", 
+  api_keys = "DEMO_KEY"
+)
 
-# comment_metadata <- get_commentsOnId(commentOnId = "09000064865d514a", api_keys = "DEMO_KEY")
+# Get all comments submitted to the EPA
+epa_comments <- get_commentsOnId(
+  agencyId = "EPA",
+  api_keys = "DEMO_KEY"
+)
 
-# head(comment_metadata)
+# Get comments modified after a specific date
+recent_comments <- get_commentsOnId(
+  agencyId = "FCC",
+  lastModifiedDate = "2024-06-01\%2000:00:00",
+  lastModifiedDate_mod = "ge"
+)
 
-# A tibble: 1 × 11
-#   documentType      lastModifiedDate    highlightedContent withdrawn agencyId title objectId postedDate id   
-#   <chr>             <chr>               <chr>              <lgl>     <chr>    <chr> <chr>    <chr>      <chr>
-# 1 Public Submission 2024-07-26T13:29:3… ""                 FALSE     FBI      Comm… 0900006… 2024-07-2… FBI-…
-# ℹ 2 more variables: lastpage <lgl>, commentOnId <chr>
+# Using multiple API keys for higher rate limits
+keys <- c("api_key_1", "api_key_2", "api_key_3")
+results <- get_commentsOnId(agencyId = "EPA", api_keys = keys)
+}
 }

@@ -1,118 +1,83 @@
 \name{get_comment_details}
 \alias{get_comment_details}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A Capitalized Title (ideally limited to 65 characters)
+Retrieve Full Comment Details and Content
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Fetches complete comment details and content from regulations.gov using 
+comment IDs. Returns a data frame containing the full text, metadata, 
+and attachment information for each requested comment.
 }
 \usage{
-get_comment_details(id, lastModifiedDate = Sys.time(), api_keys = keys)
+get_comment_details(id, lastModifiedDate = Sys.time(), api_keys)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{id}{
-%%     ~~Describe \code{id} here~~
+Character string or vector containing comment ID(s) obtained from 
+\code{\link{get_commentsOnId}} or other search functions. 
+Duplicate IDs are automatically removed to optimize API usage.
 }
   \item{lastModifiedDate}{
-%%     ~~Describe \code{lastModifiedDate} here~~
+Filter comments by their last modified date. Default is current system time.
+Format must be: \code{"yyyy-MM-dd\%20HH:mm:ss"} 
+(e.g., "2024-01-01\%2000:00:00" for January 1, 2024).
 }
   \item{api_keys}{
-%%     ~~Describe \code{api_keys} here~~
+Character string or vector containing API key(s) from api.data.gov. 
+If multiple keys are provided, the function will cycle through them 
+to manage rate limits.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+This function retrieves the full content of public comments, including the 
+comment text, submitter information, and any attachments. Unlike 
+\code{\link{get_commentsOnId}} which returns only metadata, this function 
+fetches the complete comment details from the regulations.gov API.
+
+If the function encounters errors during execution, it will save successfully 
+retrieved comments to a temporary .rda file and provide the file path for 
+recovery.
 }
 \references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+Regulations.gov API Documentation: 
+\url{https://open.gsa.gov/api/regulationsgov/}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or standard data sets, see data().
+\dontrun{
+# Get details for a single comment using its ID
+comment_details <- get_comment_details(
+  id = "FBI-2024-0001-0002", 
+  api_keys = "DEMO_KEY"
+)
 
-## The function is currently defined as
-function (id, lastModifiedDate = Sys.time(), api_keys = keys) 
-{
-    if (length(id) != length(unique(id))) {
-        message("Duplicate ids dropped to save API calls (result will be shorter than length of input id vector)")
-    }
-    message("Trying: ", make_path_comment_details(id[1], "XXXXXXXXXXXXXX"))
-    unique_ids <- unique(id)
-    message("| Comment details | input N = ", length(id), " | output N = ", 
-        length(unique_ids), " | \n| --- | --- | --- | ")
-    temp_file <- tempfile(pattern = "comment_details_content_", 
-        fileext = ".rda")
-    success <- FALSE
-    on.exit({
-        if (!success && exists("content")) {
-            metadata <- dplyr::select(purrr::map_dfr(content, 
-                ~{
-                  attrs <- as.data.frame(purrr::map(purrr::pluck(.x, 
-                    "data", "attributes"), ~if (is.null(.x)) NA else .x))
-                  attrs$id <- purrr::pluck(.x, "data", "id")
-                  attrs
-                }), where(~!all(is.na(.x))))
-            save(metadata, file = temp_file)
-            message("\nFunction failed - saved content to temporary file: ", 
-                temp_file)
-            message("To load: load('", temp_file, "')")
-        }
-    })
-    content <- vector("list", length(unique_ids))
-    for (i in seq_along(unique_ids)) {
-        tryCatch({
-            content[[i]] <- get_comment_details_content(unique_ids[i], 
-                api_keys = api_keys)
-        }, error = function(e) {
-            message("Error for id ", unique_ids[i], ": ", e$message)
-            content[[i]] <<- NULL
-        })
-    }
-    nulls <- vapply(content, is.null, logical(1))
-    if (sum(nulls) > 0) {
-        message(paste("Errors for ids:", paste(unique_ids[nulls], 
-            collapse = ",")))
-    }
-    content <- content[!nulls]
-    if (length(content) == 0) {
-        warning("No valid comments retrieved")
-        return(NULL)
-    }
-    metadata <- dplyr::select(purrr::map_dfr(content, extract_attrs), 
-        where(~!all(is.na(.x))))
-    metadata <- dplyr::distinct(metadata)
-    success <- TRUE
-    return(metadata)
-  }
+# View the full comment text
+cat(comment_details$comment)
+
+# Get details for multiple comments
+comment_ids <- c("FBI-2024-0001-0002", "FBI-2024-0001-0005", 
+                 "FBI-2024-0001-0007")
+                 
+multiple_comments <- get_comment_details(
+  id = comment_ids, 
+  api_keys = "DEMO_KEY"
+)
+
+# Using multiple API keys for higher rate limits
+keys <- c("api_key_1", "api_key_2", "api_key_3")
+results <- get_comment_details(
+  id = comment_ids, 
+  api_keys = keys
+)
+
+# Typical workflow: get metadata first, then full details
+# Get metadata for comments on a document
+metadata <- get_commentsOnId(objectId = "09000064865d514a", 
+                            api_keys = "DEMO_KEY")
+# Then fetch full details for specific comments of interest
+detailed <- get_comment_details(
+  id = metadata$id[1:10],  # First 10 comments
+  api_keys = "DEMO_KEY"
+)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
-% Use only one keyword per line.
-% For non-standard keywords, use \concept instead of \keyword:
-% \concept{ ~cpt1 }
-% \concept{ ~cpt2 }
-% Use only one concept per line.
+}
+

@@ -19,8 +19,11 @@ Imports:
     jsonlite,
     purrr,
     stringr,
-    tibble
+    tibble, 
+    tidyr
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown, 
+    kableExtra, 
+    pdftools
 VignetteBuilder: knitr

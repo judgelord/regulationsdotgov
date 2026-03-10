@@ -1,49 +1,33 @@
 \name{save_dockets}
 \alias{save_dockets}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Save docket metadata in directory. 
+Save Docket Metadata to Local Directory
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-save_dockets("[agency_acronym]") creates a data directory for collecting agency docket metadata within a folder structure. 
+Retrieves docket metadata for specified agency(ies) and saves it to a structured 
+local directory. Creates an organized folder system for storing and managing 
+regulatory data over time.
 }
 \usage{
-save_dockets(agency)
+save_dockets(agency, api_keys)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{agency}{
-%%     ~~Describe \code{agency} here~~
-Agency acronym(s) (see official acronyms on regulations.gov)
+A character string containing the agency acronym. 
+Must match official agency acronyms used on regulations.gov 
+(e.g., "EPA", "FCC", "CMS").
+}
+  \item{api_keys}{
+Character string or vector containing API key(s) from api.data.gov. 
+If multiple keys are provided, the function will cycle through them 
+to manage rate limits.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
-This function uses the get_dockets function internally, so you will need to have an 'api_keys' stored in your environment in order for it to function properly. 
+The function uses \code{\link{get_dockets}} internally to fetch the latest 
+docket metadata, so you will need to have an API key.
 }
 \value{
 Stores data as a .rmd file. 
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-
-agency <- c("OMB")
-
-save_dockets(agency)
-
-}
