@@ -33,8 +33,8 @@ get_documents(agencyId = NULL, docketId = NULL,
 - lastModifiedDate:
 
   Filter documents by their last modified date. Default is current
-  system time. Format must be: `"yyyy-MM-dd%20HH:mm:ss"` (e.g.,
-  "2024-01-01%2000:00:00" for January 1, 2024).
+  system time. Format must be: `"yyyy-MM-ddHH:mm:ss"` (e.g.,
+  "2024-01-0100:00:00" for January 1, 2024).
 
 - lastModifiedDate_mod:
 
