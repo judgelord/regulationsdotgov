@@ -29,8 +29,8 @@ belonging to the specified docket.
 }
   \item{lastModifiedDate}{
 Filter documents by their last modified date. Default is current system time.
-Format must be: \code{"yyyy-MM-dd\%20HH:mm:ss"} 
-(e.g., "2024-01-01\%2000:00:00" for January 1, 2024).
+Format must be: \code{"yyyy-MM-ddHH:mm:ss"} 
+(e.g., "2024-01-0100:00:00" for January 1, 2024).
 }
   \item{lastModifiedDate_mod}{
 Modifier for the date filter.
