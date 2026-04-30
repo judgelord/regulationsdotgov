@@ -15,6 +15,14 @@ if(F){
 
   documents = c("documents", "comments")
   documents = c("comments")
+  
+  make_path_searchTerm(searchTerm = "climate justice", 
+                       endpoint = "comments", 
+                       page = 1, 
+                       api_key = keys[1], 
+                       lastModifiedDate = Sys.time())
+  
+  racism <- get_searchTerm('structural%20racism', "documents", api_keys = keys)
 
 
 
