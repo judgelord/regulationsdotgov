@@ -16,11 +16,23 @@ get_searchTerm_batch <- function(searchTerm,
 
   i <- 1
   metadata <- list()
-
-  message(paste0(endpoint,' containing "', searchTerm,
-                 '" posted before ',lastModifiedDate)
-          )
-
+  
+  
+  if(lastModifiedDate_mod == "ge"){
+    
+    message(paste0(endpoint,' containing "', searchTerm,
+                   '" posted after ',lastModifiedDate))
+  } else if(is.null(lastModifiedDate_mod)){
+    
+    message(paste0(endpoint,' containing "', searchTerm,
+                   '" posted on ',lastModifiedDate))
+  } else {
+    
+    message(paste0(endpoint,' containing "', searchTerm,
+                   '" posted before ',lastModifiedDate))
+  } 
+  
+  
   for (i in 1:20){
 
     message(paste("Page", i))
