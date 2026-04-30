@@ -15,6 +15,9 @@ make_path_searchTerm <- function(searchTerm,
   base_url <- "https://api.regulations.gov/v4/"
   endpoint <- match.arg(endpoint, c("documents", "comments", "dockets"))
   
+  # Remove spaces from searchTerm
+  searchTerm <- stringr::str_replace_all(searchTerm, " ", "%20")
+  
   # Format the last modified date with modifier if present
   lastModifiedDate_param <- if (!is.null(lastModifiedDate_mod)) {
     paste0("filter[lastModifiedDate][", lastModifiedDate_mod, "]")
