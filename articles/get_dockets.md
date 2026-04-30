@@ -6,6 +6,7 @@
   official acronyms on regulations.gov)
 
 ``` r
+
 # you need an API key
 #source("~/api-key.R")
 
@@ -13,6 +14,7 @@ library(regulationsdotgov)
 ```
 
 ``` r
+
 # get FBI dockets
 #FBI_dockets <- get_dockets("FBI")
 ```

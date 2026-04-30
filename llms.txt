@@ -12,11 +12,13 @@ You can install the development version of regulationsdotgov from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 if (!requireNamespace('pak')) install.packages('pak')
 pak::pak("judgelord/regulationsdotgov")
 ```
 
 ``` r
+
 library(regulationsdotgov)
 ```
 
@@ -44,6 +46,7 @@ functions to retrieve metadata:
   official acronyms on regulations.gov)
 
 ``` r
+
 # You need an API key, you can register for one at https://open.gsa.gov/api/regulationsgov/.
 
 api_keys <- "123tHiSkEyIsFaKe"
@@ -68,6 +71,7 @@ head(FBI_dockets)
 ```
 
 ``` r
+
 FBI_dockets$id
 ```
 
@@ -81,6 +85,7 @@ FBI_dockets$id
 - `get_documents("[docketId]")` retrieves documents for a docket
 
 ``` r
+
 FBI_docket_2013 <- get_documents(docketId = "FBI-2013-0001", api_keys = api_keys)
 
 head(FBI_docket_2013)
@@ -97,6 +102,7 @@ head(FBI_docket_2013)
 ```
 
 ``` r
+
 # Although the docket contains two documents, only the 'Proposed Rule' had a comment period, so we'll use the objectId for that document to collect comments.
 FBI_docket_2013$objectId[1]
 ```
@@ -112,6 +118,7 @@ FBI_docket_2013$objectId[1]
 document (e.g., a specific proposed rule)
 
 ``` r
+
 commentsOn_FBI_docket_2013 <- get_commentsOnId(commentOnId = "09000064811daace", api_keys = api_keys)
 
 # There are 36 comments on this document, we can see the metadata for the first 6 below
@@ -132,6 +139,7 @@ head(commentsOn_FBI_docket_2013)
 ```
 
 ``` r
+
 # Now we'll store the id for each comment on the document 
 comments_to_collect <- commentsOn_FBI_docket_2013$id
 
@@ -149,6 +157,7 @@ head(comments_to_collect)
 document (e.g., a specific proposed rule)
 
 ``` r
+
 comments <- get_comment_details(id = comments_to_collect, api_keys = api_keys)
 
 # We retrieve 21 attributes for these 36 comments 
@@ -165,6 +174,7 @@ colnames(comments)
 ```
 
 ``` r
+
 # Let's take a look a closer look at one of the comments. 
 comments$comment[23]
 ```
@@ -175,6 +185,7 @@ comments$comment[23]
 ```
 
 ``` r
+
 # We can use the following attachments attribute to download any file(s) that may accompany the comment. 
 comments$attachments[23]
 ```

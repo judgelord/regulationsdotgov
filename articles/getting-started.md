@@ -9,11 +9,13 @@ You can install the development version of `regulationsdotgov` from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 if (!requireNamespace('pak')) install.packages('pak')
 pak::pak("judgelord/regulationsdotgov")
 ```
 
 ``` r
+
 library(regulationsdotgov)
 ```
 
@@ -25,6 +27,7 @@ You will need an API key, you can register for one at
 You will want to store your API key locally as follows:
 
 ``` r
+
 
 api_keys <- "123tHiSkEyIsFaKe"
 ```
@@ -53,6 +56,7 @@ functions to retrieve metadata:
   official acronyms on regulations.gov)
 
 ``` r
+
 # get FBI dockets
 FBI_dockets <- get_dockets(agency = "FBI", api_keys = api_keys)
 
@@ -70,6 +74,7 @@ head(FBI_dockets)
     6 Nonrulemaking 2021-05-02T01:06:49Z NA                 FBI      "FBI Records Manage… 0b00006… FBI-… TRUE 
 
 ``` r
+
 FBI_dockets$id
 ```
 
@@ -81,6 +86,7 @@ FBI_dockets$id
 - `get_documents("[docketId]")` retrieves documents for a docket
 
 ``` r
+
 FBI_docket_2013 <- get_documents(docketId = "FBI-2013-0001", api_keys = api_keys)
 
 head(FBI_docket_2013)
@@ -95,6 +101,7 @@ head(FBI_docket_2013)
     # ℹ 5 more variables: commentStartDate <chr>, openForComment <lgl>, objectId <chr>, id <chr>, lastpage <lgl>
 
 ``` r
+
 # Although the docket contains two documents, only the 'Proposed Rule' had a comment period, so we'll use the objectId for that document to collect comments.
 FBI_docket_2013$objectId[1]
 ```
@@ -108,6 +115,7 @@ FBI_docket_2013$objectId[1]
 document (e.g., a specific proposed rule)
 
 ``` r
+
 commentsOn_FBI_docket_2013 <- get_commentsOnId(commentOnId = "09000064811daace", api_keys = api_keys)
 
 # There are 36 comments on this document, we can see the metadata for the first 6 below
@@ -126,6 +134,7 @@ head(commentsOn_FBI_docket_2013)
     6 Public Submission 2013-04-01T17:14:13Z ""                 FALSE     FBI      Comment on FR Doc #… 0900006… 2013-04-0… FBI-… TRUE     0900006481…
 
 ``` r
+
 # Now we'll store the id for each comment on the document 
 comments_to_collect <- commentsOn_FBI_docket_2013$id
 
@@ -141,6 +150,7 @@ head(comments_to_collect)
 document (e.g., a specific proposed rule)
 
 ``` r
+
 comments <- get_comment_details(id = comments_to_collect, api_keys = api_keys)
 
 # We retrieve 21 attributes for these 36 comments 
@@ -155,6 +165,7 @@ colnames(comments)
     [19] "attachments"  
 
 ``` r
+
 # Let's take a look a closer look at one of the comments. 
 comments$comment[23]
 ```
@@ -163,6 +174,7 @@ comments$comment[23]
     [1] "Docket No. FBI 152, Proposal 1 should be approved to stem gang violence and prevent youth suicide on Indian reservations."
 
 ``` r
+
 # We can use the following attachments attribute to download any file(s) that may accompany the comment. 
 comments$attachments[23]
 ```
